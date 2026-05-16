@@ -49,6 +49,14 @@ h1 {
   font-size: 24px;
 }
 
+.project-credit {
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
 .header-actions {
   display: flex;
   gap: 10px;
@@ -136,10 +144,6 @@ legend {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-}
-
-.form-grid label:nth-child(3) {
-  grid-column: span 2;
 }
 
 .secondary-diagnosis-grid {
@@ -329,12 +333,28 @@ select {
 }
 
 .manual-meta-row span {
-  display: block;
+  display: flex;
+  align-items: center;
   min-height: 100%;
   padding: 0.45mm 1mm;
   border-left: 0.24mm solid #000000;
   font-size: 7pt;
   line-height: 1.1;
+}
+
+.manual-meta-record {
+  justify-content: center;
+  font-weight: 800;
+  text-align: center;
+}
+
+.manual-meta-check {
+  justify-content: center;
+  padding: 0;
+}
+
+.manual-meta-check .legal-box {
+  margin-left: 0;
 }
 
 .legal-table {
@@ -464,19 +484,29 @@ select {
   height: 5mm;
 }
 
-.medicine-manual.has-indications th:nth-child(1),
-.medicine-manual.has-indications td:nth-child(1) {
-  width: 24%;
+.medicine-manual.has-indications .medicine-col {
+  width: 31%;
 }
 
-.medicine-manual.has-indications th:nth-child(2),
-.medicine-manual.has-indications td:nth-child(2) {
-  width: 38%;
+.medicine-manual.has-indications .indication-col {
+  width: 35%;
 }
 
-.medicine-manual.no-indications th:nth-child(1),
-.medicine-manual.no-indications td:nth-child(1) {
+.medicine-manual.has-indications .quantity-col {
+  width: 9%;
+}
+
+.medicine-manual.has-indications .value-col {
+  width: 8%;
+}
+
+.medicine-manual.no-indications .medicine-col {
   width: 68%;
+}
+
+.medicine-manual.no-indications .quantity-col,
+.medicine-manual.no-indications .value-col {
+  width: 8%;
 }
 
 .medicine-manual td {

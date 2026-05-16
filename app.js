@@ -90,16 +90,7 @@ const internadoProcedures = [
 
 const state = {
   template: "ambulatorio",
-  medicines: [
-    {
-      name: "Metformina",
-      concentration: "850 mg",
-      form: "Comprimido",
-      route: "VO",
-      quantity: 30,
-      instruction: "Tomar 1 comprimido cada 12 horas",
-    },
-  ],
+  medicines: [],
 };
 
 const form = document.querySelector("#recipeForm");
@@ -110,16 +101,13 @@ const quantityInput = document.querySelector("#quantityInput");
 const instructionInput = document.querySelector("#instructionInput");
 const medicineOptions = document.querySelector("#medicineOptions");
 const diagnosisOptions = document.querySelector("#diagnosisOptions");
-const serviceOptions = document.querySelector("#serviceOptions");
+const serviceSelect = document.querySelector("#serviceSelect");
+const admissionServiceSelect = document.querySelector("#admissionServiceSelect");
 const installButton = document.querySelector("#installBtn");
 const tabs = [...document.querySelectorAll(".template-tab")];
 const ambulatorioServicesOptions = document.querySelector("#ambulatorioServicesOptions");
 const internadoProcedureOptions = document.querySelector("#internadoProcedureOptions");
 let installPrompt = null;
-
-const today = new Date().toISOString().slice(0, 10);
-form.elements.requestDate.value = today;
-form.elements.admissionDate.value = today;
 
 populateMedicineOptions();
 populateServiceOptions();
@@ -142,6 +130,7 @@ tabs.forEach((tab) => {
       .querySelectorAll(".ambulatorio-only")
       .forEach((item) => item.classList.toggle("hidden", state.template !== "ambulatorio"));
     document.querySelectorAll(".uti-only").forEach((item) => item.classList.toggle("hidden", !isUti));
+    document.querySelectorAll(".non-uti-only").forEach((item) => item.classList.toggle("hidden", isUti));
     render();
   });
 });
@@ -150,8 +139,6 @@ document.querySelector("#printBtn").addEventListener("click", () => window.print
 document.querySelector("#pdfBtn").addEventListener("click", generatePdf);
 document.querySelector("#clearBtn").addEventListener("click", () => {
   form.reset();
-  form.elements.requestDate.value = today;
-  form.elements.admissionDate.value = today;
   state.medicines = [];
   render();
 });
@@ -276,7 +263,11 @@ function populateDiagnosisOptions() {
 }
 
 function populateServiceOptions() {
-  serviceOptions.innerHTML = clinicalServices.map((service) => `<option value="${safe(service)}"></option>`).join("");
+  const options = `<option value=""></option>${clinicalServices
+    .map((service) => `<option value="${safe(service)}">${safe(service)}</option>`)
+    .join("")}`;
+  serviceSelect.innerHTML = options;
+  admissionServiceSelect.innerHTML = options;
 }
 
 function findDiagnosis(value) {
@@ -486,19 +477,19 @@ function renderManualHeader(data) {
       <div class="manual-meta-right">
         <div class="manual-meta-row">
           <strong>Nº DE EXPEDIENTE CLINICO:</strong>
-          <span>${safe(data.clinicalRecord)}</span>
+          <span class="manual-meta-record">${safe(data.clinicalRecord)}</span>
         </div>
         <div class="manual-meta-row">
           <strong>SEGURO UNICO DE SALUD</strong>
-          <span></span>
+          <span class="manual-meta-check">${renderBox(data.patientType === "SUS")}</span>
         </div>
         <div class="manual-meta-row">
           <strong>PROGRAMAS:</strong>
-          <span></span>
+          <span class="manual-meta-check">${renderBox(data.patientType === "PROGRAMAS")}</span>
         </div>
         <div class="manual-meta-row">
           <strong>VENTA:</strong>
-          <span></span>
+          <span class="manual-meta-check">${renderBox(data.patientType === "VENTA")}</span>
         </div>
       </div>
     </section>
@@ -696,6 +687,24 @@ function renderManualMedicines(minRows, withIndications) {
   while (rows.length < minRows) rows.push(null);
   return `
     <table class="legal-table medicine-manual ${withIndications ? "has-indications" : "no-indications"}">
+      ${
+        withIndications
+          ? `<colgroup>
+              <col class="medicine-col">
+              <col class="indication-col">
+              <col class="quantity-col">
+              <col class="quantity-col">
+              <col class="value-col">
+              <col class="value-col">
+            </colgroup>`
+          : `<colgroup>
+              <col class="medicine-col">
+              <col class="quantity-col">
+              <col class="quantity-col">
+              <col class="value-col">
+              <col class="value-col">
+            </colgroup>`
+      }
       <thead>
         <tr>
           <th rowspan="2">MEDICAMENTOS E INSUMOS<br><small>(Nombre generico, Forma Farmaceutica y Concentracion)</small></th>
@@ -1044,7 +1053,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-23").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-25").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

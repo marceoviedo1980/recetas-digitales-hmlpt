@@ -5,16 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-23" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-25" />
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260516-23" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260516-25" />
   </head>
   <body>
     <header class="app-header">
       <div>
         <p class="eyebrow">Hospital Municipal La Portada</p>
         <h1>Recetario Digital</h1>
+        <div class="project-credit">
+          <strong>Proyecto: LA PORTADA DIGITAL</strong>
+          <strong>Desarrollado por: Marcelo Oviedo L.</strong>
+        </div>
       </div>
       <div class="header-actions">
         <button class="ghost-button hidden" id="installBtn" type="button">Instalar app</button>
@@ -38,34 +42,35 @@
             <div class="form-grid">
               <label>
                 Apellido paterno
-                <input name="paternalSurname" required value="Oviedo" />
+                <input name="paternalSurname" required />
               </label>
               <label>
                 Apellido materno
-                <input name="maternalSurname" value="Lazcano" />
+                <input name="maternalSurname" />
               </label>
-              <label>
+              <label class="span-2">
                 Nombres
-                <input name="givenNames" required value="Marcelo" />
+                <input name="givenNames" required />
               </label>
               <label>
                 Expediente clinico
-                <input name="clinicalRecord" value="15534" />
+                <input name="clinicalRecord" />
               </label>
               <label>
                 Fecha de nacimiento
-                <input name="birthDate" type="date" value="1980-07-19" />
+                <input name="birthDate" type="date" />
               </label>
               <label>
                 Sexo
                 <select name="sex">
+                  <option value=""></option>
                   <option value="M">Masculino</option>
                   <option value="F">Femenino</option>
                 </select>
               </label>
               <label class="span-2">
                 Domicilio
-                <input name="address" value="Condominio Los Alamos calle 4 N 25 zona Alto Achumani" />
+                <input name="address" />
               </label>
             </div>
           </fieldset>
@@ -76,6 +81,7 @@
               <label>
                 Tipo de atencion
                 <select name="attentionType">
+                  <option value=""></option>
                   <option>EN CONSULTORIO</option>
                   <option>DOMICILIARIA</option>
                   <option>EMERGENCIAS</option>
@@ -84,15 +90,24 @@
               </label>
               <label>
                 Servicio
-                <input name="service" list="serviceOptions" value="MEDICINA INTERNA" />
+                <select name="service" id="serviceSelect"></select>
+              </label>
+              <label class="non-uti-only">
+                Tipo de paciente
+                <select name="patientType">
+                  <option value=""></option>
+                  <option value="SUS">Seguro Unico de Salud</option>
+                  <option value="PROGRAMAS">Programas</option>
+                  <option value="VENTA">Venta</option>
+                </select>
               </label>
               <label class="span-2">
                 Diagnostico principal
-                <input name="diagnosis" list="diagnosisOptions" value="Trastorno metabolico no especificado" />
+                <input name="diagnosis" list="diagnosisOptions" />
               </label>
               <label>
                 Codigo CIE-10
-                <input name="cie10" value="E88.9" />
+                <input name="cie10" />
               </label>
               <label>
                 Fecha de solicitud
@@ -104,10 +119,9 @@
               </label>
               <label class="internado-only hidden">
                 Servicio de ingreso
-                <input name="admissionService" list="serviceOptions" />
+                <select name="admissionService" id="admissionServiceSelect"></select>
               </label>
             </div>
-            <datalist id="serviceOptions"></datalist>
             <datalist id="diagnosisOptions"></datalist>
           </fieldset>
 
@@ -214,6 +228,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=manual-20260516-23" type="module"></script>
+    <script src="app.js?v=manual-20260516-25" type="module"></script>
   </body>
 </html>
