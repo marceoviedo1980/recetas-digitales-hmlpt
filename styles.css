@@ -1,0 +1,1183 @@
+:root {
+  --ink: #17211f;
+  --muted: #5f6f6b;
+  --line: #c9d5d1;
+  --soft: #edf3f1;
+  --panel: #ffffff;
+  --accent: #146c5d;
+  --accent-dark: #0d4d43;
+  --danger: #9d2c2c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: #f6f8f7;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 28px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 13px;
+  cursor: pointer;
+  background: #ffffff;
+}
+
+.primary-button {
+  color: #ffffff;
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.primary-button:hover {
+  background: var(--accent-dark);
+}
+
+.secondary-button {
+  color: #ffffff;
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.ghost-button {
+  color: var(--accent-dark);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.9fr) minmax(560px, 1.1fr);
+  gap: 18px;
+  padding: 18px;
+}
+
+.panel,
+.preview-shell {
+  min-width: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.editor-panel {
+  padding: 16px;
+}
+
+.template-switcher {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.template-tab {
+  color: var(--muted);
+  background: var(--soft);
+}
+
+.template-tab.active {
+  color: #ffffff;
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+fieldset {
+  margin: 0 0 16px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+legend {
+  padding: 0 6px;
+  font-weight: 700;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.form-grid label:nth-child(3) {
+  grid-column: span 2;
+}
+
+.secondary-diagnosis-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px;
+  gap: 10px;
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.uti-program-grid {
+  grid-template-columns: 1fr;
+}
+
+.check-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.check-option input {
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  min-height: 16px;
+  padding: 0;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+input,
+select {
+  width: 100%;
+  min-height: 38px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: #ffffff;
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+.hidden {
+  display: none;
+}
+
+.medicine-search {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.3fr) 90px minmax(170px, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+}
+
+.medicine-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.medicine-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fbfdfc;
+}
+
+.medicine-row small {
+  display: block;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.remove-button {
+  color: var(--danger);
+  border-color: #e7baba;
+}
+
+.preview-shell {
+  overflow: auto;
+}
+
+.preview-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.recipe-page {
+  width: 216mm;
+  min-height: 279mm;
+  margin: 18px auto;
+  padding: 6mm 7mm 5mm;
+  background: #ffffff;
+  border: 1px solid #aeb9b6;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111111;
+}
+
+.legal-template {
+  width: 100%;
+  color: #000000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 7.8pt;
+  line-height: 1.08;
+}
+
+.legal-title {
+  display: grid;
+  place-items: center;
+  height: 13mm;
+  text-align: center;
+  font-size: 12.4pt;
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.manual-meta-header {
+  display: grid;
+  grid-template-columns: 1fr 58mm;
+  align-items: start;
+  column-gap: 7mm;
+  min-height: 17mm;
+  margin-bottom: 0.6mm;
+  font-size: 7.7pt;
+  line-height: 1.08;
+}
+
+.manual-meta-left {
+  display: grid;
+  grid-template-columns: 28mm 1fr;
+  row-gap: 1mm;
+  padding-top: 1mm;
+}
+
+.manual-meta-left div:nth-child(3),
+.manual-meta-left div:nth-child(4) {
+  grid-column: 1 / -1;
+}
+
+.manual-meta-right {
+  display: grid;
+  grid-template-rows: repeat(4, 4.15mm);
+  border: 0.24mm solid #000000;
+  border-bottom: 0;
+}
+
+.manual-meta-row {
+  display: grid;
+  grid-template-columns: 40mm 1fr;
+  align-items: center;
+  min-height: 4.15mm;
+  border-bottom: 0.24mm solid #000000;
+}
+
+.manual-meta-row strong {
+  justify-self: end;
+  padding-right: 1.4mm;
+  font-size: 6.75pt;
+  line-height: 1;
+  text-align: right;
+}
+
+.manual-meta-row span {
+  display: block;
+  min-height: 100%;
+  padding: 0.45mm 1mm;
+  border-left: 0.24mm solid #000000;
+  font-size: 7pt;
+  line-height: 1.1;
+}
+
+.legal-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.legal-table td,
+.legal-table th {
+  min-height: 3.25mm;
+  padding: 0.55mm 0.85mm;
+  border: 0.24mm solid #000000;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+.legal-table th {
+  font-size: 6.6pt;
+  font-weight: 800;
+  text-align: center;
+}
+
+.legal-table small {
+  font-size: 5.55pt;
+  font-weight: 700;
+}
+
+.legal-header td {
+  height: 4mm;
+  border-color: transparent;
+  padding-top: 0.4mm;
+  padding-bottom: 0.4mm;
+}
+
+.legal-compact td {
+  height: 5.3mm;
+}
+
+.diagnosis-manual td {
+  height: 4.55mm;
+}
+
+.manual-section-title {
+  min-height: 4mm;
+  padding: 0.62mm 0.8mm;
+  border: 0.24mm solid #000000;
+  border-top: 0;
+  font-size: 8pt;
+  font-weight: 800;
+}
+
+.manual-services {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-left: 0.24mm solid #000000;
+  border-right: 0.24mm solid #000000;
+  border-bottom: 0.24mm solid #000000;
+  padding: 0.55mm 0.9mm;
+  column-gap: 1.5mm;
+}
+
+.manual-services div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 4.25mm;
+  gap: 0.75mm;
+  font-size: 5.85pt;
+  line-height: 1.05;
+  border-bottom: 0.2mm solid transparent;
+}
+
+.manual-services.procedures {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.legal-box {
+  display: inline-grid;
+  place-items: center;
+  width: 3.35mm;
+  height: 3.35mm;
+  margin-left: 0.5mm;
+  border: 0.24mm solid #000000;
+  font-size: 6pt;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.inline-check {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.date-trio {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  height: 100%;
+  margin: -0.5mm -0.75mm;
+}
+
+.date-trio span {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  place-items: center;
+  min-height: 4.45mm;
+  border-left: 0.24mm solid #000000;
+}
+
+.date-trio span:first-child {
+  border-left: 0;
+}
+
+.date-trio b {
+  display: block;
+  width: 100%;
+  border-bottom: 0.22mm solid #000000;
+  text-align: center;
+  font-size: 5.2pt;
+  line-height: 1.15;
+}
+
+.medicine-manual th,
+.medicine-manual td {
+  height: 5mm;
+}
+
+.medicine-manual.has-indications th:nth-child(1),
+.medicine-manual.has-indications td:nth-child(1) {
+  width: 24%;
+}
+
+.medicine-manual.has-indications th:nth-child(2),
+.medicine-manual.has-indications td:nth-child(2) {
+  width: 38%;
+}
+
+.medicine-manual.no-indications th:nth-child(1),
+.medicine-manual.no-indications td:nth-child(1) {
+  width: 68%;
+}
+
+.medicine-manual td {
+  font-size: 6.65pt;
+}
+
+.observations-manual td {
+  height: 9mm;
+}
+
+.signature-manual {
+  display: grid;
+  grid-template-columns: 1.15fr 1.15fr 0.75fr 1fr;
+  align-items: end;
+  min-height: 27mm;
+  border-left: 0.24mm solid #000000;
+  border-right: 0.24mm solid #000000;
+  border-bottom: 0.24mm solid #000000;
+  padding: 1.8mm 2mm 0;
+  column-gap: 4mm;
+}
+
+.signature-area {
+  min-height: 19mm;
+  text-align: center;
+  font-size: 6.6pt;
+}
+
+.signature-line {
+  height: 9.5mm;
+  border-bottom: 0.24mm dotted #000000;
+  margin-bottom: 0.7mm;
+}
+
+.signature-area strong,
+.signature-area em {
+  display: block;
+  font-style: normal;
+  line-height: 1.2;
+}
+
+.signature-area span {
+  display: block;
+  min-height: 2.5mm;
+  line-height: 1.1;
+}
+
+.patient-signature .signature-line {
+  height: 9.5mm;
+}
+
+.patient-signature strong {
+  margin-top: 0.8mm;
+  text-align: left;
+  padding-left: 0;
+}
+
+.ci-row {
+  display: grid;
+  grid-template-columns: 4.7mm 1fr;
+  align-items: end;
+  gap: 0.8mm;
+  padding-left: 0;
+  padding-right: 1mm;
+}
+
+.patient-signature .ci-row em {
+  text-align: left;
+}
+
+.ci-line {
+  height: 2.8mm;
+  border-bottom: 0.24mm dotted #000000;
+}
+
+.signature-manual p {
+  grid-column: 1 / -1;
+  margin: 0;
+  min-height: 3.4mm;
+  padding: 0.45mm 0;
+  border-top: 0.24mm solid #000000;
+  font-size: 6.1pt;
+  line-height: 1.1;
+}
+
+.establishment-stamp-cell {
+  text-align: center;
+  align-self: center;
+}
+
+.establishment-stamp {
+  display: inline-grid;
+  place-items: center;
+  width: 19mm;
+  height: 19mm;
+  border: 0.25mm dashed #000000;
+  font-size: 5.7pt;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.uti-template {
+  font-size: 9pt;
+}
+
+.uti-top {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  align-items: center;
+  min-height: 33mm;
+}
+
+.uti-address {
+  font-size: 8pt;
+  line-height: 1.35;
+}
+
+.uti-title {
+  text-align: center;
+  font-size: 20pt;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.uti-logo-placeholder {
+  min-height: 18mm;
+}
+
+.uti-header-table td {
+  height: 5.2mm;
+  font-size: 9pt;
+  padding: 0.65mm 1mm;
+}
+
+.uti-header-table .uti-small-label {
+  font-size: 7.2pt;
+  line-height: 1;
+}
+
+.uti-header-table .legal-box {
+  margin-left: 0;
+}
+
+.uti-diagnosis-table td {
+  height: 5.6mm;
+  font-size: 9pt;
+}
+
+.uti-programs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 3mm;
+  padding: 1.8mm 6mm 1.3mm 4mm;
+  font-size: 7.6pt;
+  text-align: right;
+}
+
+.uti-programs > div {
+  min-height: 7mm;
+}
+
+.uti-program-item {
+  display: grid !important;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1mm;
+}
+
+.pc-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7mm;
+  white-space: nowrap;
+}
+
+.uti-programs strong {
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.uti-medicine-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 0.24mm solid #000000;
+  border-radius: 5mm 5mm 0 0;
+  overflow: hidden;
+}
+
+.uti-medicine-table th,
+.uti-medicine-table td {
+  border-top: 0;
+  border-left: 0;
+}
+
+.uti-medicine-table th:last-child,
+.uti-medicine-table td:last-child {
+  border-right: 0;
+}
+
+.uti-medicine-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.uti-medicine-table th {
+  height: 6.5mm;
+  font-size: 9.2pt;
+}
+
+.uti-medicine-table td {
+  height: 8mm;
+  font-size: 8.6pt;
+}
+
+.uti-medicine-table .uti-index {
+  width: 8mm;
+}
+
+.uti-medicine-table th:nth-child(2),
+.uti-medicine-table td:nth-child(2) {
+  width: 63%;
+}
+
+.uti-footer {
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr 0.9fr 1.25fr 1.1fr;
+  align-items: end;
+  column-gap: 4mm;
+  padding-top: 3mm;
+  font-size: 8.2pt;
+}
+
+.uti-footer-sign {
+  text-align: center;
+  align-self: end;
+}
+
+.uti-footer-sign::before {
+  content: "";
+  display: block;
+  height: 13mm;
+  border-bottom: 0.24mm dotted #000;
+  margin-bottom: 1mm;
+}
+
+.uti-footer-sign strong,
+.uti-footer-sign span,
+.uti-footer-sign em {
+  display: block;
+  font-style: normal;
+}
+
+.uti-authorization {
+  text-align: center;
+  align-self: end;
+  padding-top: 6mm;
+}
+
+.uti-authorization::before {
+  content: "";
+  display: block;
+  height: 15mm;
+  border-bottom: 0.24mm dotted #000;
+  margin-bottom: 1mm;
+}
+
+.uti-authorization span {
+  display: block;
+  margin-top: 5mm;
+  border-bottom: 0.24mm dotted #000;
+  text-align: left;
+}
+
+.uti-costs {
+  display: grid;
+  grid-template-columns: 1fr 9mm;
+  align-self: start;
+  gap: 0;
+  font-size: 7.7pt;
+}
+
+.uti-costs div,
+.uti-costs span {
+  min-height: 8mm;
+  display: grid;
+  align-items: center;
+}
+
+.uti-costs div {
+  justify-items: end;
+  padding-right: 2mm;
+}
+
+.uti-costs span {
+  border: 0.24mm solid #000000;
+}
+
+.uti-footer p {
+  grid-column: 1 / 5;
+  margin: 0;
+  font-size: 8pt;
+  font-style: italic;
+  line-height: 1.25;
+}
+
+.official-sheet {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.official-cell {
+  height: 100%;
+  padding: 1px 2px;
+  color: #111111;
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.official-cell.wrap {
+  white-space: normal;
+}
+
+.official-cell.is-bold {
+  font-weight: 700;
+}
+
+.official-cell.is-unlocked {
+  color: #111111;
+}
+
+.official-sheet.ambulatorio tr:nth-child(n + 32):nth-child(-n + 44) .official-cell,
+.official-sheet.internado tr:nth-child(n + 36):nth-child(-n + 48) .official-cell {
+  white-space: normal;
+  line-height: 1.1;
+}
+
+.recipe-page.pdf-preview-page {
+  width: min(100%, 216mm);
+  height: min(78vh, 305mm);
+  min-height: 760px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.official-pdf-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+}
+
+.pdf-loading {
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  color: var(--muted);
+  text-align: center;
+}
+
+.pdf-loading strong {
+  color: var(--ink);
+}
+
+.excel-title {
+  min-height: 22mm;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid #111111;
+  border-bottom: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.excel-grid {
+  display: grid;
+  grid-template-columns: repeat(42, minmax(0, 1fr));
+  border-left: 1.5px solid #111111;
+  border-top: 1.5px solid #111111;
+}
+
+.cell {
+  min-height: 18px;
+  padding: 2px 4px;
+  border-right: 1px solid #111111;
+  border-bottom: 1px solid #111111;
+  font-size: 10.5px;
+  line-height: 1.15;
+  overflow: hidden;
+}
+
+.label {
+  font-weight: 700;
+}
+
+.fill {
+  font-weight: 500;
+}
+
+.center {
+  text-align: center;
+}
+
+.blank {
+  color: transparent;
+}
+
+.date-box {
+  font-weight: 700;
+}
+
+.date-box small {
+  display: block;
+  font-size: 7.5px;
+  line-height: 1;
+}
+
+.option-label {
+  font-size: 9px;
+}
+
+.option-box {
+  font-weight: 800;
+}
+
+.right-zone {
+  text-align: left;
+}
+
+.span-1 { grid-column: span 1; }
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-5 { grid-column: span 5; }
+.span-6 { grid-column: span 6; }
+.span-7 { grid-column: span 7; }
+.span-8 { grid-column: span 8; }
+.span-9 { grid-column: span 9; }
+.span-10 { grid-column: span 10; }
+.span-11 { grid-column: span 11; }
+.span-12 { grid-column: span 12; }
+.span-13 { grid-column: span 13; }
+.span-14 { grid-column: span 14; }
+.span-15 { grid-column: span 15; }
+.span-16 { grid-column: span 16; }
+.span-17 { grid-column: span 17; }
+.span-18 { grid-column: span 18; }
+.span-19 { grid-column: span 19; }
+.span-20 { grid-column: span 20; }
+.span-21 { grid-column: span 21; }
+.span-22 { grid-column: span 22; }
+.span-23 { grid-column: span 23; }
+.span-24 { grid-column: span 24; }
+.span-25 { grid-column: span 25; }
+.span-26 { grid-column: span 26; }
+.span-27 { grid-column: span 27; }
+.span-28 { grid-column: span 28; }
+.span-29 { grid-column: span 29; }
+.span-30 { grid-column: span 30; }
+.span-31 { grid-column: span 31; }
+.span-32 { grid-column: span 32; }
+.span-33 { grid-column: span 33; }
+.span-34 { grid-column: span 34; }
+.span-35 { grid-column: span 35; }
+.span-36 { grid-column: span 36; }
+.span-37 { grid-column: span 37; }
+.span-38 { grid-column: span 38; }
+.span-39 { grid-column: span 39; }
+.span-40 { grid-column: span 40; }
+.span-41 { grid-column: span 41; }
+.span-42 { grid-column: span 42; }
+
+.tall-4 {
+  grid-row: span 5;
+}
+
+.institution-block .cell {
+  min-height: 17px;
+}
+
+.patient-grid .cell,
+.diagnosis-grid .cell,
+.ingreso-grid .cell {
+  min-height: 22px;
+}
+
+.internado-layout .cell {
+  min-height: 21px;
+}
+
+.excel-section-title {
+  min-height: 20px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid #111111;
+  border-top: 0;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-left: 1.5px solid #111111;
+  border-top: 1px solid #111111;
+}
+
+.services-grid div {
+  min-height: 20px;
+  padding: 2px 4px;
+  border-right: 1px solid #111111;
+  border-bottom: 1px solid #111111;
+  font-size: 8.2px;
+  line-height: 1.1;
+}
+
+.procedures-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.rx-table {
+  display: grid;
+  border-left: 1.5px solid #111111;
+  border-top: 1.5px solid #111111;
+}
+
+.rx-table.with-indications {
+  grid-template-columns: 11fr 18fr 4fr 4fr 4fr 4fr;
+}
+
+.rx-table.internado-rx {
+  grid-template-columns: 29fr 4fr 4fr 4fr 4fr;
+}
+
+.rx-head,
+.rx-cell {
+  min-height: 25px;
+  padding: 3px 4px;
+  border-right: 1px solid #111111;
+  border-bottom: 1px solid #111111;
+  font-size: 10px;
+  line-height: 1.15;
+}
+
+.rx-head {
+  min-height: 24px;
+  text-align: center;
+  font-weight: 800;
+  background: #f1f1f1;
+}
+
+.rx-head small {
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.rx-medicine {
+  grid-column: span 1;
+}
+
+.rx-indications {
+  grid-column: span 1;
+}
+
+.rx-qty,
+.rx-value {
+  text-align: center;
+}
+
+.cost-block {
+  display: grid;
+  grid-template-columns: 1fr 170px;
+  border-left: 1.5px solid #111111;
+  border-top: 1.5px solid #111111;
+}
+
+.observations,
+.cost-lines div {
+  border-right: 1px solid #111111;
+  border-bottom: 1px solid #111111;
+  padding: 4px 5px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.observations {
+  min-height: 36px;
+}
+
+.cost-lines div {
+  min-height: 18px;
+}
+
+.signature-official {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  border-left: 1.5px solid #111111;
+  border-top: 1.5px solid #111111;
+}
+
+.signature-official > div {
+  min-height: 48px;
+  padding: 3px 5px;
+  border-right: 1px solid #111111;
+  border-bottom: 1px solid #111111;
+  font-size: 10px;
+}
+
+.signature-space {
+  display: block;
+  height: 26px;
+}
+
+.signature-official p {
+  grid-column: span 3;
+  margin: 0;
+  min-height: 16px;
+  padding: 3px 5px;
+  border-right: 1px solid #111111;
+  border-bottom: 1px solid #111111;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+@media (max-width: 980px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-page {
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 700px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .workspace {
+    padding: 10px;
+  }
+
+  .template-switcher,
+  .form-grid,
+  .medicine-search {
+    grid-template-columns: 1fr;
+  }
+
+  .span-2 {
+    grid-column: auto;
+  }
+
+  .recipe-page {
+    width: 100%;
+    min-height: auto;
+    padding: 12px;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .app-header,
+  .editor-panel,
+  .preview-toolbar {
+    display: none !important;
+  }
+
+  .workspace {
+    display: block;
+    padding: 0;
+  }
+
+  .preview-shell {
+    border: 0;
+    overflow: visible;
+  }
+
+  .recipe-page {
+    width: 216mm;
+    min-height: 279mm;
+    margin: 0;
+    padding: 6mm 7mm 5mm;
+    border: 0;
+    box-shadow: none;
+  }
+
+  @page {
+    size: letter;
+    margin: 0;
+  }
+}

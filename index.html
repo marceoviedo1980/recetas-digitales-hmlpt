@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#146c5d" />
+    <title>Recetario Digital La Portada</title>
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-23" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260516-23" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Hospital Municipal La Portada</p>
+        <h1>Recetario Digital</h1>
+      </div>
+      <div class="header-actions">
+        <button class="ghost-button hidden" id="installBtn" type="button">Instalar app</button>
+        <button class="ghost-button" id="clearBtn" type="button">Limpiar</button>
+        <button class="ghost-button" id="pdfBtn" type="button">Generar PDF</button>
+        <button class="primary-button" id="printBtn" type="button">Imprimir</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel editor-panel" aria-label="Formulario de receta">
+        <div class="template-switcher" role="tablist" aria-label="Tipo de recetario">
+          <button class="template-tab active" type="button" data-template="ambulatorio">Ambulatorio</button>
+          <button class="template-tab" type="button" data-template="internado">Internado</button>
+          <button class="template-tab" type="button" data-template="utiUcin">UTI / UCIN</button>
+        </div>
+
+        <form id="recipeForm" autocomplete="off">
+          <fieldset>
+            <legend>Datos del paciente</legend>
+            <div class="form-grid">
+              <label>
+                Apellido paterno
+                <input name="paternalSurname" required value="Oviedo" />
+              </label>
+              <label>
+                Apellido materno
+                <input name="maternalSurname" value="Lazcano" />
+              </label>
+              <label>
+                Nombres
+                <input name="givenNames" required value="Marcelo" />
+              </label>
+              <label>
+                Expediente clinico
+                <input name="clinicalRecord" value="15534" />
+              </label>
+              <label>
+                Fecha de nacimiento
+                <input name="birthDate" type="date" value="1980-07-19" />
+              </label>
+              <label>
+                Sexo
+                <select name="sex">
+                  <option value="M">Masculino</option>
+                  <option value="F">Femenino</option>
+                </select>
+              </label>
+              <label class="span-2">
+                Domicilio
+                <input name="address" value="Condominio Los Alamos calle 4 N 25 zona Alto Achumani" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Datos clinicos</legend>
+            <div class="form-grid">
+              <label>
+                Tipo de atencion
+                <select name="attentionType">
+                  <option>EN CONSULTORIO</option>
+                  <option>DOMICILIARIA</option>
+                  <option>EMERGENCIAS</option>
+                  <option>REFERENCIA</option>
+                </select>
+              </label>
+              <label>
+                Servicio
+                <input name="service" list="serviceOptions" value="MEDICINA INTERNA" />
+              </label>
+              <label class="span-2">
+                Diagnostico principal
+                <input name="diagnosis" list="diagnosisOptions" value="Trastorno metabolico no especificado" />
+              </label>
+              <label>
+                Codigo CIE-10
+                <input name="cie10" value="E88.9" />
+              </label>
+              <label>
+                Fecha de solicitud
+                <input name="requestDate" type="date" />
+              </label>
+              <label class="internado-only hidden">
+                Fecha de ingreso
+                <input name="admissionDate" type="date" />
+              </label>
+              <label class="internado-only hidden">
+                Servicio de ingreso
+                <input name="admissionService" list="serviceOptions" />
+              </label>
+            </div>
+            <datalist id="serviceOptions"></datalist>
+            <datalist id="diagnosisOptions"></datalist>
+          </fieldset>
+
+          <fieldset>
+            <legend>Diagnosticos secundarios</legend>
+            <div class="secondary-diagnosis-grid">
+              <label>
+                1
+                <input name="secondaryDiagnosis1" list="diagnosisOptions" />
+              </label>
+              <label>
+                CIE-10
+                <input name="secondaryCode1" />
+              </label>
+              <label>
+                2
+                <input name="secondaryDiagnosis2" list="diagnosisOptions" />
+              </label>
+              <label>
+                CIE-10
+                <input name="secondaryCode2" />
+              </label>
+              <label>
+                3
+                <input name="secondaryDiagnosis3" list="diagnosisOptions" />
+              </label>
+              <label>
+                CIE-10
+                <input name="secondaryCode3" />
+              </label>
+              <label>
+                4
+                <input name="secondaryDiagnosis4" list="diagnosisOptions" />
+              </label>
+              <label>
+                CIE-10
+                <input name="secondaryCode4" />
+              </label>
+              <label>
+                5
+                <input name="secondaryDiagnosis5" list="diagnosisOptions" />
+              </label>
+              <label>
+                CIE-10
+                <input name="secondaryCode5" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="ambulatorio-only">
+            <legend>Otras prestaciones</legend>
+            <div class="check-grid" id="ambulatorioServicesOptions"></div>
+          </fieldset>
+
+          <fieldset class="internado-only hidden">
+            <legend>Procedimientos</legend>
+            <div class="check-grid" id="internadoProcedureOptions"></div>
+          </fieldset>
+
+          <fieldset class="uti-only hidden">
+            <legend>Unidad y programa</legend>
+            <div class="check-grid uti-program-grid">
+              <label class="check-option">
+                <input type="checkbox" name="utiPc81" />
+                <span>Medicamentos e insumos utilizados en la Unidad de Terapia Intensiva - PC 81</span>
+              </label>
+              <label class="check-option">
+                <input type="checkbox" name="ucinPc82" />
+                <span>Medicamentos e insumos utilizados en la Unidad de Cuidados Intensivos Neonatales - PC 82</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Medicamentos</legend>
+            <div class="medicine-search">
+              <label>
+                Medicamento
+                <input id="medicineInput" list="medicineOptions" placeholder="Elige de la lista o escribe libremente" />
+              </label>
+              <datalist id="medicineOptions"></datalist>
+              <label>
+                Cantidad
+                <input id="quantityInput" type="number" min="1" value="1" />
+              </label>
+              <label>
+                Indicacion
+                <input id="instructionInput" placeholder="Ej. cada 8 horas por 5 dias" />
+              </label>
+              <button class="secondary-button" id="addMedicineBtn" type="button">Agregar</button>
+            </div>
+            <div class="medicine-list" id="medicineList"></div>
+          </fieldset>
+
+        </form>
+      </section>
+
+      <section class="preview-shell" aria-label="Vista previa imprimible">
+        <div class="preview-toolbar">
+          <strong>Vista previa</strong>
+          <span>Plantilla manual calibrable sobre hoja carta</span>
+        </div>
+        <article class="recipe-page" id="recipePreview"></article>
+      </section>
+    </main>
+
+    <script src="app.js?v=manual-20260516-23" type="module"></script>
+  </body>
+</html>
