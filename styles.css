@@ -63,12 +63,27 @@ h1 {
 }
 
 button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   min-height: 38px;
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 8px 13px;
   cursor: pointer;
   background: #ffffff;
+}
+
+.icon-button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: 0 0 auto;
 }
 
 .primary-button {

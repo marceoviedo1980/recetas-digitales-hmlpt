@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-37" />
-    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260516-37" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-38" />
+    <link rel="icon" href="icons/icon-32.png?v=manual-20260516-38" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260516-38" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260516-38" />
   </head>
   <body>
     <header class="app-header">
@@ -21,10 +21,22 @@
         </div>
       </div>
       <div class="header-actions">
-        <button class="ghost-button hidden" id="installBtn" type="button">Instalar app</button>
-        <button class="ghost-button" id="clearBtn" type="button">Limpiar</button>
-        <button class="ghost-button" id="pdfBtn" type="button">Generar PDF</button>
-        <button class="primary-button" id="printBtn" type="button">Imprimir</button>
+        <button class="ghost-button icon-button hidden" id="installBtn" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v10m0 0 4-4m-4 4-4-4"/><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+          <span>Instalar app</span>
+        </button>
+        <button class="ghost-button icon-button" id="clearBtn" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 21 6-6"/><path d="m7 17 4 4"/><path d="m13 3 8 8-7 7-8-8Z"/><path d="m14 4-7 7"/></svg>
+          <span>Limpiar</span>
+        </button>
+        <button class="ghost-button icon-button" id="pdfBtn" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7Z"/><path d="M14 2v5h5"/><path d="M8 16h8"/><path d="M8 12h8"/></svg>
+          <span>Generar PDF</span>
+        </button>
+        <button class="primary-button icon-button" id="printBtn" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v7H6z"/></svg>
+          <span>Imprimir</span>
+        </button>
       </div>
     </header>
 
@@ -258,6 +270,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=manual-20260516-37" type="module"></script>
+    <script src="app.js?v=manual-20260516-38" type="module"></script>
   </body>
 </html>
