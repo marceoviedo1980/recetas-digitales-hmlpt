@@ -104,6 +104,7 @@ const diagnosisOptions = document.querySelector("#diagnosisOptions");
 const serviceSelect = document.querySelector("#serviceSelect");
 const admissionServiceSelect = document.querySelector("#admissionServiceSelect");
 const dischargeServiceSelect = document.querySelector("#dischargeServiceSelect");
+const utiAdmissionServiceSelect = document.querySelector("#utiAdmissionServiceSelect");
 const installButton = document.querySelector("#installBtn");
 const pdfButton = document.querySelector("#pdfBtn");
 const pdfButtonLabel = pdfButton?.querySelector("span");
@@ -140,6 +141,7 @@ tabs.forEach((tab) => {
       .forEach((item) => item.classList.toggle("hidden", !(isInternado || isUti)));
     document.querySelectorAll(".uti-only").forEach((item) => item.classList.toggle("hidden", !isUti));
     document.querySelectorAll(".non-uti-only").forEach((item) => item.classList.toggle("hidden", isUti));
+    document.querySelectorAll(".secondary-extra").forEach((item) => item.classList.toggle("hidden", isUti));
     render();
   });
 });
@@ -380,6 +382,7 @@ function populateServiceOptions() {
   serviceSelect.innerHTML = options;
   admissionServiceSelect.innerHTML = options;
   dischargeServiceSelect.innerHTML = options;
+  utiAdmissionServiceSelect.innerHTML = options;
 }
 
 function findDiagnosis(value) {
@@ -682,7 +685,7 @@ function renderUtiUcinRecipe(data) {
           </tr>
           <tr class="uti-date-row">
             <td colspan="8"><strong>SERVICIO DE INGRESO</strong></td>
-            <td colspan="15">${safe(data.admissionService || data.service)}</td>
+            <td colspan="15">${safe(data.utiAdmissionService || data.admissionService || data.service)}</td>
             <td colspan="7" class="uti-date-label"><strong>FECHA DE INGRESO</strong></td>
             <td colspan="12" class="uti-date-field">${renderDateCells(admissionDate)}</td>
           </tr>
@@ -1197,7 +1200,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-40").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-42").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

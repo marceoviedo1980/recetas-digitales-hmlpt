@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-40" />
-    <link rel="icon" href="icons/icon-32.png?v=manual-20260516-40" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260516-40" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260516-40" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-42" />
+    <link rel="icon" href="icons/icon-32.png?v=manual-20260516-42" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260516-42" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260516-42" />
   </head>
   <body>
     <header class="app-header">
@@ -53,6 +53,10 @@
             <legend>Datos del paciente</legend>
             <div class="form-grid">
               <label>
+                Expediente clinico
+                <input name="clinicalRecord" />
+              </label>
+              <label>
                 Apellido paterno
                 <input name="paternalSurname" required />
               </label>
@@ -63,10 +67,6 @@
               <label class="span-2">
                 Nombres
                 <input name="givenNames" required />
-              </label>
-              <label>
-                Expediente clinico
-                <input name="clinicalRecord" />
               </label>
               <label>
                 Fecha de nacimiento
@@ -83,6 +83,54 @@
               <label class="span-2">
                 Domicilio
                 <input name="address" />
+              </label>
+              <label class="non-uti-only">
+                Tipo de paciente
+                <select name="patientType">
+                  <option value=""></option>
+                  <option value="SUS">Seguro Unico de Salud</option>
+                  <option value="PROGRAMAS">Programas</option>
+                  <option value="VENTA">Venta</option>
+                </select>
+              </label>
+              <div class="form-choice-group uti-only hidden">
+                <span>Tipo de paciente</span>
+                <div class="check-grid">
+                  <label class="check-option">
+                    <input type="radio" name="utiPatientType" value="SUS" />
+                    <span>SUS</span>
+                  </label>
+                  <label class="check-option">
+                    <input type="radio" name="utiPatientType" value="VENTA" />
+                    <span>Venta</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Fechas</legend>
+            <div class="form-grid">
+              <label>
+                Fecha de solicitud
+                <input name="requestDate" type="date" />
+              </label>
+              <label class="stay-only hidden">
+                Fecha de ingreso
+                <input name="admissionDate" type="date" />
+              </label>
+              <label class="internado-only hidden">
+                Servicio de ingreso
+                <select name="admissionService" id="admissionServiceSelect"></select>
+              </label>
+              <label class="stay-only hidden">
+                Fecha de egreso
+                <input name="dischargeDate" type="date" />
+              </label>
+              <label class="internado-only hidden">
+                Servicio de egreso
+                <select name="dischargeService" id="dischargeServiceSelect"></select>
               </label>
             </div>
           </fieldset>
@@ -114,15 +162,23 @@
                   <option>Por consultorio externo</option>
                 </select>
               </label>
-              <label class="non-uti-only">
-                Tipo de paciente
-                <select name="patientType">
-                  <option value=""></option>
-                  <option value="SUS">Seguro Unico de Salud</option>
-                  <option value="PROGRAMAS">Programas</option>
-                  <option value="VENTA">Venta</option>
-                </select>
+              <label class="uti-only hidden">
+                Servicio de ingreso
+                <select name="utiAdmissionService" id="utiAdmissionServiceSelect"></select>
               </label>
+              <div class="form-choice-group span-2 uti-only hidden">
+                <span>Paciente de UTI o UCIN</span>
+                <div class="check-grid uti-program-grid">
+                  <label class="check-option">
+                    <input type="checkbox" name="utiPc81" />
+                    <span>Medicamentos e insumos utilizados en la Unidad de Terapia Intensiva - PC 81</span>
+                  </label>
+                  <label class="check-option">
+                    <input type="checkbox" name="ucinPc82" />
+                    <span>Medicamentos e insumos utilizados en la Unidad de Cuidados Intensivos Neonatales - PC 82</span>
+                  </label>
+                </div>
+              </div>
               <label class="span-2">
                 Diagnostico principal
                 <input name="diagnosis" list="diagnosisOptions" />
@@ -130,26 +186,6 @@
               <label>
                 Codigo CIE-10
                 <input name="cie10" />
-              </label>
-              <label>
-                Fecha de solicitud
-                <input name="requestDate" type="date" />
-              </label>
-              <label class="stay-only hidden">
-                Fecha de ingreso
-                <input name="admissionDate" type="date" />
-              </label>
-              <label class="stay-only hidden">
-                Servicio de ingreso
-                <select name="admissionService" id="admissionServiceSelect"></select>
-              </label>
-              <label class="stay-only hidden">
-                Fecha de egreso
-                <input name="dischargeDate" type="date" />
-              </label>
-              <label class="internado-only hidden">
-                Servicio de alta
-                <select name="dischargeService" id="dischargeServiceSelect"></select>
               </label>
             </div>
             <datalist id="diagnosisOptions"></datalist>
@@ -182,45 +218,23 @@
                 CIE-10
                 <input name="secondaryCode3" />
               </label>
-              <label>
+              <label class="secondary-extra">
                 4
                 <input name="secondaryDiagnosis4" list="diagnosisOptions" />
               </label>
-              <label>
+              <label class="secondary-extra">
                 CIE-10
                 <input name="secondaryCode4" />
               </label>
-              <label>
+              <label class="secondary-extra">
                 5
                 <input name="secondaryDiagnosis5" list="diagnosisOptions" />
               </label>
-              <label>
+              <label class="secondary-extra">
                 CIE-10
                 <input name="secondaryCode5" />
               </label>
             </div>
-          </fieldset>
-
-          <fieldset class="uti-only hidden">
-            <legend>Tipo de paciente</legend>
-            <div class="check-grid">
-              <label class="check-option">
-                <input type="radio" name="utiPatientType" value="SUS" />
-                <span>SUS</span>
-              </label>
-              <label class="check-option">
-                <input type="radio" name="utiPatientType" value="VENTA" />
-                <span>Venta</span>
-              </label>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Observaciones</legend>
-            <label>
-              Observaciones para imprimir en el recetario
-              <textarea name="observations" rows="3"></textarea>
-            </label>
           </fieldset>
 
           <fieldset class="ambulatorio-only">
@@ -231,20 +245,6 @@
           <fieldset class="internado-only hidden">
             <legend>Procedimientos</legend>
             <div class="check-grid" id="internadoProcedureOptions"></div>
-          </fieldset>
-
-          <fieldset class="uti-only hidden">
-            <legend>Paciente de UTI o UCIN</legend>
-            <div class="check-grid uti-program-grid">
-              <label class="check-option">
-                <input type="checkbox" name="utiPc81" />
-                <span>Medicamentos e insumos utilizados en la Unidad de Terapia Intensiva - PC 81</span>
-              </label>
-              <label class="check-option">
-                <input type="checkbox" name="ucinPc82" />
-                <span>Medicamentos e insumos utilizados en la Unidad de Cuidados Intensivos Neonatales - PC 82</span>
-              </label>
-            </div>
           </fieldset>
 
           <fieldset>
@@ -268,6 +268,14 @@
             <div class="medicine-list" id="medicineList"></div>
           </fieldset>
 
+          <fieldset>
+            <legend>Observaciones</legend>
+            <label>
+              Observaciones para imprimir en el recetario
+              <textarea name="observations" rows="3"></textarea>
+            </label>
+          </fieldset>
+
         </form>
       </section>
 
@@ -280,6 +288,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=manual-20260516-40" type="module"></script>
+    <script src="app.js?v=manual-20260516-42" type="module"></script>
   </body>
 </html>
