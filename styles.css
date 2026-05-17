@@ -589,7 +589,7 @@ textarea {
 }
 
 .observations-manual td {
-  height: 9mm;
+  height: 5.8mm;
 }
 
 .observations-cell {
@@ -612,7 +612,7 @@ textarea {
   display: grid;
   grid-template-columns: 1.15fr 1.15fr 0.75fr 1fr;
   align-items: end;
-  min-height: 27mm;
+  min-height: 33.4mm;
   border-left: 0.24mm solid #000000;
   border-right: 0.24mm solid #000000;
   border-bottom: 0.24mm solid #000000;
@@ -621,13 +621,13 @@ textarea {
 }
 
 .signature-area {
-  min-height: 19mm;
+  min-height: 24mm;
   text-align: center;
   font-size: 6.6pt;
 }
 
 .signature-line {
-  height: 9.5mm;
+  height: 13.5mm;
   border-bottom: 0.24mm dotted #000000;
   margin-bottom: 0.7mm;
 }
@@ -646,7 +646,7 @@ textarea {
 }
 
 .patient-signature .signature-line {
-  height: 9.5mm;
+  height: 13.5mm;
 }
 
 .patient-signature strong {
@@ -749,6 +749,20 @@ textarea {
   padding: 0.55mm 0.75mm;
 }
 
+.uti-header-table .uti-compact-row td {
+  height: 3.6mm;
+  padding-top: 0.25mm;
+  padding-bottom: 0.25mm;
+}
+
+.uti-header-table .uti-date-row td {
+  height: 6.55mm;
+}
+
+.uti-header-table .uti-sex-row td {
+  height: 3.8mm;
+}
+
 .uti-header-table .uti-small-label {
   font-size: 5.8pt;
   line-height: 1;
@@ -774,11 +788,15 @@ textarea {
 }
 
 .uti-header-table .uti-date-field .date-trio span {
-  min-height: 5.05mm;
+  min-height: 6.35mm;
+  font-size: 7.5pt;
+  font-weight: 700;
+  line-height: 1.05;
 }
 
 .uti-header-table .uti-date-field .date-trio b {
-  font-size: 4.9pt;
+  font-size: 4.75pt;
+  line-height: 1;
 }
 
 .uti-diagnosis-table td {
@@ -848,7 +866,7 @@ textarea {
 }
 
 .uti-medicine-table td {
-  height: 5.85mm;
+  height: 5.65mm;
   font-size: 6.95pt;
 }
 

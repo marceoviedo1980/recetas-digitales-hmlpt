@@ -624,7 +624,7 @@ function renderUtiUcinRecipe(data) {
             <td colspan="8" class="uti-small-label"><strong>Nº DE EXPEDIENTE CLINICO</strong></td>
             <td colspan="11">${safe(data.clinicalRecord)}</td>
           </tr>
-          <tr>
+          <tr class="uti-compact-row">
             <td colspan="8"><strong>MUNICIPIO</strong></td>
             <td colspan="15">LA PAZ</td>
             <td colspan="4" class="uti-small-label"><strong>SUS</strong></td>
@@ -632,7 +632,7 @@ function renderUtiUcinRecipe(data) {
             <td colspan="5" class="uti-small-label"><strong>VENTA</strong></td>
             <td colspan="5" class="center">${renderBox(patientType === "VENTA")}</td>
           </tr>
-          <tr>
+          <tr class="uti-date-row">
             <td colspan="8"><strong>ESTABLECIMIENTO</strong></td>
             <td colspan="15">HOSPITAL MUNICIPAL LA PORTADA</td>
             <td colspan="7" class="uti-date-label"><strong>FECHA DE SOLICITUD</strong></td>
@@ -644,7 +644,7 @@ function renderUtiUcinRecipe(data) {
             <td colspan="7"><strong>APELLIDO MATERNO</strong></td>
             <td colspan="12">${safe(patient.maternal)}</td>
           </tr>
-          <tr>
+          <tr class="uti-compact-row uti-sex-row">
             <td colspan="8"><strong>NOMBRES</strong></td>
             <td colspan="15">${safe(patient.names)}</td>
             <td colspan="5"><strong>SEXO</strong></td>
@@ -652,19 +652,19 @@ function renderUtiUcinRecipe(data) {
             <td colspan="3">M ${renderBox(data.sex === "M")}</td>
             <td colspan="8"></td>
           </tr>
-          <tr>
+          <tr class="uti-date-row">
             <td colspan="8"><strong>DIRECCION</strong></td>
             <td colspan="15">${safe(data.address)}</td>
             <td colspan="7" class="uti-date-label"><strong>FECHA DE NACIMIENTO</strong></td>
             <td colspan="12" class="uti-date-field">${renderDateCells(birthDate)}</td>
           </tr>
-          <tr>
+          <tr class="uti-date-row">
             <td colspan="8"><strong>SERVICIO DE INGRESO</strong></td>
             <td colspan="15">${safe(data.admissionService || data.service)}</td>
             <td colspan="7" class="uti-date-label"><strong>FECHA DE INGRESO</strong></td>
             <td colspan="12" class="uti-date-field">${renderDateCells(admissionDate)}</td>
           </tr>
-          <tr>
+          <tr class="uti-date-row">
             <td colspan="23"></td>
             <td colspan="7" class="uti-date-label"><strong>FECHA DE EGRESO</strong></td>
             <td colspan="12" class="uti-date-field">${renderDateCells(dischargeDate)}</td>
@@ -1175,7 +1175,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-36").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-37").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });
