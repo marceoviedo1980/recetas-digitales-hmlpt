@@ -105,6 +105,8 @@ const serviceSelect = document.querySelector("#serviceSelect");
 const admissionServiceSelect = document.querySelector("#admissionServiceSelect");
 const dischargeServiceSelect = document.querySelector("#dischargeServiceSelect");
 const installButton = document.querySelector("#installBtn");
+const pdfButton = document.querySelector("#pdfBtn");
+const pdfButtonLabel = pdfButton?.querySelector("span");
 const tabs = [...document.querySelectorAll(".template-tab")];
 const ambulatorioServicesOptions = document.querySelector("#ambulatorioServicesOptions");
 const internadoProcedureOptions = document.querySelector("#internadoProcedureOptions");
@@ -117,6 +119,9 @@ ambulatorioServicesOptions.innerHTML = renderCheckOptions("service", ambulatorio
 internadoProcedureOptions.innerHTML = renderCheckOptions("procedure", internadoProcedures);
 
 form.addEventListener("input", render);
+updatePdfButtonLabel();
+window.addEventListener("resize", updatePdfButtonLabel);
+window.addEventListener("orientationchange", updatePdfButtonLabel);
 
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
@@ -140,7 +145,7 @@ tabs.forEach((tab) => {
 });
 
 document.querySelector("#printBtn").addEventListener("click", () => window.print());
-document.querySelector("#pdfBtn").addEventListener("click", generatePdf);
+pdfButton.addEventListener("click", generatePdf);
 document.querySelector("#clearBtn").addEventListener("click", () => {
   form.reset();
   state.medicines = [];
@@ -167,12 +172,17 @@ window.addEventListener("appinstalled", () => {
 });
 
 async function generatePdf() {
-  const button = document.querySelector("#pdfBtn");
-  const originalText = button.textContent;
+  if (isMobilePdfFlow()) {
+    window.print();
+    return;
+  }
+
+  const button = pdfButton;
+  const originalText = pdfButtonLabel?.textContent || "Generar PDF";
 
   try {
     button.disabled = true;
-    button.textContent = "Generando...";
+    if (pdfButtonLabel) pdfButtonLabel.textContent = "Generando...";
     preview.classList.add("pdf-exporting");
     await loadPdfLibraries();
 
@@ -209,8 +219,20 @@ async function generatePdf() {
   } finally {
     preview.classList.remove("pdf-exporting");
     button.disabled = false;
-    button.textContent = originalText;
+    if (pdfButtonLabel) pdfButtonLabel.textContent = originalText;
   }
+}
+
+function updatePdfButtonLabel() {
+  if (!pdfButtonLabel) return;
+  pdfButtonLabel.textContent = isMobilePdfFlow() ? "Guardar PDF" : "Generar PDF";
+}
+
+function isMobilePdfFlow() {
+  const userAgent = navigator.userAgent || "";
+  const isAndroidOrIos = /Android|iPhone|iPad|iPod/i.test(userAgent);
+  const isIpadDesktopMode = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+  return isAndroidOrIos || isIpadDesktopMode;
 }
 
 function loadPdfLibraries() {
@@ -1175,7 +1197,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-38").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-39").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });
