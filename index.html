@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-34" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-35" />
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260516-34" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260516-35" />
   </head>
   <body>
     <header class="app-header">
@@ -113,7 +113,7 @@
                 Fecha de solicitud
                 <input name="requestDate" type="date" />
               </label>
-              <label class="internado-only hidden">
+              <label class="stay-only hidden">
                 Fecha de ingreso
                 <input name="admissionDate" type="date" />
               </label>
@@ -121,7 +121,7 @@
                 Servicio de ingreso
                 <select name="admissionService" id="admissionServiceSelect"></select>
               </label>
-              <label class="internado-only hidden">
+              <label class="stay-only hidden">
                 Fecha de egreso
                 <input name="dischargeDate" type="date" />
               </label>
@@ -175,6 +175,20 @@
               <label>
                 CIE-10
                 <input name="secondaryCode5" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="uti-only hidden">
+            <legend>Tipo de paciente</legend>
+            <div class="check-grid">
+              <label class="check-option">
+                <input type="radio" name="utiPatientType" value="SUS" />
+                <span>SUS</span>
+              </label>
+              <label class="check-option">
+                <input type="radio" name="utiPatientType" value="VENTA" />
+                <span>Venta</span>
               </label>
             </div>
           </fieldset>
@@ -244,6 +258,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=manual-20260516-34" type="module"></script>
+    <script src="app.js?v=manual-20260516-35" type="module"></script>
   </body>
 </html>

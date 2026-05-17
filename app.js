@@ -130,6 +130,9 @@ tabs.forEach((tab) => {
     document
       .querySelectorAll(".ambulatorio-only")
       .forEach((item) => item.classList.toggle("hidden", state.template !== "ambulatorio"));
+    document
+      .querySelectorAll(".stay-only")
+      .forEach((item) => item.classList.toggle("hidden", !(isInternado || isUti)));
     document.querySelectorAll(".uti-only").forEach((item) => item.classList.toggle("hidden", !isUti));
     document.querySelectorAll(".non-uti-only").forEach((item) => item.classList.toggle("hidden", isUti));
     render();
@@ -507,7 +510,9 @@ function renderManualHeader(data) {
 function renderUtiUcinRecipe(data) {
   const birthDate = splitDate(data.birthDate);
   const admissionDate = splitDate(data.admissionDate);
+  const dischargeDate = splitDate(data.dischargeDate);
   const patient = getPatientParts(data);
+  const patientType = data.utiPatientType || data.patientType;
 
   return `
     <div class="legal-template uti-template">
@@ -538,9 +543,9 @@ function renderUtiUcinRecipe(data) {
             <td colspan="8"><strong>MUNICIPIO</strong></td>
             <td colspan="15">LA PAZ</td>
             <td colspan="4" class="uti-small-label"><strong>SUS</strong></td>
-            <td colspan="5" class="center">${renderBox(false)}</td>
+            <td colspan="5" class="center">${renderBox(patientType === "SUS")}</td>
             <td colspan="5" class="uti-small-label"><strong>VENTA</strong></td>
-            <td colspan="5" class="center">${renderBox(false)}</td>
+            <td colspan="5" class="center">${renderBox(patientType === "VENTA")}</td>
           </tr>
           <tr>
             <td colspan="8"><strong>ESTABLECIMIENTO</strong></td>
@@ -577,7 +582,7 @@ function renderUtiUcinRecipe(data) {
           <tr>
             <td colspan="23"></td>
             <td colspan="7" class="uti-date-label"><strong>FECHA DE EGRESO</strong></td>
-            <td colspan="12" class="uti-date-field">${renderDateCells({ day: "", month: "", year: "" })}</td>
+            <td colspan="12" class="uti-date-field">${renderDateCells(dischargeDate)}</td>
           </tr>
         </tbody>
       </table>
@@ -610,6 +615,7 @@ function renderUtiUcinRecipe(data) {
       </div>
 
       ${renderUtiMedicines(20)}
+      ${renderUtiObservations(data)}
       ${renderUtiFooter(data)}
     </div>
   `;
@@ -783,6 +789,19 @@ function renderUtiMedicines(minRows) {
             <td></td>
           </tr>
         `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderUtiObservations(data) {
+  return `
+    <table class="legal-table uti-observations">
+      <tbody>
+        <tr>
+          <td class="uti-observation-label"><strong>OBSERVACIONES</strong></td>
+          <td>${safe(data.observations)}</td>
+        </tr>
       </tbody>
     </table>
   `;
@@ -1071,7 +1090,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-34").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-35").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

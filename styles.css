@@ -837,12 +837,12 @@ textarea {
 }
 
 .uti-medicine-table th {
-  height: 5.25mm;
+  height: 5.15mm;
   font-size: 7pt;
 }
 
 .uti-medicine-table td {
-  height: 6.15mm;
+  height: 5.85mm;
   font-size: 6.95pt;
 }
 
@@ -853,6 +853,18 @@ textarea {
 .uti-medicine-table th:nth-child(2),
 .uti-medicine-table td:nth-child(2) {
   width: 63%;
+}
+
+.uti-observations td {
+  height: 6mm;
+  padding: 0.65mm 0.9mm;
+  font-size: 6.8pt;
+  line-height: 1.1;
+  vertical-align: top;
+}
+
+.uti-observation-label {
+  width: 29mm;
 }
 
 .uti-footer {
@@ -935,6 +947,10 @@ textarea {
   font-size: 6.1pt;
   font-style: italic;
   line-height: 1.08;
+}
+
+.uti-footer p:first-of-type {
+  margin-top: 1.6mm;
 }
 
 .official-sheet {

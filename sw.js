@@ -1,10 +1,10 @@
-const CACHE_NAME = "recetario-digital-manual-20260516-34";
+const CACHE_NAME = "recetario-digital-manual-20260516-35";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=manual-20260516-34",
-  "./app.js?v=manual-20260516-34",
-  "./manifest.webmanifest?v=manual-20260516-34",
+  "./styles.css?v=manual-20260516-35",
+  "./app.js?v=manual-20260516-35",
+  "./manifest.webmanifest?v=manual-20260516-35",
   "./icons/icon.svg",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
