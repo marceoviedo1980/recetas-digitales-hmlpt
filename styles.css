@@ -279,7 +279,7 @@ textarea {
 }
 
 .recipe-page.is-uti-ucin {
-  padding: 4.5mm 6mm 3.5mm;
+  padding: 4.5mm 5mm 3.5mm;
 }
 
 .legal-template {
@@ -711,10 +711,26 @@ textarea {
 }
 
 .uti-title {
+  display: grid;
+  justify-items: center;
+  gap: 0.7mm;
   text-align: center;
-  font-size: 15.2pt;
   font-weight: 900;
   letter-spacing: 0;
+}
+
+.uti-title span {
+  display: block;
+  font-size: 15.2pt;
+  line-height: 1;
+}
+
+.uti-title em {
+  display: block;
+  font-size: 7pt;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .uti-logo-placeholder {
@@ -722,9 +738,9 @@ textarea {
 }
 
 .uti-header-table td {
-  height: 3.9mm;
+  height: 5.15mm;
   font-size: 7.15pt;
-  padding: 0.35mm 0.65mm;
+  padding: 0.55mm 0.75mm;
 }
 
 .uti-header-table .uti-small-label {
@@ -736,30 +752,53 @@ textarea {
   margin-left: 0;
 }
 
+.uti-header-table .uti-date-label {
+  font-size: 6.35pt;
+  line-height: 1.08;
+}
+
+.uti-header-table .uti-date-field {
+  padding-left: 0.15mm;
+  padding-right: 0.15mm;
+}
+
+.uti-header-table .uti-date-field .date-trio {
+  margin-left: -0.15mm;
+  margin-right: -0.15mm;
+}
+
+.uti-header-table .uti-date-field .date-trio span {
+  min-height: 5.05mm;
+}
+
+.uti-header-table .uti-date-field .date-trio b {
+  font-size: 4.9pt;
+}
+
 .uti-diagnosis-table td {
-  height: 4.35mm;
+  height: 5mm;
   font-size: 7.15pt;
 }
 
 .uti-programs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: 3mm;
-  padding: 0.75mm 3mm 0.65mm 2.5mm;
-  font-size: 5.95pt;
-  text-align: right;
+  grid-template-columns: minmax(0, 98mm);
+  justify-content: center;
+  gap: 0.3mm;
+  padding: 1.3mm 0 1.1mm;
+  font-size: 5.9pt;
+  text-align: left;
 }
 
 .uti-programs > div {
-  min-height: 4.6mm;
+  min-height: 3.7mm;
 }
 
 .uti-program-item {
   display: grid !important;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 1mm;
+  gap: 1.2mm;
 }
 
 .pc-check {
@@ -798,12 +837,12 @@ textarea {
 }
 
 .uti-medicine-table th {
-  height: 4.8mm;
+  height: 5.25mm;
   font-size: 7pt;
 }
 
 .uti-medicine-table td {
-  height: 5.45mm;
+  height: 6.15mm;
   font-size: 6.95pt;
 }
 
@@ -818,10 +857,10 @@ textarea {
 
 .uti-footer {
   display: grid;
-  grid-template-columns: 1.1fr 1.1fr 0.9fr 1.25fr 1.1fr;
+  grid-template-columns: 1.05fr 1.05fr 0.8fr 1.45fr 0.95fr;
   align-items: end;
-  column-gap: 2.4mm;
-  padding-top: 1.6mm;
+  column-gap: 3.2mm;
+  padding: 6.5mm 3mm 0 8mm;
   font-size: 6.6pt;
 }
 
@@ -833,9 +872,9 @@ textarea {
 .uti-footer-sign::before {
   content: "";
   display: block;
-  height: 8mm;
+  height: 13mm;
   border-bottom: 0.24mm dotted #000;
-  margin-bottom: 0.55mm;
+  margin-bottom: 0.8mm;
 }
 
 .uti-footer-sign strong,
@@ -848,20 +887,20 @@ textarea {
 .uti-authorization {
   text-align: center;
   align-self: end;
-  padding-top: 2mm;
+  padding-top: 4mm;
 }
 
 .uti-authorization::before {
   content: "";
   display: block;
-  height: 8mm;
+  height: 13mm;
   border-bottom: 0.24mm dotted #000;
-  margin-bottom: 0.55mm;
+  margin-bottom: 0.8mm;
 }
 
 .uti-authorization span {
   display: block;
-  margin-top: 2mm;
+  margin-top: 3mm;
   border-bottom: 0.24mm dotted #000;
   text-align: left;
 }

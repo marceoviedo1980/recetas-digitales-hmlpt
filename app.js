@@ -517,7 +517,10 @@ function renderUtiUcinRecipe(data) {
           Zona La Portada/ Av. La Florida<br>
           Calle s/n Macrodistrito II
         </div>
-        <div class="uti-title">RECETARIO / RECIBO</div>
+        <div class="uti-title">
+          <span>RECETARIO / RECIBO</span>
+          <em>SERVICIOS Y PRODUCTOS ESPECIALES</em>
+        </div>
         <div class="uti-logo-placeholder"></div>
       </div>
 
@@ -525,25 +528,25 @@ function renderUtiUcinRecipe(data) {
         <tbody>
           <tr>
             <td colspan="5"><strong>SEDES</strong></td>
-            <td colspan="9">LA PAZ</td>
-            <td colspan="5"><strong>RED</strong></td>
-            <td colspan="12">2 NOR OESTE</td>
-            <td colspan="6" class="uti-small-label"><strong>Nº DE EXPEDIENTE CLINICO</strong></td>
-            <td colspan="5">${safe(data.clinicalRecord)}</td>
+            <td colspan="8">LA PAZ</td>
+            <td colspan="3"><strong>RED</strong></td>
+            <td colspan="7">2 NOR OESTE</td>
+            <td colspan="8" class="uti-small-label"><strong>Nº DE EXPEDIENTE CLINICO</strong></td>
+            <td colspan="11">${safe(data.clinicalRecord)}</td>
           </tr>
           <tr>
             <td colspan="8"><strong>MUNICIPIO</strong></td>
-            <td colspan="23">LA PAZ</td>
-            <td colspan="3" class="uti-small-label"><strong>SUS</strong></td>
-            <td colspan="3" class="center">${renderBox(false)}</td>
-            <td colspan="3" class="uti-small-label"><strong>VENTA</strong></td>
-            <td colspan="2" class="center">${renderBox(false)}</td>
+            <td colspan="15">LA PAZ</td>
+            <td colspan="4" class="uti-small-label"><strong>SUS</strong></td>
+            <td colspan="5" class="center">${renderBox(false)}</td>
+            <td colspan="5" class="uti-small-label"><strong>VENTA</strong></td>
+            <td colspan="5" class="center">${renderBox(false)}</td>
           </tr>
           <tr>
             <td colspan="8"><strong>ESTABLECIMIENTO</strong></td>
-            <td colspan="23">HOSPITAL MUNICIPAL LA PORTADA</td>
-            <td colspan="6"><strong>FECHA</strong></td>
-            <td colspan="5">${renderDateCells(splitDate(data.requestDate))}</td>
+            <td colspan="15">HOSPITAL MUNICIPAL LA PORTADA</td>
+            <td colspan="7" class="uti-date-label"><strong>FECHA DE SOLICITUD</strong></td>
+            <td colspan="12" class="uti-date-field">${renderDateCells(splitDate(data.requestDate))}</td>
           </tr>
           <tr>
             <td colspan="8"><strong>APELLIDO PATERNO</strong></td>
@@ -562,19 +565,19 @@ function renderUtiUcinRecipe(data) {
           <tr>
             <td colspan="8"><strong>DIRECCION</strong></td>
             <td colspan="15">${safe(data.address)}</td>
-            <td colspan="7"><strong>FECHA DE NACIMIENTO</strong></td>
-            <td colspan="12">${renderDateCells(birthDate)}</td>
+            <td colspan="7" class="uti-date-label"><strong>FECHA DE NACIMIENTO</strong></td>
+            <td colspan="12" class="uti-date-field">${renderDateCells(birthDate)}</td>
           </tr>
           <tr>
             <td colspan="8"><strong>SERVICIO DE INGRESO</strong></td>
             <td colspan="15">${safe(data.admissionService || data.service)}</td>
-            <td colspan="7"><strong>FECHA DE INGRESO</strong></td>
-            <td colspan="12">${renderDateCells(admissionDate)}</td>
+            <td colspan="7" class="uti-date-label"><strong>FECHA DE INGRESO</strong></td>
+            <td colspan="12" class="uti-date-field">${renderDateCells(admissionDate)}</td>
           </tr>
           <tr>
             <td colspan="23"></td>
-            <td colspan="7"><strong>FECHA DE EGRESO</strong></td>
-            <td colspan="12">${renderDateCells({ day: "", month: "", year: "" })}</td>
+            <td colspan="7" class="uti-date-label"><strong>FECHA DE EGRESO</strong></td>
+            <td colspan="12" class="uti-date-field">${renderDateCells({ day: "", month: "", year: "" })}</td>
           </tr>
         </tbody>
       </table>
@@ -1068,7 +1071,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-32").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-34").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });
