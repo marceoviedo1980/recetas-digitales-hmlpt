@@ -369,26 +369,26 @@ function renderAmbulatorioRecipe(data) {
         <tbody>
           <tr>
             <td colspan="5"><strong>Tipo de Atencion:</strong></td>
-            <td colspan="7">${renderInlineCheck("EN CONSULTORIO", data.attentionType === "EN CONSULTORIO")}</td>
-            <td colspan="7">${renderInlineCheck("DOMICILIARIA", data.attentionType === "DOMICILIARIA")}</td>
-            <td colspan="7">${renderInlineCheck("EMERGENCIAS", data.attentionType === "EMERGENCIAS")}</td>
-            <td colspan="8">${renderInlineCheck("REFERENCIA", data.attentionType === "REFERENCIA")}</td>
-            <td colspan="8"></td>
-          </tr>
-          <tr>
-            <td colspan="6"><strong>Nombre del Paciente:</strong></td>
-            <td colspan="20">${safe(fullName)}</td>
-            <td colspan="6"><strong>FECHA DE NACIMIENTO:</strong></td>
+            <td colspan="5" class="attention-option">${renderInlineCheck("EN CONSULTORIO", data.attentionType === "EN CONSULTORIO")}</td>
+            <td colspan="5" class="attention-option">${renderInlineCheck("DOMICILIARIA", data.attentionType === "DOMICILIARIA")}</td>
+            <td colspan="5" class="attention-option">${renderInlineCheck("EMERGENCIAS", data.attentionType === "EMERGENCIAS")}</td>
+            <td colspan="5" class="attention-option">${renderInlineCheck("REFERENCIA", data.attentionType === "REFERENCIA")}</td>
+            <td colspan="7"><strong>FECHA DE NACIMIENTO:</strong></td>
             <td colspan="10">${renderDateCells(birthDate)}</td>
           </tr>
           <tr>
+            <td colspan="6"><strong>Nombre del Paciente:</strong></td>
+            <td colspan="19">${safe(fullName)}</td>
+            <td colspan="7"><strong>FECHA DE SOLICITUD:</strong></td>
+            <td colspan="10">${renderDateCells(requestDate)}</td>
+          </tr>
+          <tr>
             <td colspan="4"><strong>Domicilio:</strong></td>
-            <td colspan="22">${safe(data.address)}</td>
+            <td colspan="28">${safe(data.address)}</td>
             <td colspan="3"><strong>SEXO:</strong></td>
             <td colspan="2">M ${renderBox(data.sex === "M")}</td>
             <td colspan="2">F ${renderBox(data.sex === "F")}</td>
-            <td colspan="3"><strong>FECHA DE SOLICITUD:</strong></td>
-            <td colspan="6">${renderDateCells(requestDate)}</td>
+            <td colspan="3"></td>
           </tr>
         </tbody>
       </table>
@@ -416,43 +416,45 @@ function renderInternadoRecipe(data) {
         <tbody>
           <tr>
             <td colspan="4"><strong>Apellido Paterno:</strong></td>
-            <td colspan="8">${safe(patientParts.paternal)}</td>
+            <td colspan="7">${safe(patientParts.paternal)}</td>
             <td colspan="4"><strong>Apellido Materno:</strong></td>
-            <td colspan="8">${safe(patientParts.maternal)}</td>
+            <td colspan="9">${safe(patientParts.maternal)}</td>
             <td colspan="3"><strong>SEXO:</strong></td>
-            <td colspan="2">M ${renderBox(data.sex === "M")}</td>
-            <td colspan="2">F ${renderBox(data.sex === "F")}</td>
+            <td colspan="4" class="sex-compact">${renderSexCompact(data.sex)}</td>
             <td colspan="5"><strong>FECHA DE NACIMIENTO:</strong></td>
             <td colspan="6">${renderDateCells(birthDate)}</td>
           </tr>
           <tr>
             <td colspan="5"><strong>Nombres:</strong></td>
-            <td colspan="23">${safe(patientParts.names)}</td>
+            <td colspan="26">${safe(patientParts.names)}</td>
             <td colspan="5"><strong>FECHA DE SOLICITUD:</strong></td>
-            <td colspan="9">${renderDateCells(requestDate)}</td>
+            <td colspan="6">${renderDateCells(requestDate)}</td>
           </tr>
           <tr>
             <td colspan="4"><strong>Domicilio:</strong></td>
-            <td colspan="24">${safe(data.address)}</td>
-            <td colspan="5"><strong>FECHA DE INGRESO:</strong></td>
-            <td colspan="9">${renderDateCells(admissionDate)}</td>
+            <td colspan="38">${safe(data.address)}</td>
           </tr>
           <tr>
             <td colspan="5"><strong>INGRESO:</strong></td>
-            <td colspan="8">${renderInlineCheck("Por referencia", false)}</td>
-            <td colspan="10">${renderInlineCheck("Por servicio de emergencia", false)}</td>
-            <td colspan="8">${renderInlineCheck("Por trabajo de parto", false)}</td>
-            <td colspan="11">${renderInlineCheck("Por consultorio externo", false)}</td>
+            <td colspan="5" class="internado-ingress-option">${renderInlineCheck("Por referencia", false)}</td>
+            <td colspan="9" class="internado-ingress-option">${renderInlineCheck("Por servicio de emergencia", false)}</td>
+            <td colspan="7" class="internado-ingress-option">${renderInlineCheck("Por trabajo de parto", false)}</td>
+            <td colspan="8" class="internado-ingress-option">${renderInlineCheck("Por consultorio externo", false)}</td>
+            <td colspan="8"></td>
           </tr>
           <tr>
             <td colspan="7"><strong>Servicio de ingreso:</strong></td>
-            <td colspan="21">${safe(data.admissionService || data.service)}</td>
-            <td colspan="5"><strong>FECHA DE EGRESO:</strong></td>
-            <td colspan="9">${renderDateCells({ day: "", month: "", year: "" })}</td>
+            <td colspan="20">${safe(data.admissionService || data.service)}</td>
+            <td colspan="4" class="date-separator"></td>
+            <td colspan="5"><strong>FECHA DE INGRESO:</strong></td>
+            <td colspan="6">${renderDateCells(admissionDate)}</td>
           </tr>
           <tr>
             <td colspan="7"><strong>Servicio de alta:</strong></td>
-            <td colspan="35">${safe(data.service)}</td>
+            <td colspan="20">${safe(data.service)}</td>
+            <td colspan="4" class="date-separator"></td>
+            <td colspan="5"><strong>FECHA DE EGRESO:</strong></td>
+            <td colspan="6">${renderDateCells({ day: "", month: "", year: "" })}</td>
           </tr>
         </tbody>
       </table>
@@ -610,6 +612,10 @@ function renderBox(checked) {
 
 function renderInlineCheck(label, checked) {
   return `<span class="inline-check">${safe(label)} ${renderBox(checked)}</span>`;
+}
+
+function renderSexCompact(value) {
+  return `<span class="sex-inline">M ${renderBox(value === "M")} F ${renderBox(value === "F")}</span>`;
 }
 
 function renderDateCells(date) {
@@ -807,7 +813,10 @@ function renderManualCostAndSignatures(data) {
     <table class="legal-table observations-manual">
       <tbody>
         <tr>
-          <td rowspan="2" colspan="32"><strong>OBSERVACIONES</strong></td>
+          <td rowspan="2" colspan="32" class="observations-cell">
+            <strong>OBSERVACIONES</strong>
+            <div>${safe(data.observations)}</div>
+          </td>
           <td colspan="10"><strong>COSTO TOTAL:</strong></td>
         </tr>
         <tr>
@@ -1053,7 +1062,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-25").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-30").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

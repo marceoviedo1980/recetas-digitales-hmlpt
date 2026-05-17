@@ -189,7 +189,8 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
   width: 100%;
   min-height: 38px;
   color: var(--ink);
@@ -197,6 +198,11 @@ select {
   border-radius: 6px;
   padding: 8px 10px;
   background: #ffffff;
+}
+
+textarea {
+  resize: vertical;
+  line-height: 1.35;
 }
 
 .span-2 {
@@ -395,6 +401,55 @@ select {
   height: 5.3mm;
 }
 
+.legal-ambulatorio .attention-option {
+  padding-left: 0.8mm;
+  padding-right: 0.4mm;
+  font-size: 6.75pt;
+}
+
+.legal-ambulatorio .attention-option .inline-check {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.sex-compact {
+  padding-left: 0.5mm;
+  padding-right: 0.5mm;
+}
+
+.sex-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8mm;
+  white-space: nowrap;
+}
+
+.sex-inline .legal-box {
+  margin-left: 0;
+}
+
+.internado-ingress-option {
+  padding-left: 0.35mm;
+  padding-right: 0.2mm;
+  font-size: 5.7pt;
+}
+
+.internado-ingress-option .inline-check {
+  justify-content: flex-start;
+  gap: 0.25mm;
+}
+
+.internado-ingress-option .legal-box {
+  width: 2.8mm;
+  height: 2.8mm;
+  margin-left: 0;
+}
+
+.date-separator {
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
 .diagnosis-manual td {
   height: 4.55mm;
 }
@@ -515,6 +570,22 @@ select {
 
 .observations-manual td {
   height: 9mm;
+}
+
+.observations-cell {
+  vertical-align: top !important;
+}
+
+.observations-cell strong {
+  display: block;
+  margin-bottom: 1.2mm;
+}
+
+.observations-cell div {
+  font-size: 7pt;
+  font-weight: 400;
+  line-height: 1.15;
+  white-space: pre-wrap;
 }
 
 .signature-manual {
