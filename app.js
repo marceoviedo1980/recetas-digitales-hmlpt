@@ -484,10 +484,10 @@ function renderAmbulatorioRecipe(data) {
         <tbody>
           <tr>
             <td colspan="5"><strong>Tipo de Atencion:</strong></td>
-            <td colspan="5" class="attention-option">${renderInlineCheck("EN CONSULTORIO", data.attentionType === "EN CONSULTORIO")}</td>
+            <td colspan="6" class="attention-option">${renderInlineCheck("EN CONSULTORIO", data.attentionType === "EN CONSULTORIO")}</td>
             <td colspan="5" class="attention-option">${renderInlineCheck("DOMICILIARIA", data.attentionType === "DOMICILIARIA")}</td>
             <td colspan="5" class="attention-option">${renderInlineCheck("EMERGENCIAS", data.attentionType === "EMERGENCIAS")}</td>
-            <td colspan="5" class="attention-option">${renderInlineCheck("REFERENCIA", data.attentionType === "REFERENCIA")}</td>
+            <td colspan="4" class="attention-option">${renderInlineCheck("REFERENCIA", data.attentionType === "REFERENCIA")}</td>
             <td colspan="7"><strong>FECHA DE NACIMIENTO:</strong></td>
             <td colspan="10">${renderDateCells(birthDate)}</td>
           </tr>
@@ -552,10 +552,10 @@ function renderInternadoRecipe(data) {
           </tr>
           <tr>
             <td colspan="5"><strong>INGRESO:</strong></td>
-            <td colspan="5" class="internado-ingress-option">${renderInlineCheck("Por referencia", false)}</td>
-            <td colspan="9" class="internado-ingress-option">${renderInlineCheck("Por servicio de emergencia", false)}</td>
-            <td colspan="7" class="internado-ingress-option">${renderInlineCheck("Por trabajo de parto", false)}</td>
-            <td colspan="8" class="internado-ingress-option">${renderInlineCheck("Por consultorio externo", false)}</td>
+            <td colspan="5" class="internado-ingress-option">${renderInlineCheck("Por referencia", data.admissionType === "Por referencia")}</td>
+            <td colspan="9" class="internado-ingress-option">${renderInlineCheck("Por servicio de emergencia", data.admissionType === "Por servicio de emergencia")}</td>
+            <td colspan="7" class="internado-ingress-option">${renderInlineCheck("Por trabajo de parto", data.admissionType === "Por trabajo de parto")}</td>
+            <td colspan="8" class="internado-ingress-option">${renderInlineCheck("Por consultorio externo", data.admissionType === "Por consultorio externo")}</td>
             <td colspan="8"></td>
           </tr>
           <tr>
@@ -1197,7 +1197,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-39").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-40").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

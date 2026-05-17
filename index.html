@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-39" />
-    <link rel="icon" href="icons/icon-32.png?v=manual-20260516-39" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260516-39" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260516-39" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-40" />
+    <link rel="icon" href="icons/icon-32.png?v=manual-20260516-40" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260516-40" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260516-40" />
   </head>
   <body>
     <header class="app-header">
@@ -90,7 +90,7 @@
           <fieldset>
             <legend>Datos clinicos</legend>
             <div class="form-grid">
-              <label>
+              <label class="ambulatorio-only">
                 Tipo de atencion
                 <select name="attentionType">
                   <option value=""></option>
@@ -100,9 +100,19 @@
                   <option>REFERENCIA</option>
                 </select>
               </label>
-              <label>
+              <label class="ambulatorio-only">
                 Servicio
                 <select name="service" id="serviceSelect"></select>
+              </label>
+              <label class="internado-only hidden">
+                Tipo de ingreso
+                <select name="admissionType">
+                  <option value=""></option>
+                  <option>Por referencia</option>
+                  <option>Por servicio de emergencia</option>
+                  <option>Por trabajo de parto</option>
+                  <option>Por consultorio externo</option>
+                </select>
               </label>
               <label class="non-uti-only">
                 Tipo de paciente
@@ -129,7 +139,7 @@
                 Fecha de ingreso
                 <input name="admissionDate" type="date" />
               </label>
-              <label class="internado-only hidden">
+              <label class="stay-only hidden">
                 Servicio de ingreso
                 <select name="admissionService" id="admissionServiceSelect"></select>
               </label>
@@ -224,7 +234,7 @@
           </fieldset>
 
           <fieldset class="uti-only hidden">
-            <legend>Unidad y programa</legend>
+            <legend>Paciente de UTI o UCIN</legend>
             <div class="check-grid uti-program-grid">
               <label class="check-option">
                 <input type="checkbox" name="utiPc81" />
@@ -270,6 +280,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=manual-20260516-39" type="module"></script>
+    <script src="app.js?v=manual-20260516-40" type="module"></script>
   </body>
 </html>
