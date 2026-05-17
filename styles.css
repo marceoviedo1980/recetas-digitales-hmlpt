@@ -282,6 +282,12 @@ textarea {
   padding: 4.5mm 5mm 3.5mm;
 }
 
+.recipe-page.pdf-exporting {
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}
+
 .legal-template {
   width: 100%;
   color: #000000;

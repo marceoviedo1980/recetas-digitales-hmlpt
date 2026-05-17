@@ -167,7 +167,92 @@ window.addEventListener("appinstalled", () => {
 });
 
 async function generatePdf() {
-  window.print();
+  const button = document.querySelector("#pdfBtn");
+  const originalText = button.textContent;
+
+  try {
+    button.disabled = true;
+    button.textContent = "Generando...";
+    preview.classList.add("pdf-exporting");
+    await loadPdfLibraries();
+
+    const canvas = await window.html2canvas(preview, {
+      backgroundColor: "#ffffff",
+      scale: 2.5,
+      useCORS: true,
+      width: preview.scrollWidth,
+      height: preview.scrollHeight,
+      windowWidth: preview.scrollWidth,
+      windowHeight: preview.scrollHeight,
+    });
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "letter" });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imageRatio = canvas.width / canvas.height;
+    let imageWidth = pageWidth;
+    let imageHeight = imageWidth / imageRatio;
+
+    if (imageHeight > pageHeight) {
+      imageHeight = pageHeight;
+      imageWidth = imageHeight * imageRatio;
+    }
+
+    const offsetX = (pageWidth - imageWidth) / 2;
+    const offsetY = (pageHeight - imageHeight) / 2;
+    pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", offsetX, offsetY, imageWidth, imageHeight);
+    pdf.save(pdfFileName());
+  } catch (error) {
+    console.error("No se pudo generar el PDF.", error);
+    alert("No se pudo generar el PDF. Verifica tu conexion a internet e intentalo nuevamente.");
+  } finally {
+    preview.classList.remove("pdf-exporting");
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+function loadPdfLibraries() {
+  if (window.html2canvas && window.jspdf?.jsPDF) return Promise.resolve();
+
+  return Promise.all([
+    loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
+    loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"),
+  ]);
+}
+
+function loadScript(src) {
+  const existing = document.querySelector(`script[src="${src}"]`);
+  if (existing) {
+    return existing.dataset.loaded === "true"
+      ? Promise.resolve()
+      : new Promise((resolve, reject) => {
+          existing.addEventListener("load", resolve, { once: true });
+          existing.addEventListener("error", reject, { once: true });
+        });
+  }
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.onload = () => {
+      script.dataset.loaded = "true";
+      resolve();
+    };
+    script.onerror = () => reject(new Error(`No se pudo cargar ${src}`));
+    document.head.appendChild(script);
+  });
+}
+
+function pdfFileName() {
+  const templateName = {
+    ambulatorio: "ambulatorio",
+    internado: "internado",
+    utiUcin: "uti-ucin",
+  }[state.template] || "recetario";
+  return `recetario-${templateName}-${new Date().toISOString().slice(0, 10)}.pdf`;
 }
 
 document.querySelector("#addMedicineBtn").addEventListener("click", () => {
@@ -1090,7 +1175,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-35").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-36").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });
