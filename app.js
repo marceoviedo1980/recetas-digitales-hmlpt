@@ -103,6 +103,7 @@ const medicineOptions = document.querySelector("#medicineOptions");
 const diagnosisOptions = document.querySelector("#diagnosisOptions");
 const serviceSelect = document.querySelector("#serviceSelect");
 const admissionServiceSelect = document.querySelector("#admissionServiceSelect");
+const dischargeServiceSelect = document.querySelector("#dischargeServiceSelect");
 const installButton = document.querySelector("#installBtn");
 const tabs = [...document.querySelectorAll(".template-tab")];
 const ambulatorioServicesOptions = document.querySelector("#ambulatorioServicesOptions");
@@ -268,6 +269,7 @@ function populateServiceOptions() {
     .join("")}`;
   serviceSelect.innerHTML = options;
   admissionServiceSelect.innerHTML = options;
+  dischargeServiceSelect.innerHTML = options;
 }
 
 function findDiagnosis(value) {
@@ -341,6 +343,9 @@ function medicineMeta(medicine) {
 function renderPreview() {
   const data = getData();
   preview.classList.remove("pdf-preview-page");
+  preview.classList.toggle("is-ambulatorio", state.template === "ambulatorio");
+  preview.classList.toggle("is-internado", state.template === "internado");
+  preview.classList.toggle("is-uti-ucin", state.template === "utiUcin");
   if (state.template === "internado") {
     preview.innerHTML = renderInternadoRecipe(data);
     return;
@@ -405,6 +410,7 @@ function renderInternadoRecipe(data) {
   const requestDate = splitDate(data.requestDate);
   const birthDate = splitDate(data.birthDate);
   const admissionDate = splitDate(data.admissionDate);
+  const dischargeDate = splitDate(data.dischargeDate);
   const patientParts = getPatientParts(data);
 
   return `
@@ -451,17 +457,17 @@ function renderInternadoRecipe(data) {
           </tr>
           <tr>
             <td colspan="7"><strong>Servicio de alta:</strong></td>
-            <td colspan="20">${safe(data.service)}</td>
+            <td colspan="20">${safe(data.dischargeService)}</td>
             <td colspan="4" class="date-separator"></td>
             <td colspan="5"><strong>FECHA DE EGRESO:</strong></td>
-            <td colspan="6">${renderDateCells({ day: "", month: "", year: "" })}</td>
+            <td colspan="6">${renderDateCells(dischargeDate)}</td>
           </tr>
         </tbody>
       </table>
 
       ${renderDiagnosisBlock(data, true)}
       ${renderManualProcedures(data)}
-      ${renderManualMedicines(13, false)}
+      ${renderManualMedicines(15, false)}
       ${renderManualCostAndSignatures(data)}
     </div>
   `;
@@ -600,7 +606,7 @@ function renderUtiUcinRecipe(data) {
         <div class="uti-program-item"><span>MEDICAMENTOS E INSUMOS UTILIZADOS EN LA UNIDAD DE CUIDADOS INTENSIVOS NEONATALES</span><span class="pc-check">${renderBox(data.ucinPc82 === "on")} <strong>PC 82</strong></span></div>
       </div>
 
-      ${renderUtiMedicines(18)}
+      ${renderUtiMedicines(20)}
       ${renderUtiFooter(data)}
     </div>
   `;
@@ -1062,7 +1068,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-30").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-32").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

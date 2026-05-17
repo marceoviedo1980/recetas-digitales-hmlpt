@@ -274,6 +274,14 @@ textarea {
   color: #111111;
 }
 
+.recipe-page.is-ambulatorio {
+  padding-top: 11mm;
+}
+
+.recipe-page.is-uti-ucin {
+  padding: 4.5mm 6mm 3.5mm;
+}
+
 .legal-template {
   width: 100%;
   color: #000000;
@@ -565,7 +573,13 @@ textarea {
 }
 
 .medicine-manual td {
-  font-size: 6.65pt;
+  font-size: 7.2pt;
+  line-height: 1.15;
+}
+
+.medicine-manual td.center {
+  font-size: 7.65pt;
+  font-weight: 800;
 }
 
 .observations-manual td {
@@ -680,40 +694,41 @@ textarea {
 }
 
 .uti-template {
-  font-size: 9pt;
+  font-size: 7.15pt;
+  line-height: 1.02;
 }
 
 .uti-top {
   display: grid;
   grid-template-columns: 1fr 1.2fr 1fr;
   align-items: center;
-  min-height: 33mm;
+  min-height: 18mm;
 }
 
 .uti-address {
-  font-size: 8pt;
-  line-height: 1.35;
+  font-size: 6.4pt;
+  line-height: 1.18;
 }
 
 .uti-title {
   text-align: center;
-  font-size: 20pt;
+  font-size: 15.2pt;
   font-weight: 900;
   letter-spacing: 0;
 }
 
 .uti-logo-placeholder {
-  min-height: 18mm;
+  min-height: 10mm;
 }
 
 .uti-header-table td {
-  height: 5.2mm;
-  font-size: 9pt;
-  padding: 0.65mm 1mm;
+  height: 3.9mm;
+  font-size: 7.15pt;
+  padding: 0.35mm 0.65mm;
 }
 
 .uti-header-table .uti-small-label {
-  font-size: 7.2pt;
+  font-size: 5.8pt;
   line-height: 1;
 }
 
@@ -722,8 +737,8 @@ textarea {
 }
 
 .uti-diagnosis-table td {
-  height: 5.6mm;
-  font-size: 9pt;
+  height: 4.35mm;
+  font-size: 7.15pt;
 }
 
 .uti-programs {
@@ -731,13 +746,13 @@ textarea {
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 3mm;
-  padding: 1.8mm 6mm 1.3mm 4mm;
-  font-size: 7.6pt;
+  padding: 0.75mm 3mm 0.65mm 2.5mm;
+  font-size: 5.95pt;
   text-align: right;
 }
 
 .uti-programs > div {
-  min-height: 7mm;
+  min-height: 4.6mm;
 }
 
 .uti-program-item {
@@ -783,17 +798,17 @@ textarea {
 }
 
 .uti-medicine-table th {
-  height: 6.5mm;
-  font-size: 9.2pt;
+  height: 4.8mm;
+  font-size: 7pt;
 }
 
 .uti-medicine-table td {
-  height: 8mm;
-  font-size: 8.6pt;
+  height: 5.45mm;
+  font-size: 6.95pt;
 }
 
 .uti-medicine-table .uti-index {
-  width: 8mm;
+  width: 6mm;
 }
 
 .uti-medicine-table th:nth-child(2),
@@ -805,9 +820,9 @@ textarea {
   display: grid;
   grid-template-columns: 1.1fr 1.1fr 0.9fr 1.25fr 1.1fr;
   align-items: end;
-  column-gap: 4mm;
-  padding-top: 3mm;
-  font-size: 8.2pt;
+  column-gap: 2.4mm;
+  padding-top: 1.6mm;
+  font-size: 6.6pt;
 }
 
 .uti-footer-sign {
@@ -818,9 +833,9 @@ textarea {
 .uti-footer-sign::before {
   content: "";
   display: block;
-  height: 13mm;
+  height: 8mm;
   border-bottom: 0.24mm dotted #000;
-  margin-bottom: 1mm;
+  margin-bottom: 0.55mm;
 }
 
 .uti-footer-sign strong,
@@ -833,35 +848,35 @@ textarea {
 .uti-authorization {
   text-align: center;
   align-self: end;
-  padding-top: 6mm;
+  padding-top: 2mm;
 }
 
 .uti-authorization::before {
   content: "";
   display: block;
-  height: 15mm;
+  height: 8mm;
   border-bottom: 0.24mm dotted #000;
-  margin-bottom: 1mm;
+  margin-bottom: 0.55mm;
 }
 
 .uti-authorization span {
   display: block;
-  margin-top: 5mm;
+  margin-top: 2mm;
   border-bottom: 0.24mm dotted #000;
   text-align: left;
 }
 
 .uti-costs {
   display: grid;
-  grid-template-columns: 1fr 9mm;
+  grid-template-columns: 1fr 7mm;
   align-self: start;
   gap: 0;
-  font-size: 7.7pt;
+  font-size: 5.9pt;
 }
 
 .uti-costs div,
 .uti-costs span {
-  min-height: 8mm;
+  min-height: 5.7mm;
   display: grid;
   align-items: center;
 }
@@ -878,9 +893,9 @@ textarea {
 .uti-footer p {
   grid-column: 1 / 5;
   margin: 0;
-  font-size: 8pt;
+  font-size: 6.1pt;
   font-style: italic;
-  line-height: 1.25;
+  line-height: 1.08;
 }
 
 .official-sheet {

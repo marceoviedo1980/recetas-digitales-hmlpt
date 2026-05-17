@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-30" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-32" />
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260516-30" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260516-32" />
   </head>
   <body>
     <header class="app-header">
@@ -120,6 +120,14 @@
               <label class="internado-only hidden">
                 Servicio de ingreso
                 <select name="admissionService" id="admissionServiceSelect"></select>
+              </label>
+              <label class="internado-only hidden">
+                Fecha de egreso
+                <input name="dischargeDate" type="date" />
+              </label>
+              <label class="internado-only hidden">
+                Servicio de alta
+                <select name="dischargeService" id="dischargeServiceSelect"></select>
               </label>
             </div>
             <datalist id="diagnosisOptions"></datalist>
@@ -236,6 +244,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=manual-20260516-30" type="module"></script>
+    <script src="app.js?v=manual-20260516-32" type="module"></script>
   </body>
 </html>
