@@ -1218,7 +1218,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-46").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-47").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

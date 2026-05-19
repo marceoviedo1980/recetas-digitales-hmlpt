@@ -331,16 +331,16 @@ textarea {
 
 .half-copy-content {
   width: 204mm;
-  transform: scale(0.64, 0.92);
+  transform: scale(0.64, 0.86);
   transform-origin: top left;
 }
 
 .recipe-page.is-half-copies.is-internado .half-copy-content {
-  transform: scale(0.64, 0.85);
+  transform: scale(0.64, 0.78);
 }
 
 .recipe-page.is-half-copies.is-uti-ucin .half-copy-content {
-  transform: scale(0.64, 0.78);
+  transform: scale(0.64, 0.72);
 }
 
 .sheet-cut-line {
