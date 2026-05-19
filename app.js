@@ -199,7 +199,11 @@ async function generatePdf() {
     });
 
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "letter" });
+    const pdf = new jsPDF({
+      orientation: preview.classList.contains("is-half-copies") ? "landscape" : "portrait",
+      unit: "pt",
+      format: "letter",
+    });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const imageRatio = canvas.width / canvas.height;
@@ -459,17 +463,31 @@ function renderPreview() {
   preview.classList.toggle("is-ambulatorio", state.template === "ambulatorio");
   preview.classList.toggle("is-internado", state.template === "internado");
   preview.classList.toggle("is-uti-ucin", state.template === "utiUcin");
+  preview.classList.toggle("is-half-copies", data.printLayout === "halfCopies");
+  preview.classList.toggle("is-full-page", data.printLayout !== "halfCopies");
+
+  let recipeHtml = "";
   if (state.template === "internado") {
-    preview.innerHTML = renderInternadoRecipe(data);
-    return;
+    recipeHtml = renderInternadoRecipe(data);
+  } else if (state.template === "utiUcin") {
+    recipeHtml = renderUtiUcinRecipe(data);
+  } else {
+    recipeHtml = renderAmbulatorioRecipe(data);
   }
 
-  if (state.template === "utiUcin") {
-    preview.innerHTML = renderUtiUcinRecipe(data);
-    return;
-  }
+  preview.innerHTML = data.printLayout === "halfCopies" ? renderHalfSheetCopies(recipeHtml) : recipeHtml;
+}
 
-  preview.innerHTML = renderAmbulatorioRecipe(data);
+function renderHalfSheetCopies(recipeHtml) {
+  return `
+    <div class="half-sheet-copy">
+      <div class="half-copy-content">${recipeHtml}</div>
+    </div>
+    <div class="sheet-cut-line" aria-hidden="true"></div>
+    <div class="half-sheet-copy">
+      <div class="half-copy-content">${recipeHtml}</div>
+    </div>
+  `;
 }
 
 function renderAmbulatorioRecipe(data) {
@@ -1200,7 +1218,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-42").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-46").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

@@ -173,6 +173,11 @@ legend {
   gap: 8px;
 }
 
+.print-layout-grid {
+  display: grid;
+  gap: 10px;
+}
+
 .uti-program-grid {
   grid-template-columns: 1fr;
 }
@@ -303,6 +308,48 @@ textarea {
 
 .recipe-page.is-uti-ucin {
   padding: 4.5mm 5mm 3.5mm;
+}
+
+.recipe-page.is-half-copies {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  width: 279mm;
+  min-height: 216mm;
+  padding: 0;
+  overflow: hidden;
+}
+
+.half-sheet-copy {
+  position: relative;
+  width: 139.5mm;
+  height: 216mm;
+  padding: 4mm 4.5mm;
+  overflow: hidden;
+}
+
+.half-copy-content {
+  width: 204mm;
+  transform: scale(0.64, 0.92);
+  transform-origin: top left;
+}
+
+.recipe-page.is-half-copies.is-internado .half-copy-content {
+  transform: scale(0.64, 0.85);
+}
+
+.recipe-page.is-half-copies.is-uti-ucin .half-copy-content {
+  transform: scale(0.64, 0.78);
+}
+
+.sheet-cut-line {
+  position: absolute;
+  z-index: 2;
+  top: 4mm;
+  bottom: 4mm;
+  left: 50%;
+  border-left: 0.35mm dashed #777777;
 }
 
 .recipe-page.pdf-exporting {
@@ -1401,8 +1448,21 @@ textarea {
     box-shadow: none;
   }
 
+  .recipe-page.is-half-copies {
+    width: 279mm;
+    min-height: 216mm;
+    height: 216mm;
+    padding: 0;
+    page: half-copies-landscape;
+  }
+
   @page {
-    size: letter;
+    size: letter portrait;
+    margin: 0;
+  }
+
+  @page half-copies-landscape {
+    size: letter landscape;
     margin: 0;
   }
 }

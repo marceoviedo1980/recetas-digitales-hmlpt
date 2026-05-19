@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-42" />
-    <link rel="icon" href="icons/icon-32.png?v=manual-20260516-42" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260516-42" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260516-42" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-46" />
+    <link rel="icon" href="icons/icon-32.png?v=manual-20260516-46" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260516-46" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260516-46" />
   </head>
   <body>
     <header class="app-header">
@@ -49,6 +49,20 @@
         </div>
 
         <form id="recipeForm" autocomplete="off">
+          <fieldset>
+            <legend>Formato de impresion</legend>
+            <div class="print-layout-grid">
+              <label class="check-option">
+                <input type="radio" name="printLayout" value="full" checked />
+                <span>Una receta en hoja carta completa</span>
+              </label>
+              <label class="check-option">
+                <input type="radio" name="printLayout" value="halfCopies" />
+                <span>Dos copias verticales en hoja carta horizontal</span>
+              </label>
+            </div>
+          </fieldset>
+
           <fieldset>
             <legend>Datos del paciente</legend>
             <div class="form-grid">
@@ -288,6 +302,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=manual-20260516-42" type="module"></script>
+    <script src="app.js?v=manual-20260516-46" type="module"></script>
   </body>
 </html>
