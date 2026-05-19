@@ -325,22 +325,22 @@ textarea {
   position: relative;
   width: 139.5mm;
   height: 216mm;
-  padding: 4mm 4.5mm;
+  padding: 6mm;
   overflow: hidden;
 }
 
 .half-copy-content {
   width: 204mm;
-  transform: scale(0.64, 1.18);
+  transform: scale(0.625, 1.36);
   transform-origin: top left;
 }
 
 .recipe-page.is-half-copies.is-internado .half-copy-content {
-  transform: scale(0.64, 1.12);
+  transform: scale(0.625, 1.22);
 }
 
 .recipe-page.is-half-copies.is-uti-ucin .half-copy-content {
-  transform: scale(0.64, 1.1);
+  transform: scale(0.625, 1.2);
 }
 
 .recipe-page.is-half-copies .legal-template {
