@@ -331,16 +331,264 @@ textarea {
 
 .half-copy-content {
   width: 204mm;
-  transform: scale(0.64, 0.86);
+  transform: scale(0.64, 1.18);
   transform-origin: top left;
 }
 
 .recipe-page.is-half-copies.is-internado .half-copy-content {
-  transform: scale(0.64, 0.78);
+  transform: scale(0.64, 1.12);
 }
 
 .recipe-page.is-half-copies.is-uti-ucin .half-copy-content {
-  transform: scale(0.64, 0.72);
+  transform: scale(0.64, 1.1);
+}
+
+.recipe-page.is-half-copies .legal-template {
+  font-size: 6.45pt;
+  line-height: 1;
+}
+
+.recipe-page.is-half-copies .legal-title {
+  height: 8.6mm;
+  font-size: 9.8pt;
+}
+
+.recipe-page.is-half-copies .manual-meta-header {
+  grid-template-columns: 1fr 50mm;
+  min-height: 12mm;
+  margin-bottom: 0.3mm;
+  font-size: 6.3pt;
+}
+
+.recipe-page.is-half-copies .manual-meta-left {
+  row-gap: 0.45mm;
+  padding-top: 0.4mm;
+}
+
+.recipe-page.is-half-copies .manual-meta-right {
+  grid-template-rows: repeat(4, 3mm);
+}
+
+.recipe-page.is-half-copies .manual-meta-row {
+  grid-template-columns: 34mm 1fr;
+  min-height: 3mm;
+}
+
+.recipe-page.is-half-copies .manual-meta-row strong {
+  font-size: 5.6pt;
+}
+
+.recipe-page.is-half-copies .manual-meta-row span {
+  padding: 0.2mm 0.6mm;
+  font-size: 5.9pt;
+}
+
+.recipe-page.is-half-copies .legal-table td,
+.recipe-page.is-half-copies .legal-table th {
+  min-height: 2.6mm;
+  padding: 0.28mm 0.5mm;
+}
+
+.recipe-page.is-half-copies .legal-table th {
+  font-size: 5.7pt;
+}
+
+.recipe-page.is-half-copies .legal-table small {
+  font-size: 4.85pt;
+}
+
+.recipe-page.is-half-copies .legal-compact td {
+  height: 3.65mm;
+}
+
+.recipe-page.is-half-copies .diagnosis-manual td {
+  height: 3.25mm;
+}
+
+.recipe-page.is-half-copies .manual-section-title {
+  min-height: 3mm;
+  padding: 0.3mm 0.55mm;
+  font-size: 6.6pt;
+}
+
+.recipe-page.is-half-copies .manual-services {
+  padding: 0.25mm 0.55mm;
+  column-gap: 0.8mm;
+}
+
+.recipe-page.is-half-copies .manual-services div {
+  min-height: 2.75mm;
+  gap: 0.45mm;
+  font-size: 4.9pt;
+}
+
+.recipe-page.is-half-copies .legal-box {
+  width: 2.45mm;
+  height: 2.45mm;
+  font-size: 4.9pt;
+}
+
+.recipe-page.is-half-copies .date-trio span {
+  min-height: 3.15mm;
+}
+
+.recipe-page.is-half-copies .date-trio b {
+  font-size: 4.45pt;
+}
+
+.recipe-page.is-half-copies .medicine-manual th,
+.recipe-page.is-half-copies .medicine-manual td {
+  height: 3.25mm;
+}
+
+.recipe-page.is-half-copies .medicine-manual td {
+  font-size: 5.85pt;
+}
+
+.recipe-page.is-half-copies .medicine-manual td.center {
+  font-size: 6.1pt;
+}
+
+.recipe-page.is-half-copies .observations-manual td {
+  height: 4mm;
+}
+
+.recipe-page.is-half-copies .observations-cell strong {
+  margin-bottom: 0.5mm;
+}
+
+.recipe-page.is-half-copies .observations-cell div {
+  font-size: 5.8pt;
+}
+
+.recipe-page.is-half-copies .signature-manual {
+  min-height: 21mm;
+  padding: 0.8mm 1.2mm 0;
+  column-gap: 2mm;
+}
+
+.recipe-page.is-half-copies .signature-area {
+  min-height: 14.5mm;
+  font-size: 5.45pt;
+}
+
+.recipe-page.is-half-copies .signature-line,
+.recipe-page.is-half-copies .patient-signature .signature-line {
+  height: 7.8mm;
+}
+
+.recipe-page.is-half-copies .signature-area span {
+  min-height: 1.4mm;
+}
+
+.recipe-page.is-half-copies .ci-row {
+  grid-template-columns: 3.6mm 1fr;
+}
+
+.recipe-page.is-half-copies .ci-line {
+  height: 1.8mm;
+}
+
+.recipe-page.is-half-copies .signature-manual p {
+  min-height: 2.3mm;
+  padding: 0.25mm 0;
+  font-size: 5pt;
+}
+
+.recipe-page.is-half-copies .establishment-stamp {
+  width: 13mm;
+  height: 13mm;
+  font-size: 4.7pt;
+}
+
+.recipe-page.is-half-copies .uti-template {
+  font-size: 5.7pt;
+}
+
+.recipe-page.is-half-copies .uti-top {
+  min-height: 11mm;
+}
+
+.recipe-page.is-half-copies .uti-title span {
+  font-size: 11.2pt;
+}
+
+.recipe-page.is-half-copies .uti-title em,
+.recipe-page.is-half-copies .uti-address {
+  font-size: 5.2pt;
+}
+
+.recipe-page.is-half-copies .uti-header-table td,
+.recipe-page.is-half-copies .uti-diagnosis-table td {
+  height: 3.45mm;
+  font-size: 5.7pt;
+}
+
+.recipe-page.is-half-copies .uti-header-table .uti-date-row td {
+  height: 4.1mm;
+}
+
+.recipe-page.is-half-copies .uti-header-table .uti-date-field .date-trio span {
+  min-height: 3.95mm;
+  font-size: 5.9pt;
+}
+
+.recipe-page.is-half-copies .uti-programs {
+  gap: 0.15mm;
+  padding: 0.5mm 0;
+  font-size: 4.8pt;
+}
+
+.recipe-page.is-half-copies .uti-programs > div {
+  min-height: 2.45mm;
+}
+
+.recipe-page.is-half-copies .uti-medicine-table th {
+  height: 3.45mm;
+  font-size: 5.6pt;
+}
+
+.recipe-page.is-half-copies .uti-medicine-table td {
+  height: 3.7mm;
+  font-size: 5.55pt;
+}
+
+.recipe-page.is-half-copies .uti-observations td {
+  height: 3.8mm;
+  font-size: 5.5pt;
+}
+
+.recipe-page.is-half-copies .uti-footer {
+  column-gap: 1.8mm;
+  padding: 2mm 1.4mm 0 3mm;
+  font-size: 5.2pt;
+}
+
+.recipe-page.is-half-copies .uti-footer-sign::before,
+.recipe-page.is-half-copies .uti-authorization::before {
+  height: 7mm;
+  margin-bottom: 0.45mm;
+}
+
+.recipe-page.is-half-copies .uti-authorization {
+  padding-top: 1mm;
+}
+
+.recipe-page.is-half-copies .uti-authorization span {
+  margin-top: 1.2mm;
+}
+
+.recipe-page.is-half-copies .uti-costs {
+  font-size: 4.7pt;
+}
+
+.recipe-page.is-half-copies .uti-costs div,
+.recipe-page.is-half-copies .uti-costs span {
+  min-height: 3.5mm;
+}
+
+.recipe-page.is-half-copies .uti-footer p {
+  font-size: 4.75pt;
 }
 
 .sheet-cut-line {
