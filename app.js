@@ -605,6 +605,9 @@ function renderInternadoRecipe(data) {
 }
 
 function renderManualHeader(data) {
+  const patientProgram = ["VIH", "TUBERCULOSIS"].includes(data.patientType) ? data.patientType : "";
+  const patientSale = ["SOAT", "RGL"].includes(data.patientType) ? data.patientType : "";
+
   return `
     <section class="manual-meta-header" aria-label="Datos institucionales">
       <div class="manual-meta-left">
@@ -619,16 +622,16 @@ function renderManualHeader(data) {
           <span class="manual-meta-record">${safe(data.clinicalRecord)}</span>
         </div>
         <div class="manual-meta-row">
-          <strong>SEGURO UNICO DE SALUD</strong>
-          <span class="manual-meta-check">${renderBox(data.patientType === "SUS")}</span>
+          <strong>SISTEMA UNICO DE SALUD:</strong>
+          <span class="manual-meta-value">${data.patientType === "SUS" ? "S.U.S" : ""}</span>
         </div>
         <div class="manual-meta-row">
-          <strong>PROGRAMAS:</strong>
-          <span class="manual-meta-check">${renderBox(data.patientType === "PROGRAMAS")}</span>
+          <strong>PROGRAMA:</strong>
+          <span class="manual-meta-value">${safe(patientProgram)}</span>
         </div>
         <div class="manual-meta-row">
           <strong>VENTA:</strong>
-          <span class="manual-meta-check">${renderBox(data.patientType === "VENTA")}</span>
+          <span class="manual-meta-value">${safe(patientSale)}</span>
         </div>
       </div>
     </section>
@@ -786,9 +789,9 @@ function renderDiagnosisBlock(data, internado = false) {
       <tbody>
         ${internado ? `
           <tr>
-            <td colspan="7"><strong>Diagnostico de ingreso:</strong></td>
-            <td colspan="30">${safe(data.diagnosis)}</td>
-            <td colspan="5" class="center"><strong>CODIGO CIE-10</strong></td>
+            <td colspan="7"><strong>Diagnosticos:</strong></td>
+            <td colspan="30"></td>
+            <td colspan="5"></td>
           </tr>
         ` : ""}
         <tr>
@@ -1218,7 +1221,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-52").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-54").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

@@ -650,7 +650,7 @@ textarea {
 .manual-meta-right {
   display: grid;
   grid-template-rows: repeat(4, 4.15mm);
-  border: 0.24mm solid #000000;
+  border: 0.08mm solid #000000;
   border-bottom: 0;
 }
 
@@ -659,7 +659,7 @@ textarea {
   grid-template-columns: 40mm 1fr;
   align-items: center;
   min-height: 4.15mm;
-  border-bottom: 0.24mm solid #000000;
+  border-bottom: 0.08mm solid #000000;
 }
 
 .manual-meta-row strong {
@@ -675,12 +675,18 @@ textarea {
   align-items: center;
   min-height: 100%;
   padding: 0.45mm 1mm;
-  border-left: 0.24mm solid #000000;
+  border-left: 0.08mm solid #000000;
   font-size: 7pt;
   line-height: 1.1;
 }
 
 .manual-meta-record {
+  justify-content: center;
+  font-weight: 800;
+  text-align: center;
+}
+
+.manual-meta-value {
   justify-content: center;
   font-weight: 800;
   text-align: center;
@@ -706,7 +712,7 @@ textarea {
 .legal-table th {
   min-height: 3.25mm;
   padding: 0.55mm 0.85mm;
-  border: 0.24mm solid #000000;
+  border: 0.08mm solid #000000;
   vertical-align: middle;
   overflow: hidden;
 }
@@ -719,6 +725,15 @@ textarea {
 
 .legal-table small {
   font-size: 5.55pt;
+  font-weight: 700;
+}
+
+.legal-table td:not(:has(strong)),
+.manual-meta-row span,
+.medicine-manual td,
+.observations-cell div,
+.uti-observations td:not(.uti-observation-label) {
+  font-size: 8.1pt;
   font-weight: 700;
 }
 
@@ -796,7 +811,7 @@ textarea {
 .manual-section-title {
   min-height: 4mm;
   padding: 0.62mm 0.8mm;
-  border: 0.24mm solid #000000;
+  border: 0.08mm solid #000000;
   border-top: 0;
   font-size: 8pt;
   font-weight: 800;
@@ -805,9 +820,9 @@ textarea {
 .manual-services {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border-left: 0.24mm solid #000000;
-  border-right: 0.24mm solid #000000;
-  border-bottom: 0.24mm solid #000000;
+  border-left: 0.08mm solid #000000;
+  border-right: 0.08mm solid #000000;
+  border-bottom: 0.08mm solid #000000;
   padding: 0.55mm 0.9mm;
   column-gap: 1.5mm;
 }
@@ -833,7 +848,7 @@ textarea {
   width: 3.35mm;
   height: 3.35mm;
   margin-left: 0.5mm;
-  border: 0.24mm solid #000000;
+  border: 0.08mm solid #000000;
   font-size: 6pt;
   font-weight: 800;
   line-height: 1;
@@ -857,7 +872,7 @@ textarea {
   grid-template-rows: auto 1fr;
   place-items: center;
   min-height: 4.45mm;
-  border-left: 0.24mm solid #000000;
+  border-left: 0.08mm solid #000000;
 }
 
 .date-trio span:first-child {
@@ -938,9 +953,9 @@ textarea {
   grid-template-columns: 1.15fr 1.15fr 0.75fr 1fr;
   align-items: end;
   min-height: 33.4mm;
-  border-left: 0.24mm solid #000000;
-  border-right: 0.24mm solid #000000;
-  border-bottom: 0.24mm solid #000000;
+  border-left: 0.08mm solid #000000;
+  border-right: 0.08mm solid #000000;
+  border-bottom: 0.08mm solid #000000;
   padding: 1.8mm 2mm 0;
   column-gap: 4mm;
 }
@@ -953,7 +968,7 @@ textarea {
 
 .signature-line {
   height: 13.5mm;
-  border-bottom: 0.24mm dotted #000000;
+  border-bottom: 0.08mm dotted #000000;
   margin-bottom: 0.7mm;
 }
 
@@ -995,7 +1010,7 @@ textarea {
 
 .ci-line {
   height: 2.8mm;
-  border-bottom: 0.24mm dotted #000000;
+  border-bottom: 0.08mm dotted #000000;
 }
 
 .signature-manual p {
@@ -1003,7 +1018,7 @@ textarea {
   margin: 0;
   min-height: 3.4mm;
   padding: 0.45mm 0;
-  border-top: 0.24mm solid #000000;
+  border-top: 0.08mm solid #000000;
   font-size: 6.1pt;
   line-height: 1.1;
 }
@@ -1018,7 +1033,7 @@ textarea {
   place-items: center;
   width: 19mm;
   height: 19mm;
-  border: 0.25mm dashed #000000;
+  border: 0.08mm dashed #000000;
   font-size: 5.7pt;
   line-height: 1.1;
   text-align: center;
@@ -1165,7 +1180,7 @@ textarea {
 .uti-medicine-table {
   border-collapse: separate;
   border-spacing: 0;
-  border: 0.24mm solid #000000;
+  border: 0.08mm solid #000000;
   border-radius: 5mm 5mm 0 0;
   overflow: hidden;
 }
@@ -1234,7 +1249,7 @@ textarea {
   content: "";
   display: block;
   height: 13mm;
-  border-bottom: 0.24mm dotted #000;
+  border-bottom: 0.08mm dotted #000;
   margin-bottom: 0.8mm;
 }
 
@@ -1255,14 +1270,14 @@ textarea {
   content: "";
   display: block;
   height: 13mm;
-  border-bottom: 0.24mm dotted #000;
+  border-bottom: 0.08mm dotted #000;
   margin-bottom: 0.8mm;
 }
 
 .uti-authorization span {
   display: block;
   margin-top: 3mm;
-  border-bottom: 0.24mm dotted #000;
+  border-bottom: 0.08mm dotted #000;
   text-align: left;
 }
 
@@ -1287,7 +1302,7 @@ textarea {
 }
 
 .uti-costs span {
-  border: 0.24mm solid #000000;
+  border: 0.08mm solid #000000;
 }
 
 .uti-footer p {
