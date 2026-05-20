@@ -13,6 +13,8 @@ const templates = {
   },
 };
 
+const SAVED_RECIPES_KEY = "recetario-la-portada-recetas-guardadas-v1";
+
 let medicines = [
   {
     name: "Paracetamol",
@@ -91,6 +93,7 @@ const internadoProcedures = [
 const state = {
   template: "ambulatorio",
   medicines: [],
+  currentSavedId: null,
 };
 
 const form = document.querySelector("#recipeForm");
@@ -108,6 +111,14 @@ const utiAdmissionServiceSelect = document.querySelector("#utiAdmissionServiceSe
 const installButton = document.querySelector("#installBtn");
 const pdfButton = document.querySelector("#pdfBtn");
 const pdfButtonLabel = pdfButton?.querySelector("span");
+const saveRecipeButton = document.querySelector("#saveRecipeBtn");
+const openSavedButton = document.querySelector("#openSavedBtn");
+const exportSavedButton = document.querySelector("#exportSavedBtn");
+const importSavedButton = document.querySelector("#importSavedBtn");
+const importSavedInput = document.querySelector("#importSavedInput");
+const savedDialog = document.querySelector("#savedRecipesDialog");
+const savedRecipesList = document.querySelector("#savedRecipesList");
+const closeSavedDialogButton = document.querySelector("#closeSavedDialogBtn");
 const tabs = [...document.querySelectorAll(".template-tab")];
 const ambulatorioServicesOptions = document.querySelector("#ambulatorioServicesOptions");
 const internadoProcedureOptions = document.querySelector("#internadoProcedureOptions");
@@ -125,32 +136,21 @@ window.addEventListener("resize", updatePdfButtonLabel);
 window.addEventListener("orientationchange", updatePdfButtonLabel);
 
 tabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    state.template = tab.dataset.template;
-    tabs.forEach((item) => item.classList.toggle("active", item === tab));
-    const isInternado = state.template === "internado";
-    const isUti = state.template === "utiUcin";
-    document
-      .querySelectorAll(".internado-only")
-      .forEach((item) => item.classList.toggle("hidden", !isInternado));
-    document
-      .querySelectorAll(".ambulatorio-only")
-      .forEach((item) => item.classList.toggle("hidden", state.template !== "ambulatorio"));
-    document
-      .querySelectorAll(".stay-only")
-      .forEach((item) => item.classList.toggle("hidden", !(isInternado || isUti)));
-    document.querySelectorAll(".uti-only").forEach((item) => item.classList.toggle("hidden", !isUti));
-    document.querySelectorAll(".non-uti-only").forEach((item) => item.classList.toggle("hidden", isUti));
-    document.querySelectorAll(".secondary-extra").forEach((item) => item.classList.toggle("hidden", isUti));
-    render();
-  });
+  tab.addEventListener("click", () => activateTemplate(tab.dataset.template));
 });
 
 document.querySelector("#printBtn").addEventListener("click", () => window.print());
 pdfButton.addEventListener("click", generatePdf);
+saveRecipeButton.addEventListener("click", saveCurrentRecipe);
+openSavedButton.addEventListener("click", openSavedRecipes);
+exportSavedButton.addEventListener("click", exportSavedRecipes);
+importSavedButton.addEventListener("click", () => importSavedInput.click());
+importSavedInput.addEventListener("change", importSavedRecipes);
+closeSavedDialogButton.addEventListener("click", () => savedDialog.close());
 document.querySelector("#clearBtn").addEventListener("click", () => {
   form.reset();
   state.medicines = [];
+  state.currentSavedId = null;
   render();
 });
 
@@ -172,6 +172,230 @@ window.addEventListener("appinstalled", () => {
   installPrompt = null;
   installButton.classList.add("hidden");
 });
+
+function activateTemplate(template) {
+  state.template = template || "ambulatorio";
+  tabs.forEach((item) => item.classList.toggle("active", item.dataset.template === state.template));
+  const isInternado = state.template === "internado";
+  const isUti = state.template === "utiUcin";
+  document
+    .querySelectorAll(".internado-only")
+    .forEach((item) => item.classList.toggle("hidden", !isInternado));
+  document
+    .querySelectorAll(".ambulatorio-only")
+    .forEach((item) => item.classList.toggle("hidden", state.template !== "ambulatorio"));
+  document
+    .querySelectorAll(".stay-only")
+    .forEach((item) => item.classList.toggle("hidden", !(isInternado || isUti)));
+  document.querySelectorAll(".uti-only").forEach((item) => item.classList.toggle("hidden", !isUti));
+  document.querySelectorAll(".non-uti-only").forEach((item) => item.classList.toggle("hidden", isUti));
+  document.querySelectorAll(".secondary-extra").forEach((item) => item.classList.toggle("hidden", isUti));
+  render();
+}
+
+function readSavedRecipes() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(SAVED_RECIPES_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    console.warn("No se pudieron leer las recetas guardadas.", error);
+    return [];
+  }
+}
+
+function writeSavedRecipes(recipes) {
+  localStorage.setItem(SAVED_RECIPES_KEY, JSON.stringify(recipes));
+}
+
+function saveCurrentRecipe() {
+  const recipes = readSavedRecipes();
+  const snapshot = buildRecipeSnapshot();
+  const existingIndex = recipes.findIndex((recipe) => recipe.id === state.currentSavedId);
+
+  if (existingIndex >= 0) {
+    recipes[existingIndex] = {
+      ...recipes[existingIndex],
+      ...snapshot,
+      id: state.currentSavedId,
+      createdAt: recipes[existingIndex].createdAt,
+      updatedAt: new Date().toISOString(),
+    };
+  } else {
+    recipes.unshift(snapshot);
+    state.currentSavedId = snapshot.id;
+  }
+
+  writeSavedRecipes(recipes);
+  saveRecipeButton.classList.add("saved-flash");
+  window.setTimeout(() => saveRecipeButton.classList.remove("saved-flash"), 700);
+}
+
+function buildRecipeSnapshot() {
+  const formData = serializeForm();
+  return {
+    id: state.currentSavedId || crypto.randomUUID?.() || `receta-${Date.now()}`,
+    template: state.template,
+    title: recipeSnapshotTitle(formData),
+    formData,
+    medicines: state.medicines,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function recipeSnapshotTitle(formData) {
+  const templateName = {
+    ambulatorio: "Ambulatorio",
+    internado: "Internado",
+    utiUcin: "UTI / UCIN",
+  }[state.template] || "Receta";
+  const patient = [formData.paternalSurname, formData.maternalSurname, formData.givenNames].filter(Boolean).join(" ");
+  const record = formData.clinicalRecord ? `Exp. ${formData.clinicalRecord}` : "Sin expediente";
+  const date = formData.requestDate || new Date().toISOString().slice(0, 10);
+  return `${templateName} - ${patient || "Sin nombre"} - ${record} - ${date}`;
+}
+
+function serializeForm() {
+  const data = {};
+  Array.from(form.elements).forEach((element) => {
+    if (!element.name || element.disabled) return;
+    if (element.type === "checkbox") {
+      data[element.name] = element.checked;
+      return;
+    }
+    if (element.type === "radio") {
+      if (element.checked) data[element.name] = element.value;
+      else if (!(element.name in data)) data[element.name] = "";
+      return;
+    }
+    data[element.name] = element.value;
+  });
+  return data;
+}
+
+function restoreForm(formData = {}) {
+  form.reset();
+  Array.from(form.elements).forEach((element) => {
+    if (!element.name || element.disabled) return;
+    if (element.type === "checkbox") {
+      element.checked = Boolean(formData[element.name]);
+      return;
+    }
+    if (element.type === "radio") {
+      element.checked = formData[element.name] === element.value;
+      return;
+    }
+    element.value = formData[element.name] || "";
+  });
+}
+
+function openSavedRecipes() {
+  renderSavedRecipesList();
+  if (typeof savedDialog.showModal === "function") savedDialog.showModal();
+  else savedDialog.setAttribute("open", "");
+}
+
+function renderSavedRecipesList() {
+  const recipes = readSavedRecipes();
+  if (!recipes.length) {
+    savedRecipesList.innerHTML = '<p class="empty saved-empty">No hay recetas guardadas todavia.</p>';
+    return;
+  }
+
+  savedRecipesList.innerHTML = recipes
+    .map(
+      (recipe) => `
+        <article class="saved-recipe-card">
+          <div>
+            <strong>${safe(recipe.title)}</strong>
+            <span>${safe(formatSavedDate(recipe.updatedAt || recipe.createdAt))}</span>
+          </div>
+          <div class="saved-recipe-actions">
+            <button class="secondary-button icon-button compact-button" type="button" data-load-id="${safe(recipe.id)}">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              <span>Cargar</span>
+            </button>
+            <button class="remove-button icon-button compact-button" type="button" data-delete-id="${safe(recipe.id)}">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 15H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+              <span>Borrar</span>
+            </button>
+          </div>
+        </article>
+      `,
+    )
+    .join("");
+
+  savedRecipesList.querySelectorAll("[data-load-id]").forEach((button) => {
+    button.addEventListener("click", () => loadSavedRecipe(button.dataset.loadId));
+  });
+  savedRecipesList.querySelectorAll("[data-delete-id]").forEach((button) => {
+    button.addEventListener("click", () => deleteSavedRecipe(button.dataset.deleteId));
+  });
+}
+
+function loadSavedRecipe(id) {
+  const recipe = readSavedRecipes().find((item) => item.id === id);
+  if (!recipe) return;
+  state.currentSavedId = recipe.id;
+  state.medicines = Array.isArray(recipe.medicines) ? recipe.medicines : [];
+  restoreForm(recipe.formData);
+  activateTemplate(recipe.template);
+  savedDialog.close();
+}
+
+function deleteSavedRecipe(id) {
+  const recipes = readSavedRecipes().filter((recipe) => recipe.id !== id);
+  if (state.currentSavedId === id) state.currentSavedId = null;
+  writeSavedRecipes(recipes);
+  renderSavedRecipesList();
+}
+
+function exportSavedRecipes() {
+  const recipes = readSavedRecipes();
+  const payload = {
+    app: "Recetario Digital La Portada",
+    exportedAt: new Date().toISOString(),
+    recipes,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `recetas-guardadas-la-portada-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+async function importSavedRecipes(event) {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+    const imported = Array.isArray(parsed) ? parsed : parsed.recipes;
+    if (!Array.isArray(imported)) throw new Error("Formato no valido");
+    const current = readSavedRecipes();
+    const merged = [...imported, ...current].reduce((accumulator, recipe) => {
+      if (recipe?.id && !accumulator.some((item) => item.id === recipe.id)) accumulator.push(recipe);
+      return accumulator;
+    }, []);
+    writeSavedRecipes(merged);
+    renderSavedRecipesList();
+    openSavedRecipes();
+  } catch (error) {
+    console.error("No se pudo importar el respaldo.", error);
+    alert("No se pudo importar el respaldo. Verifica que sea un archivo JSON exportado desde esta app.");
+  }
+}
+
+function formatSavedDate(value) {
+  if (!value) return "Sin fecha";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString("es-BO", { dateStyle: "short", timeStyle: "short" });
+}
 
 async function generatePdf() {
   if (isMobilePdfFlow()) {
@@ -1313,7 +1537,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-62").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-64").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-62" />
-    <link rel="icon" href="icons/icon-32.png?v=manual-20260516-62" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260516-62" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260516-62" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260516-64" />
+    <link rel="icon" href="icons/icon-32.png?v=manual-20260516-64" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260516-64" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260516-64" />
   </head>
   <body>
     <header class="app-header">
@@ -25,6 +25,23 @@
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v10m0 0 4-4m-4 4-4-4"/><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
           <span>Instalar app</span>
         </button>
+        <button class="ghost-button icon-button" id="saveRecipeBtn" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+          <span>Guardar</span>
+        </button>
+        <button class="ghost-button icon-button" id="openSavedBtn" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M5 4h14v13H5z"/><path d="M8 8h8"/><path d="M8 12h5"/></svg>
+          <span>Guardadas</span>
+        </button>
+        <button class="ghost-button icon-button" id="exportSavedBtn" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          <span>Respaldo</span>
+        </button>
+        <button class="ghost-button icon-button" id="importSavedBtn" type="button">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>
+          <span>Importar</span>
+        </button>
+        <input id="importSavedInput" type="file" accept="application/json,.json" hidden />
         <button class="ghost-button icon-button" id="clearBtn" type="button">
           <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 21 6-6"/><path d="m7 17 4 4"/><path d="m13 3 8 8-7 7-8-8Z"/><path d="m14 4-7 7"/></svg>
           <span>Limpiar</span>
@@ -300,6 +317,19 @@
       </section>
     </main>
 
-    <script src="app.js?v=manual-20260516-62" type="module"></script>
+    <dialog class="saved-dialog" id="savedRecipesDialog">
+      <div class="saved-dialog-header">
+        <div>
+          <strong>Recetas guardadas</strong>
+          <span>Carga una receta para editarla e imprimirla nuevamente.</span>
+        </div>
+        <button class="ghost-button icon-button compact-button" id="closeSavedDialogBtn" type="button" aria-label="Cerrar">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="saved-list" id="savedRecipesList"></div>
+    </dialog>
+
+    <script src="app.js?v=manual-20260516-64" type="module"></script>
   </body>
 </html>

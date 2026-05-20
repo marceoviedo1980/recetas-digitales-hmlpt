@@ -59,7 +59,10 @@ h1 {
 
 .header-actions {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
+  max-width: 760px;
 }
 
 button {
@@ -104,6 +107,16 @@ button {
 
 .ghost-button {
   color: var(--accent-dark);
+}
+
+.compact-button {
+  min-height: 32px;
+  padding: 6px 10px;
+}
+
+.saved-flash {
+  border-color: var(--accent);
+  background: #dff0eb;
 }
 
 .workspace {
@@ -274,6 +287,81 @@ textarea {
 .remove-button {
   color: var(--danger);
   border-color: #e7baba;
+}
+
+.saved-dialog {
+  width: min(760px, calc(100vw - 28px));
+  max-height: min(720px, calc(100vh - 36px));
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+}
+
+.saved-dialog::backdrop {
+  background: rgba(17, 25, 23, 0.42);
+}
+
+.saved-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.saved-dialog-header div {
+  display: grid;
+  gap: 4px;
+}
+
+.saved-dialog-header strong {
+  font-size: 18px;
+}
+
+.saved-dialog-header span,
+.saved-recipe-card span,
+.saved-empty {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.saved-list {
+  display: grid;
+  gap: 10px;
+  max-height: calc(100vh - 150px);
+  overflow: auto;
+  padding: 14px 16px 16px;
+}
+
+.saved-recipe-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfdfc;
+}
+
+.saved-recipe-card > div:first-child {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.saved-recipe-card strong {
+  overflow-wrap: anywhere;
+}
+
+.saved-recipe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .preview-shell {
@@ -2110,8 +2198,26 @@ textarea {
 
   .template-switcher,
   .form-grid,
-  .medicine-search {
+  .medicine-search,
+  .saved-recipe-card {
     grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .header-actions button {
+    flex: 1 1 132px;
+  }
+
+  .saved-recipe-actions {
+    justify-content: stretch;
+  }
+
+  .saved-recipe-actions button {
+    flex: 1 1 110px;
   }
 
   .span-2 {

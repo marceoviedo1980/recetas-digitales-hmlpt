@@ -1,10 +1,11 @@
-const CACHE_NAME = "recetario-digital-manual-20260516-62";
+const CACHE_NAME = "recetario-digital-manual-20260516-64";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=manual-20260516-62",
-  "./app.js?v=manual-20260516-62",
-  "./manifest.webmanifest?v=manual-20260516-62",
+  "./index.html?app=pwa",
+  "./styles.css?v=manual-20260516-64",
+  "./app.js?v=manual-20260516-64",
+  "./manifest.webmanifest?v=manual-20260516-64",
   "./icons/icon-32.png",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -31,15 +32,29 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
   if (event.request.mode === "navigate") {
-    event.respondWith(fetch(event.request).catch(() => caches.match("./index.html")));
+    event.respondWith(
+      caches.match("./index.html", { ignoreSearch: true }).then((cached) => {
+        return (
+          cached ||
+          fetch(event.request)
+            .then((response) => {
+              const copy = response.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put("./index.html", copy));
+              return response;
+            })
+            .catch(() => caches.match("./index.html", { ignoreSearch: true }))
+        );
+      }),
+    );
     return;
   }
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
+    caches.match(event.request, { ignoreSearch: true }).then((cached) => {
       return (
         cached ||
         fetch(event.request).then((response) => {
+          if (!response || response.status !== 200) return response;
           const copy = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           return response;
