@@ -331,16 +331,16 @@ textarea {
 
 .half-copy-content {
   width: 204mm;
-  transform: scale(0.625, 1.36);
+  transform: scale(0.625, 0.89);
   transform-origin: top left;
 }
 
 .recipe-page.is-half-copies.is-internado .half-copy-content {
-  transform: scale(0.625, 1.22);
+  transform: scale(0.625, 0.86);
 }
 
 .recipe-page.is-half-copies.is-uti-ucin .half-copy-content {
-  transform: scale(0.625, 1.2);
+  transform: scale(0.625, 1.08);
 }
 
 .recipe-page.is-half-copies .legal-template {
@@ -505,42 +505,78 @@ textarea {
   font-size: 5.7pt;
 }
 
-.recipe-page.is-half-copies .uti-top {
-  min-height: 11mm;
+.recipe-page.is-half-copies .uti-official-header {
+  grid-template-columns: 30mm 1fr 38mm;
+  column-gap: 2mm;
+  min-height: 14mm;
+  margin-bottom: 0.35mm;
 }
 
-.recipe-page.is-half-copies .uti-title span {
-  font-size: 11.2pt;
+.recipe-page.is-half-copies .uti-official-side {
+  gap: 0.25mm;
+  font-size: 5pt;
 }
 
-.recipe-page.is-half-copies .uti-title em,
-.recipe-page.is-half-copies .uti-address {
+.recipe-page.is-half-copies .uti-official-side .official-patient-panel {
+  width: 28mm;
+  font-size: 3.95pt;
+}
+
+.recipe-page.is-half-copies .uti-official-side .official-patient-panel div {
+  grid-template-columns: 13mm 15mm;
+  min-height: 3.1mm;
+}
+
+.recipe-page.is-half-copies .uti-official-side .official-patient-panel span {
+  min-height: 3.1mm;
+  font-size: 4.6pt;
+}
+
+.recipe-page.is-half-copies .uti-official-side .official-date {
+  grid-template-columns: auto repeat(3, 5.4mm);
+}
+
+.recipe-page.is-half-copies .uti-side-row {
+  gap: 1.4mm;
   font-size: 5.2pt;
 }
 
-.recipe-page.is-half-copies .uti-header-table td,
-.recipe-page.is-half-copies .uti-diagnosis-table td {
-  height: 3.45mm;
-  font-size: 5.7pt;
+.recipe-page.is-half-copies .uti-open-meta {
+  gap: 0.35mm 2mm;
+  margin: 0.3mm 0;
+  font-size: 5.2pt;
 }
 
-.recipe-page.is-half-copies .uti-header-table .uti-date-row td {
-  height: 4.1mm;
+.recipe-page.is-half-copies .uti-open-meta div {
+  grid-template-columns: 22mm 1fr;
 }
 
-.recipe-page.is-half-copies .uti-header-table .uti-date-field .date-trio span {
-  min-height: 3.95mm;
-  font-size: 5.9pt;
+.recipe-page.is-half-copies .uti-open-meta span {
+  min-height: 2.4mm;
 }
 
-.recipe-page.is-half-copies .uti-programs {
-  gap: 0.15mm;
-  padding: 0.5mm 0;
+.recipe-page.is-half-copies .uti-open-form {
+  gap: 0.35mm;
+  font-size: 5.3pt;
+}
+
+.recipe-page.is-half-copies .uti-open-diagnosis,
+.recipe-page.is-half-copies .uti-diagnosis-list {
+  gap: 0.25mm;
+}
+
+.recipe-page.is-half-copies .uti-diagnosis-list div {
+  grid-template-columns: 5mm 1fr;
+}
+
+.recipe-page.is-half-copies .uti-open-programs {
+  gap: 0.2mm;
+  margin: 0.4mm 0;
   font-size: 4.8pt;
 }
 
-.recipe-page.is-half-copies .uti-programs > div {
-  min-height: 2.45mm;
+.recipe-page.is-half-copies .uti-open-programs div {
+  min-height: 2.4mm;
 }
 
 .recipe-page.is-half-copies .uti-medicine-table th {
@@ -622,6 +658,414 @@ textarea {
   font-size: 12.4pt;
   font-weight: 800;
   line-height: 1.08;
+}
+
+.official-header {
+  display: grid;
+  grid-template-columns: 42mm 1fr 42mm;
+  align-items: start;
+  column-gap: 5mm;
+  min-height: 20mm;
+  position: relative;
+}
+
+.official-header-internado {
+  grid-template-columns: 48mm 1fr 42mm;
+  min-height: 21mm;
+}
+
+.official-brand-left,
+.official-address {
+  font-size: 7pt;
+  line-height: 1.18;
+}
+
+.official-brand-left small {
+  display: block;
+  margin-top: 0;
+  font-size: 6.5pt;
+}
+
+.official-title {
+  align-self: center;
+  text-align: center;
+  font-size: 13pt;
+  font-weight: 900;
+  line-height: 1.08;
+}
+
+.official-title-strong {
+  font-size: 17pt;
+  letter-spacing: 0;
+}
+
+.official-header-internado .official-title-strong {
+  font-size: 14.2pt;
+  line-height: 1;
+}
+
+.official-patient-panel {
+  grid-column: 3;
+  justify-self: end;
+  width: 42mm;
+  margin-top: 12mm;
+  font-size: 5.8pt;
+}
+
+.official-header-internado .official-patient-panel {
+  margin-top: 14mm;
+}
+
+.official-patient-panel div {
+  display: grid;
+  grid-template-columns: 20mm 22mm;
+  align-items: center;
+  min-height: 5mm;
+}
+
+.official-patient-panel strong {
+  justify-self: end;
+  padding-right: 1.2mm;
+  line-height: 1;
+  text-align: right;
+}
+
+.official-patient-panel span {
+  display: grid;
+  place-items: center;
+  min-height: 5mm;
+  border: 0.08mm solid #000000;
+  border-bottom: 0;
+  font-size: 7.3pt;
+  font-weight: 800;
+}
+
+.official-patient-panel div:last-child span {
+  border-bottom: 0.08mm solid #000000;
+}
+
+.official-meta-lines {
+  display: grid;
+  grid-template-columns: 28mm 35mm 1fr;
+  gap: 2mm 7mm;
+  margin: -2mm 0 2mm;
+  font-size: 7pt;
+}
+
+.official-meta-lines div:nth-child(3),
+.official-meta-lines div:nth-child(4) {
+  grid-column: 1 / -1;
+}
+
+.internado-meta {
+  grid-template-columns: 32mm 42mm 1fr;
+  margin-top: -1mm;
+  font-size: 8pt;
+}
+
+.official-form {
+  display: grid;
+  gap: 1.2mm;
+  font-size: 7.2pt;
+}
+
+.official-row,
+.official-two-col {
+  display: grid;
+  align-items: end;
+  gap: 2mm;
+}
+
+.official-two-col {
+  grid-template-columns: 1fr 1fr;
+}
+
+.official-field {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+  gap: 1mm;
+  min-height: 4.6mm;
+}
+
+.official-label {
+  white-space: nowrap;
+  font-weight: 800;
+}
+
+.official-fill {
+  min-height: 3.8mm;
+  border-bottom: 0.18mm dotted #000000;
+  font-size: 8.4pt;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.official-attention-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2.2mm;
+}
+
+.official-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8mm;
+  white-space: nowrap;
+}
+
+.official-box {
+  display: inline-grid;
+  place-items: center;
+  width: 4mm;
+  height: 4mm;
+  border: 0.16mm solid #000000;
+  font-size: 7pt;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.with-side-date {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.official-sex-date {
+  display: flex;
+  align-items: end;
+  gap: 1.2mm;
+  white-space: nowrap;
+}
+
+.official-sex-request-row {
+  justify-content: end;
+}
+
+.official-date {
+  display: inline-grid;
+  grid-template-columns: auto repeat(3, 9mm);
+  align-items: end;
+  gap: 0;
+  font-size: 6.2pt;
+  white-space: nowrap;
+}
+
+.official-date strong {
+  padding-right: 1.5mm;
+}
+
+.official-date span {
+  display: grid;
+  grid-template-rows: auto 4.2mm;
+  place-items: center;
+  border: 0.08mm solid #000000;
+  border-right: 0;
+  font-weight: 800;
+}
+
+.official-date span:last-child {
+  border-right: 0.08mm solid #000000;
+}
+
+.official-date em {
+  width: 100%;
+  border-bottom: 0.08mm solid #000000;
+  font-size: 5.2pt;
+  font-style: normal;
+  font-weight: 700;
+  text-align: center;
+}
+
+.uti-official-header {
+  grid-template-columns: 48mm 1fr 58mm;
+  min-height: 23mm;
+  margin-bottom: 1mm;
+}
+
+.uti-official-side {
+  display: grid;
+  justify-items: end;
+  gap: 1mm;
+  font-size: 6.4pt;
+}
+
+.uti-official-side .official-patient-panel {
+  grid-column: auto;
+  width: 42mm;
+  margin-top: 0;
+}
+
+.uti-official-side .official-date {
+  grid-template-columns: auto repeat(3, 8.5mm);
+}
+
+.uti-side-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3mm;
+  font-size: 7pt;
+}
+
+.uti-open-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1mm 5mm;
+  margin: 1mm 0 1.5mm;
+  font-size: 7.2pt;
+}
+
+.uti-open-meta div {
+  display: grid;
+  grid-template-columns: 34mm 1fr;
+  align-items: end;
+}
+
+.uti-open-meta span {
+  min-height: 3.8mm;
+  border-bottom: 0.18mm dotted #000000;
+  font-weight: 800;
+}
+
+.uti-open-form {
+  display: grid;
+  gap: 1mm;
+  font-size: 7.2pt;
+}
+
+.uti-open-meta strong,
+.uti-open-form strong,
+.official-form strong,
+.official-check,
+.official-date strong,
+.official-meta-lines strong,
+.manual-meta-header strong,
+.legal-template th,
+.legal-template td strong,
+.signature-manual strong,
+.signature-area strong,
+.patient-signature strong {
+  font-weight: 800;
+}
+
+.uti-open-diagnosis {
+  display: grid;
+  gap: 1mm;
+  margin-top: 0.6mm;
+}
+
+.uti-diagnosis-list {
+  display: grid;
+  gap: 0.8mm;
+}
+
+.uti-diagnosis-list div {
+  display: grid;
+  grid-template-columns: 8mm 1fr;
+  align-items: end;
+}
+
+.uti-open-programs {
+  display: grid;
+  gap: 0.8mm;
+  margin: 1mm 0;
+  font-size: 6.2pt;
+  text-align: center;
+}
+
+.uti-open-programs div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1mm;
+}
+
+.official-diagnosis {
+  display: grid;
+  gap: 0.9mm;
+  margin-top: 0.5mm;
+}
+
+.official-diagnosis-title,
+.official-diagnosis-row {
+  display: grid;
+  grid-template-columns: 31mm 7mm 1fr 22mm;
+  align-items: end;
+  gap: 1mm;
+}
+
+.official-diagnosis-title {
+  grid-template-columns: 39mm 1fr 22mm;
+  min-height: 5mm;
+  border: 0.08mm solid #000000;
+  border-bottom: 0;
+  padding: 0.8mm 1mm;
+}
+
+.official-diagnosis-title strong:first-child {
+  grid-column: 1 / 3;
+}
+
+.official-diagnosis-title strong:last-child {
+  justify-self: stretch;
+  text-align: center;
+}
+
+.official-code,
+.official-code-label,
+.official-code-stack {
+  text-align: center;
+}
+
+.official-code-stack {
+  align-self: stretch;
+  display: grid;
+  border: 0.08mm solid #000000;
+  border-bottom: 0;
+}
+
+.official-code-stack strong {
+  display: grid;
+  place-items: center;
+  min-height: 3.2mm;
+  border-bottom: 0.08mm solid #000000;
+  font-weight: 800;
+}
+
+.official-code-stack .official-fill {
+  display: grid;
+  place-items: center;
+  min-height: 3.8mm;
+  border-bottom: 0;
+}
+
+.diagnosis-label {
+  font-weight: 800;
+}
+
+.diagnosis-label.main {
+  grid-column: 1 / 3;
+}
+
+.diagnosis-number {
+  font-weight: 800;
+  text-align: right;
+}
+
+.official-diagnosis.internado {
+  gap: 0;
+  margin-top: 1mm;
+}
+
+.official-diagnosis.internado .official-diagnosis-row {
+  min-height: 5.4mm;
+  border-left: 0.08mm solid #000000;
+  border-right: 0.08mm solid #000000;
+  padding: 0 1mm;
+}
+
+.official-diagnosis.internado .official-diagnosis-row:last-child {
+  border-bottom: 0.08mm solid #000000;
 }
 
 .manual-meta-header {

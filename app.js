@@ -491,45 +491,9 @@ function renderHalfSheetCopies(recipeHtml) {
 }
 
 function renderAmbulatorioRecipe(data) {
-  const requestDate = splitDate(data.requestDate);
-  const birthDate = splitDate(data.birthDate);
-  const patient = getPatientParts(data);
-  const fullName = [patient.names, patient.paternal, patient.maternal].filter(Boolean).join(" ");
-
   return `
     <div class="legal-template legal-ambulatorio">
-      <div class="legal-title">RECETARIO / RECIBO<br>ATENCION AMBULATORIA</div>
-      ${renderManualHeader(data)}
-
-      <table class="legal-table legal-compact">
-        <tbody>
-          <tr>
-            <td colspan="5"><strong>Tipo de Atencion:</strong></td>
-            <td colspan="6" class="attention-option">${renderInlineCheck("EN CONSULTORIO", data.attentionType === "EN CONSULTORIO")}</td>
-            <td colspan="5" class="attention-option">${renderInlineCheck("DOMICILIARIA", data.attentionType === "DOMICILIARIA")}</td>
-            <td colspan="5" class="attention-option">${renderInlineCheck("EMERGENCIAS", data.attentionType === "EMERGENCIAS")}</td>
-            <td colspan="4" class="attention-option">${renderInlineCheck("REFERENCIA", data.attentionType === "REFERENCIA")}</td>
-            <td colspan="7"><strong>FECHA DE NACIMIENTO:</strong></td>
-            <td colspan="10">${renderDateCells(birthDate)}</td>
-          </tr>
-          <tr>
-            <td colspan="6"><strong>Nombre del Paciente:</strong></td>
-            <td colspan="19">${safe(fullName)}</td>
-            <td colspan="7"><strong>FECHA DE SOLICITUD:</strong></td>
-            <td colspan="10">${renderDateCells(requestDate)}</td>
-          </tr>
-          <tr>
-            <td colspan="4"><strong>Domicilio:</strong></td>
-            <td colspan="28">${safe(data.address)}</td>
-            <td colspan="3"><strong>SEXO:</strong></td>
-            <td colspan="2">M ${renderBox(data.sex === "M")}</td>
-            <td colspan="2">F ${renderBox(data.sex === "F")}</td>
-            <td colspan="3"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      ${renderDiagnosisBlock(data)}
+      ${renderAmbulatorioOfficialHeader(data)}
       ${renderManualServices(data)}
       ${renderManualMedicines(13, true)}
       ${renderManualCostAndSignatures(data)}
@@ -538,69 +502,216 @@ function renderAmbulatorioRecipe(data) {
 }
 
 function renderInternadoRecipe(data) {
-  const requestDate = splitDate(data.requestDate);
-  const birthDate = splitDate(data.birthDate);
-  const admissionDate = splitDate(data.admissionDate);
-  const dischargeDate = splitDate(data.dischargeDate);
-  const patientParts = getPatientParts(data);
-
   return `
     <div class="legal-template legal-internado">
-      <div class="legal-title">RECETARIO / RECIBO<br>ATENCION DEL PACIENTE INTERNADO</div>
-      ${renderManualHeader(data)}
-
-      <table class="legal-table legal-compact">
-        <tbody>
-          <tr>
-            <td colspan="4"><strong>Apellido Paterno:</strong></td>
-            <td colspan="7">${safe(patientParts.paternal)}</td>
-            <td colspan="4"><strong>Apellido Materno:</strong></td>
-            <td colspan="9">${safe(patientParts.maternal)}</td>
-            <td colspan="3"><strong>SEXO:</strong></td>
-            <td colspan="4" class="sex-compact">${renderSexCompact(data.sex)}</td>
-            <td colspan="5"><strong>FECHA DE NACIMIENTO:</strong></td>
-            <td colspan="6">${renderDateCells(birthDate)}</td>
-          </tr>
-          <tr>
-            <td colspan="5"><strong>Nombres:</strong></td>
-            <td colspan="26">${safe(patientParts.names)}</td>
-            <td colspan="5"><strong>FECHA DE SOLICITUD:</strong></td>
-            <td colspan="6">${renderDateCells(requestDate)}</td>
-          </tr>
-          <tr>
-            <td colspan="4"><strong>Domicilio:</strong></td>
-            <td colspan="38">${safe(data.address)}</td>
-          </tr>
-          <tr>
-            <td colspan="5"><strong>INGRESO:</strong></td>
-            <td colspan="5" class="internado-ingress-option">${renderInlineCheck("Por referencia", data.admissionType === "Por referencia")}</td>
-            <td colspan="9" class="internado-ingress-option">${renderInlineCheck("Por servicio de emergencia", data.admissionType === "Por servicio de emergencia")}</td>
-            <td colspan="7" class="internado-ingress-option">${renderInlineCheck("Por trabajo de parto", data.admissionType === "Por trabajo de parto")}</td>
-            <td colspan="8" class="internado-ingress-option">${renderInlineCheck("Por consultorio externo", data.admissionType === "Por consultorio externo")}</td>
-            <td colspan="8"></td>
-          </tr>
-          <tr>
-            <td colspan="7"><strong>Servicio de ingreso:</strong></td>
-            <td colspan="20">${safe(data.admissionService || data.service)}</td>
-            <td colspan="4" class="date-separator"></td>
-            <td colspan="5"><strong>FECHA DE INGRESO:</strong></td>
-            <td colspan="6">${renderDateCells(admissionDate)}</td>
-          </tr>
-          <tr>
-            <td colspan="7"><strong>Servicio de alta:</strong></td>
-            <td colspan="20">${safe(data.dischargeService)}</td>
-            <td colspan="4" class="date-separator"></td>
-            <td colspan="5"><strong>FECHA DE EGRESO:</strong></td>
-            <td colspan="6">${renderDateCells(dischargeDate)}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      ${renderDiagnosisBlock(data, true)}
+      ${renderInternadoOfficialHeader(data)}
       ${renderManualProcedures(data)}
       ${renderManualMedicines(15, false)}
       ${renderManualCostAndSignatures(data)}
     </div>
+  `;
+}
+
+function renderAmbulatorioOfficialHeader(data) {
+  const requestDate = splitDate(data.requestDate);
+  const birthDate = splitDate(data.birthDate);
+  const patient = getPatientParts(data);
+  return `
+    <section class="official-header official-header-ambulatorio">
+      ${renderOfficialBrand()}
+      <div class="official-title">RECETARIO / RECIBO<br>ATENCION AMBULATORIA</div>
+      ${renderOfficialPatientTypePanel(data)}
+    </section>
+    <section class="official-meta-lines">
+      <div><strong>SEDES:</strong> LA PAZ</div>
+      <div><strong>RED:</strong> 2 NOR OESTE</div>
+      <div><strong>Municipio:</strong> LA PAZ</div>
+      <div><strong>Establecimiento:</strong> HOSPITAL MUNICIPAL LA PORTADA</div>
+    </section>
+    <section class="official-form official-form-ambulatorio">
+      <div class="official-row official-attention-row">
+        <strong>Tipo de Atencion:</strong>
+        ${renderOfficialCheck("EN CONSULTORIO", data.attentionType === "EN CONSULTORIO")}
+        ${renderOfficialCheck("DOMICILIARIA", data.attentionType === "DOMICILIARIA")}
+        ${renderOfficialCheck("EMERGENCIAS", data.attentionType === "EMERGENCIAS")}
+        ${renderOfficialCheck("REFERENCIA", data.attentionType === "REFERENCIA")}
+      </div>
+      <div class="official-two-col">
+        ${renderOfficialDottedField("Apellido paterno:", patient.paternal)}
+        ${renderOfficialDottedField("Apellido materno:", patient.maternal)}
+      </div>
+      ${renderOfficialDottedField("Nombres:", patient.names)}
+      <div class="official-row with-side-date">
+        ${renderOfficialDottedField("Domicilio:", data.address)}
+        ${renderOfficialDate("FECHA DE NACIMIENTO:", birthDate)}
+      </div>
+      <div class="official-row official-sex-request-row">
+        <div class="official-sex-date">
+          <strong>Sexo:</strong>
+          ${renderOfficialCheck("M", data.sex === "M")}
+          ${renderOfficialCheck("F", data.sex === "F")}
+          ${renderOfficialDate("FECHA:", requestDate)}
+        </div>
+      </div>
+      ${renderOfficialDiagnosisBlock(data, false)}
+    </section>
+  `;
+}
+
+function renderInternadoOfficialHeader(data) {
+  const requestDate = splitDate(data.requestDate);
+  const birthDate = splitDate(data.birthDate);
+  const admissionDate = splitDate(data.admissionDate);
+  const dischargeDate = splitDate(data.dischargeDate);
+  const patient = getPatientParts(data);
+
+  return `
+    <section class="official-header official-header-internado">
+      <div class="official-address">
+        Hospital Municipal La Portada<br>
+        Zona La Portada/ Av. La Florida<br>
+        Calle s/n Macrodistrito II
+      </div>
+      <div class="official-title official-title-strong">RECETARIO / RECIBO<br>ATENCION DEL PACIENTE INTERNADO</div>
+      ${renderOfficialPatientTypePanel(data)}
+    </section>
+    <section class="official-meta-lines internado-meta">
+      <div><strong>SEDES:</strong> LA PAZ</div>
+      <div><strong>RED:</strong> 2 NOR OESTE</div>
+      <div><strong>Municipio:</strong> LA PAZ</div>
+      <div><strong>Establecimiento:</strong> HOSPITAL MUNICIPAL LA PORTADA</div>
+    </section>
+    <section class="official-form official-form-internado">
+      <div class="official-two-col">
+        ${renderOfficialDottedField("APELLIDO PATERNO:", patient.paternal)}
+        ${renderOfficialDottedField("APELLIDO MATERNO:", patient.maternal)}
+      </div>
+      <div class="official-row with-side-date">
+        ${renderOfficialDottedField("NOMBRES:", patient.names)}
+        <div class="official-sex-date">
+          <span>SEXO:</span>
+          ${renderOfficialCheck("F", data.sex === "F")}
+          ${renderOfficialCheck("M", data.sex === "M")}
+          ${renderOfficialDate("FECHA DE NACIMIENTO", birthDate)}
+        </div>
+      </div>
+      <div class="official-row with-side-date">
+        ${renderOfficialDottedField("DOMICILIO:", data.address)}
+        ${renderOfficialDate("FECHA DE SOLICITUD", requestDate)}
+      </div>
+      <div class="official-row official-attention-row">
+        <strong>INGRESO:</strong>
+        ${renderOfficialCheck("Por referencia", data.admissionType === "Por referencia")}
+        ${renderOfficialCheck("Por servicio de emergencia", data.admissionType === "Por servicio de emergencia")}
+        ${renderOfficialCheck("Por trabajo de parto", data.admissionType === "Por trabajo de parto")}
+        ${renderOfficialCheck("Por consultorio externo", data.admissionType === "Por consultorio externo")}
+      </div>
+      <div class="official-row with-side-date">
+        ${renderOfficialDottedField("Servicio de ingreso:", data.admissionService || data.service)}
+        ${renderOfficialDate("FECHA DE INGRESO", admissionDate)}
+      </div>
+      <div class="official-row with-side-date">
+        ${renderOfficialDottedField("Servicio de alta:", data.dischargeService)}
+        ${renderOfficialDate("FECHA DE EGRESO", dischargeDate)}
+      </div>
+      ${renderOfficialDiagnosisBlock(data, true)}
+    </section>
+  `;
+}
+
+function renderOfficialBrand() {
+  return `
+    <div class="official-brand-left">
+      <small>Hospital Municipal La Portada</small>
+      <small>Zona La Portada/ Av. La Florida</small>
+      <small>Calle s/n Macrodistrito II</small>
+    </div>
+  `;
+}
+
+function renderOfficialPatientTypePanel(data) {
+  const patientProgram = ["VIH", "TUBERCULOSIS"].includes(data.patientType) ? data.patientType : "";
+  const patientSale = ["SOAT", "RGL"].includes(data.patientType) ? data.patientType : "";
+
+  return `
+    <div class="official-patient-panel">
+      <div><strong>Nº DE EXPEDIENTE<br>CLINICO:</strong><span>${safe(data.clinicalRecord)}</span></div>
+      <div><strong>SISTEMA UNICO DE SALUD:</strong><span>${data.patientType === "SUS" ? "S.U.S" : ""}</span></div>
+      <div><strong>VENTA:</strong><span>${safe(patientSale)}</span></div>
+      <div><strong>PROGRAMAS:</strong><span>${safe(patientProgram)}</span></div>
+    </div>
+  `;
+}
+
+function renderOfficialDottedField(label, value) {
+  return `
+    <div class="official-field">
+      <span class="official-label">${safe(label)}</span>
+      <span class="official-fill">${safe(value)}</span>
+    </div>
+  `;
+}
+
+function renderOfficialCheck(label, checked) {
+  return `<span class="official-check">${safe(label)} ${renderOfficialBox(checked)}</span>`;
+}
+
+function renderOfficialBox(checked) {
+  return `<span class="official-box">${checked ? "X" : ""}</span>`;
+}
+
+function renderOfficialDate(label, date) {
+  return `
+    <div class="official-date">
+      <strong>${safe(label)}</strong>
+      <span><em>DIA</em>${safe(date.day)}</span>
+      <span><em>MES</em>${safe(date.month)}</span>
+      <span><em>AÑO</em>${safe(date.year)}</span>
+    </div>
+  `;
+}
+
+function renderOfficialDiagnosisBlock(data, internado = false) {
+  const secondaryRows = Array.from({ length: internado ? 3 : 4 }, (_, index) => {
+    const number = index + 1;
+    return {
+      number,
+      diagnosis: data[`secondaryDiagnosis${number}`] || "",
+      code: data[`secondaryCode${number}`] || "",
+    };
+  });
+
+  return `
+    <section class="official-diagnosis ${internado ? "internado" : ""}">
+      ${internado ? `
+        <div class="official-diagnosis-title">
+          <strong>DIAGNOSTICOS:</strong>
+          <strong>CODIGO</strong>
+        </div>
+        <div class="official-diagnosis-row">
+          <strong class="diagnosis-label main">Diagnostico Principal:</strong>
+          <span class="official-fill">${safe(data.diagnosis)}</span>
+          <span class="official-fill official-code">${safe(data.cie10)}</span>
+        </div>
+      ` : `
+        <div class="official-diagnosis-row">
+          <strong class="diagnosis-label main">Diagnostico Principal:</strong>
+          <span class="official-fill">${safe(data.diagnosis)}</span>
+          <span class="official-code-stack">
+            <strong>CODIGO</strong>
+            <span class="official-fill official-code">${safe(data.cie10)}</span>
+          </span>
+        </div>
+      `}
+      ${secondaryRows.map((row, index) => `
+        <div class="official-diagnosis-row">
+          <strong class="diagnosis-label">${index === 0 ? "Diagnosticos Secundarios:" : ""}</strong>
+          <span class="diagnosis-number">${row.number}.-</span>
+          <span class="official-fill">${safe(row.diagnosis)}</span>
+          <span class="official-fill official-code">${safe(row.code)}</span>
+        </div>
+      `).join("")}
+    </section>
   `;
 }
 
@@ -643,111 +754,92 @@ function renderUtiUcinRecipe(data) {
   const admissionDate = splitDate(data.admissionDate);
   const dischargeDate = splitDate(data.dischargeDate);
   const patient = getPatientParts(data);
-  const patientType = data.utiPatientType || data.patientType;
+  const patientType = data.utiPatientType || "";
 
   return `
     <div class="legal-template uti-template">
-      <div class="uti-top">
-        <div class="uti-address">
-          Hospital Municipal La Portada<br>
-          Zona La Portada/ Av. La Florida<br>
-          Calle s/n Macrodistrito II
-        </div>
-        <div class="uti-title">
-          <span>RECETARIO / RECIBO</span>
-          <em>SERVICIOS Y PRODUCTOS ESPECIALES</em>
-        </div>
-        <div class="uti-logo-placeholder"></div>
-      </div>
-
-      <table class="legal-table uti-header-table">
-        <tbody>
-          <tr>
-            <td colspan="5"><strong>SEDES</strong></td>
-            <td colspan="8">LA PAZ</td>
-            <td colspan="3"><strong>RED</strong></td>
-            <td colspan="7">2 NOR OESTE</td>
-            <td colspan="8" class="uti-small-label"><strong>Nº DE EXPEDIENTE CLINICO</strong></td>
-            <td colspan="11">${safe(data.clinicalRecord)}</td>
-          </tr>
-          <tr class="uti-compact-row">
-            <td colspan="8"><strong>MUNICIPIO</strong></td>
-            <td colspan="15">LA PAZ</td>
-            <td colspan="4" class="uti-small-label"><strong>SUS</strong></td>
-            <td colspan="5" class="center">${renderBox(patientType === "SUS")}</td>
-            <td colspan="5" class="uti-small-label"><strong>VENTA</strong></td>
-            <td colspan="5" class="center">${renderBox(patientType === "VENTA")}</td>
-          </tr>
-          <tr class="uti-date-row">
-            <td colspan="8"><strong>ESTABLECIMIENTO</strong></td>
-            <td colspan="15">HOSPITAL MUNICIPAL LA PORTADA</td>
-            <td colspan="7" class="uti-date-label"><strong>FECHA DE SOLICITUD</strong></td>
-            <td colspan="12" class="uti-date-field">${renderDateCells(splitDate(data.requestDate))}</td>
-          </tr>
-          <tr>
-            <td colspan="8"><strong>APELLIDO PATERNO</strong></td>
-            <td colspan="15">${safe(patient.paternal)}</td>
-            <td colspan="7"><strong>APELLIDO MATERNO</strong></td>
-            <td colspan="12">${safe(patient.maternal)}</td>
-          </tr>
-          <tr class="uti-compact-row uti-sex-row">
-            <td colspan="8"><strong>NOMBRES</strong></td>
-            <td colspan="15">${safe(patient.names)}</td>
-            <td colspan="5"><strong>SEXO</strong></td>
-            <td colspan="3">F ${renderBox(data.sex === "F")}</td>
-            <td colspan="3">M ${renderBox(data.sex === "M")}</td>
-            <td colspan="8"></td>
-          </tr>
-          <tr class="uti-date-row">
-            <td colspan="8"><strong>DIRECCION</strong></td>
-            <td colspan="15">${safe(data.address)}</td>
-            <td colspan="7" class="uti-date-label"><strong>FECHA DE NACIMIENTO</strong></td>
-            <td colspan="12" class="uti-date-field">${renderDateCells(birthDate)}</td>
-          </tr>
-          <tr class="uti-date-row">
-            <td colspan="8"><strong>SERVICIO DE INGRESO</strong></td>
-            <td colspan="15">${safe(data.utiAdmissionService || data.admissionService || data.service)}</td>
-            <td colspan="7" class="uti-date-label"><strong>FECHA DE INGRESO</strong></td>
-            <td colspan="12" class="uti-date-field">${renderDateCells(admissionDate)}</td>
-          </tr>
-          <tr class="uti-date-row">
-            <td colspan="23"></td>
-            <td colspan="7" class="uti-date-label"><strong>FECHA DE EGRESO</strong></td>
-            <td colspan="12" class="uti-date-field">${renderDateCells(dischargeDate)}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <table class="legal-table uti-diagnosis-table">
-        <tbody>
-          <tr>
-            <td colspan="8"><strong>DIAGNOSTICO PRINCIPAL</strong></td>
-            <td colspan="34">${safe(data.diagnosis)} ${data.cie10 ? `(${safe(data.cie10)})` : ""}</td>
-          </tr>
-          <tr>
-            <td colspan="8" rowspan="3"><strong>DIAGNOSTICOS</strong></td>
-            <td colspan="2">1.</td>
-            <td colspan="32">${safe(data.secondaryDiagnosis1)} ${data.secondaryCode1 ? `(${safe(data.secondaryCode1)})` : ""}</td>
-          </tr>
-          <tr>
-            <td colspan="2">2.</td>
-            <td colspan="32">${safe(data.secondaryDiagnosis2)} ${data.secondaryCode2 ? `(${safe(data.secondaryCode2)})` : ""}</td>
-          </tr>
-          <tr>
-            <td colspan="2">3.</td>
-            <td colspan="32">${safe(data.secondaryDiagnosis3)} ${data.secondaryCode3 ? `(${safe(data.secondaryCode3)})` : ""}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="uti-programs">
-        <div class="uti-program-item"><span>MEDICAMENTOS E INSUMOS UTILIZADOS EN LA UNIDAD DE TERAPIA INTENSIVA</span><span class="pc-check">${renderBox(data.utiPc81 === "on")} <strong>PC 81</strong></span></div>
-        <div class="uti-program-item"><span>MEDICAMENTOS E INSUMOS UTILIZADOS EN LA UNIDAD DE CUIDADOS INTENSIVOS NEONATALES</span><span class="pc-check">${renderBox(data.ucinPc82 === "on")} <strong>PC 82</strong></span></div>
-      </div>
+      ${renderUtiOfficialHeader(data, patient, patientType, birthDate, admissionDate, dischargeDate)}
 
       ${renderUtiMedicines(20)}
       ${renderUtiObservations(data)}
       ${renderUtiFooter(data)}
+    </div>
+  `;
+}
+
+function renderUtiOfficialHeader(data, patient, patientType, birthDate, admissionDate, dischargeDate) {
+  return `
+    <section class="official-header uti-official-header">
+      <div class="official-address">
+        Hospital Municipal La Portada<br>
+        Zona La Portada/ Av. La Florida<br>
+        Calle s/n Macrodistrito II
+      </div>
+      <div class="official-title official-title-strong">RECETARIO / RECIBO</div>
+      <div class="uti-official-side">
+        ${renderUtiPatientTypePanel(data, patientType)}
+        ${renderOfficialDate("FECHA DE SOLICITUD", splitDate(data.requestDate))}
+      </div>
+    </section>
+    <section class="uti-open-meta">
+      <div><strong>SEDES</strong><span>LA PAZ</span></div>
+      <div><strong>RED</strong><span>2 NOR OESTE</span></div>
+      <div><strong>MUNICIPIO</strong><span>LA PAZ</span></div>
+      <div><strong>ESTABLECIMIENTO</strong><span>HOSPITAL MUNICIPAL LA PORTADA</span></div>
+    </section>
+    <section class="uti-open-form">
+      <div class="official-two-col">
+        ${renderOfficialDottedField("APELLIDO PATERNO", patient.paternal)}
+        ${renderOfficialDottedField("APELLIDO MATERNO", patient.maternal)}
+      </div>
+      <div class="official-row with-side-date">
+        ${renderOfficialDottedField("NOMBRES", patient.names)}
+        <div class="official-sex-date">
+          <span>SEXO</span>
+          ${renderOfficialCheck("F", data.sex === "F")}
+          ${renderOfficialCheck("M", data.sex === "M")}
+        </div>
+      </div>
+      <div class="official-row with-side-date">
+        ${renderOfficialDottedField("DIRECCION", data.address)}
+        ${renderOfficialDate("FECHA DE NACIMIENTO", birthDate)}
+      </div>
+      <div class="official-row with-side-date">
+        ${renderOfficialDottedField("SERVICIO DE INGRESO", data.utiAdmissionService || data.admissionService || data.service)}
+        ${renderOfficialDate("FECHA DE INGRESO", admissionDate)}
+      </div>
+      <div class="official-row with-side-date">
+        <span></span>
+        ${renderOfficialDate("FECHA DE EGRESO", dischargeDate)}
+      </div>
+      <section class="uti-open-diagnosis">
+        ${renderOfficialDottedField("DIAGNOSTICO PRINCIPAL", `${data.diagnosis || ""}${data.cie10 ? ` (${data.cie10})` : ""}`)}
+        <div class="uti-diagnosis-list">
+          <strong>DIAGNOSTICOS SECUNDARIOS:</strong>
+          ${[1, 2, 3].map((number) => `
+            <div>
+              <span>${number}.</span>
+              <span class="official-fill">${safe(data[`secondaryDiagnosis${number}`])} ${data[`secondaryCode${number}`] ? `(${safe(data[`secondaryCode${number}`])})` : ""}</span>
+            </div>
+          `).join("")}
+        </div>
+      </section>
+      <section class="uti-open-programs">
+        <div>MEDICAMENTOS E INSUMOS UTILIZADOS EN LA UNIDAD DE TERAPIA INTENSIVA ${renderOfficialBox(data.utiPc81 === "on")} <strong>PC 81</strong></div>
+        <div>MEDICAMENTOS E INSUMOS UTILIZADOS EN LA UNIDAD DE CUIDADOS INTENSIVOS NEONATALES ${renderOfficialBox(data.ucinPc82 === "on")} <strong>PC 82</strong></div>
+      </section>
+    </section>
+  `;
+}
+
+function renderUtiPatientTypePanel(data, patientType) {
+  const patientSale = ["SOAT", "RGL"].includes(patientType) ? patientType : "";
+
+  return `
+    <div class="official-patient-panel uti-patient-panel">
+      <div><strong>Nº DE EXPEDIENTE<br>CLINICO:</strong><span>${safe(data.clinicalRecord)}</span></div>
+      <div><strong>SISTEMA UNICO DE SALUD:</strong><span>${patientType === "SUS" ? "S.U.S" : ""}</span></div>
+      <div><strong>VENTA:</strong><span>${safe(patientSale)}</span></div>
     </div>
   `;
 }
@@ -1221,7 +1313,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-54").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-62").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });
