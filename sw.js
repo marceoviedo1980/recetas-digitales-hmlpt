@@ -1,11 +1,11 @@
-const CACHE_NAME = "recetario-digital-manual-20260516-64";
+const CACHE_NAME = "recetario-digital-manual-20260516-65";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./index.html?app=pwa",
-  "./styles.css?v=manual-20260516-64",
-  "./app.js?v=manual-20260516-64",
-  "./manifest.webmanifest?v=manual-20260516-64",
+  "./styles.css?v=manual-20260516-65",
+  "./app.js?v=manual-20260516-65",
+  "./manifest.webmanifest?v=manual-20260516-65",
   "./icons/icon-32.png",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -30,6 +30,13 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  if (new URL(event.request.url).pathname.endsWith("/licencia-hmlpt-recetas.json")) {
+    event.respondWith(
+      fetch(event.request, { cache: "no-store" }).catch(() => caches.match(event.request, { ignoreSearch: true })),
+    );
+    return;
+  }
 
   if (event.request.mode === "navigate") {
     event.respondWith(

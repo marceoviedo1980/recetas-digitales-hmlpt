@@ -14,6 +14,12 @@ const templates = {
 };
 
 const SAVED_RECIPES_KEY = "recetario-la-portada-recetas-guardadas-v1";
+const LICENSE_STATUS_URL = "./licencia-hmlpt-recetas.json";
+const LICENSE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
+const LICENSE_STATUS_KEY = "recetario-la-portada-licencia-v1";
+const LICENSE_LAST_CHECK_KEY = "recetario-la-portada-licencia-ultima-revision-v1";
+const DEFAULT_LICENSE_MESSAGE =
+  "Esta version ya no esta autorizada para uso institucional. Contacte al desarrollador para soporte o renovacion.";
 
 let medicines = [
   {
@@ -119,6 +125,8 @@ const importSavedInput = document.querySelector("#importSavedInput");
 const savedDialog = document.querySelector("#savedRecipesDialog");
 const savedRecipesList = document.querySelector("#savedRecipesList");
 const closeSavedDialogButton = document.querySelector("#closeSavedDialogBtn");
+const licenseBlocker = document.querySelector("#licenseBlocker");
+const licenseBlockerMessage = document.querySelector("#licenseBlockerMessage");
 const tabs = [...document.querySelectorAll(".template-tab")];
 const ambulatorioServicesOptions = document.querySelector("#ambulatorioServicesOptions");
 const internadoProcedureOptions = document.querySelector("#internadoProcedureOptions");
@@ -172,6 +180,59 @@ window.addEventListener("appinstalled", () => {
   installPrompt = null;
   installButton.classList.add("hidden");
 });
+
+function readStoredLicenseStatus() {
+  try {
+    return JSON.parse(localStorage.getItem(LICENSE_STATUS_KEY) || "null");
+  } catch (error) {
+    console.warn("No se pudo leer el estado local de licencia.", error);
+    return null;
+  }
+}
+
+function storeLicenseStatus(status) {
+  localStorage.setItem(LICENSE_STATUS_KEY, JSON.stringify(status));
+  localStorage.setItem(LICENSE_LAST_CHECK_KEY, String(Date.now()));
+}
+
+function shouldCheckLicense() {
+  const lastCheck = Number(localStorage.getItem(LICENSE_LAST_CHECK_KEY) || "0");
+  return !lastCheck || Date.now() - lastCheck > LICENSE_CHECK_INTERVAL_MS;
+}
+
+function applyLicenseStatus(status) {
+  const isActive = status?.activo !== false;
+  if (isActive) {
+    licenseBlocker?.classList.add("hidden");
+    document.body.classList.remove("license-locked");
+    return;
+  }
+
+  if (licenseBlockerMessage) {
+    licenseBlockerMessage.textContent = status?.mensaje || DEFAULT_LICENSE_MESSAGE;
+  }
+  document.body.classList.add("license-locked");
+  licenseBlocker?.classList.remove("hidden");
+}
+
+async function checkRemoteLicense({ force = false } = {}) {
+  const storedStatus = readStoredLicenseStatus();
+  if (storedStatus) applyLicenseStatus(storedStatus);
+  const mustRefreshBlockedStatus = storedStatus?.activo === false;
+  if (!force && !mustRefreshBlockedStatus && !shouldCheckLicense()) return;
+
+  try {
+    const response = await fetch(`${LICENSE_STATUS_URL}?t=${Date.now()}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) throw new Error(`Revision de licencia fallo: ${response.status}`);
+    const remoteStatus = await response.json();
+    storeLicenseStatus(remoteStatus);
+    applyLicenseStatus(remoteStatus);
+  } catch (error) {
+    console.warn("No se pudo revisar la licencia remota. Se mantiene el ultimo estado conocido.", error);
+  }
+}
 
 function activateTemplate(template) {
   state.template = template || "ambulatorio";
@@ -1531,13 +1592,14 @@ function render() {
 }
 
 render();
+checkRemoteLicense();
 loadLocalData().catch((error) => {
   console.warn("No se pudieron cargar las bases locales.", error);
 });
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-64").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260516-65").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });
