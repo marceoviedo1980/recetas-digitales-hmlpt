@@ -780,7 +780,7 @@ function renderAmbulatorioRecipe(data) {
     <div class="legal-template legal-ambulatorio">
       ${renderAmbulatorioOfficialHeader(data)}
       ${renderManualServices(data)}
-      ${renderManualMedicines(13, true)}
+      ${renderManualMedicines(17, true)}
       ${renderManualCostAndSignatures(data)}
     </div>
   `;
@@ -801,11 +801,14 @@ function renderAmbulatorioOfficialHeader(data) {
   const requestDate = splitDate(data.requestDate);
   const birthDate = splitDate(data.birthDate);
   const patient = getPatientParts(data);
+  const sidePanelExtra = renderOfficialSideDates(data, birthDate, requestDate);
   return `
     <section class="official-header official-header-ambulatorio">
       ${renderOfficialBrand()}
-      <div class="official-title">RECETARIO / RECIBO<br>ATENCION AMBULATORIA</div>
-      ${renderOfficialPatientTypePanel(data)}
+      <div class="official-title official-title-ambulatorio">
+        RECETARIO / RECIBO<br>ATENCION AMBULATORIA
+      </div>
+      <div class="official-ambulatorio-side">${renderOfficialPatientTypePanel(data, sidePanelExtra, true)}</div>
     </section>
     <section class="official-meta-lines">
       <div><strong>SEDES:</strong> LA PAZ</div>
@@ -826,18 +829,7 @@ function renderAmbulatorioOfficialHeader(data) {
         ${renderOfficialDottedField("Apellido materno:", patient.maternal)}
       </div>
       ${renderOfficialDottedField("Nombres:", patient.names)}
-      <div class="official-row with-side-date">
-        ${renderOfficialDottedField("Domicilio:", data.address)}
-        ${renderOfficialDate("FECHA DE NACIMIENTO:", birthDate)}
-      </div>
-      <div class="official-row official-sex-request-row">
-        <div class="official-sex-date">
-          <strong>Sexo:</strong>
-          ${renderOfficialCheck("M", data.sex === "M")}
-          ${renderOfficialCheck("F", data.sex === "F")}
-          ${renderOfficialDate("FECHA:", requestDate)}
-        </div>
-      </div>
+      ${renderOfficialDottedField("Domicilio:", data.address)}
       ${renderOfficialDiagnosisBlock(data, false)}
     </section>
   `;
@@ -858,7 +850,7 @@ function renderInternadoOfficialHeader(data) {
         Calle s/n Macrodistrito II
       </div>
       <div class="official-title official-title-strong">RECETARIO / RECIBO<br>ATENCION DEL PACIENTE INTERNADO</div>
-      ${renderOfficialPatientTypePanel(data)}
+      ${renderOfficialPatientTypePanel(data, "", true, false)}
     </section>
     <section class="official-meta-lines internado-meta">
       <div><strong>SEDES:</strong> LA PAZ</div>
@@ -914,16 +906,36 @@ function renderOfficialBrand() {
   `;
 }
 
-function renderOfficialPatientTypePanel(data) {
+function renderOfficialPatientTypePanel(data, extraContent = "", singleLineLabels = false, singularProgramLabel = singleLineLabels) {
   const patientProgram = ["VIH", "TUBERCULOSIS"].includes(data.patientType) ? data.patientType : "";
   const patientSale = ["SOAT", "RGL"].includes(data.patientType) ? data.patientType : "";
+  const recordLabel = singleLineLabels ? "Nº DE EXPEDIENTE CLINICO:" : "Nº DE EXPEDIENTE<br>CLINICO:";
+  const susLabel = singleLineLabels ? "SISTEMA UNICO DE SALUD:" : "SISTEMA UNICO DE SALUD:";
+  const programLabel = singularProgramLabel ? "PROGRAMA:" : "PROGRAMAS:";
 
   return `
     <div class="official-patient-panel">
-      <div><strong>Nº DE EXPEDIENTE<br>CLINICO:</strong><span>${safe(data.clinicalRecord)}</span></div>
-      <div><strong>SISTEMA UNICO DE SALUD:</strong><span>${data.patientType === "SUS" ? "S.U.S" : ""}</span></div>
+      <div><strong>${recordLabel}</strong><span>${safe(data.clinicalRecord)}</span></div>
+      <div><strong>${susLabel}</strong><span>${data.patientType === "SUS" ? "S.U.S" : ""}</span></div>
       <div><strong>VENTA:</strong><span>${safe(patientSale)}</span></div>
-      <div><strong>PROGRAMAS:</strong><span>${safe(patientProgram)}</span></div>
+      <div><strong>${programLabel}</strong><span>${safe(patientProgram)}</span></div>
+      ${extraContent}
+    </div>
+  `;
+}
+
+function renderOfficialSideDates(data, birthDate, requestDate) {
+  return `
+    <div class="official-panel-extra">
+      ${renderOfficialDate("FECHA DE NACIMIENTO", birthDate)}
+      <div class="official-panel-request-row">
+        <div class="official-panel-sex">
+          <strong>Sexo:</strong>
+          ${renderOfficialCheck("M", data.sex === "M")}
+          ${renderOfficialCheck("F", data.sex === "F")}
+        </div>
+        ${renderOfficialDate("FECHA DE SOLICITUD", requestDate)}
+      </div>
     </div>
   `;
 }
@@ -1110,8 +1122,8 @@ function renderUtiOfficialHeader(data, patient, patientType, birthDate, admissio
         </div>
       </section>
       <section class="uti-open-programs">
-        <div>MEDICAMENTOS E INSUMOS UTILIZADOS EN LA UNIDAD DE TERAPIA INTENSIVA ${renderOfficialBox(data.utiPc81 === "on")} <strong>PC 81</strong></div>
-        <div>MEDICAMENTOS E INSUMOS UTILIZADOS EN LA UNIDAD DE CUIDADOS INTENSIVOS NEONATALES ${renderOfficialBox(data.ucinPc82 === "on")} <strong>PC 82</strong></div>
+      <div><span>MEDICAMENTOS E INSUMOS UTILIZADOS EN LA UNIDAD DE TERAPIA INTENSIVA</span>${renderOfficialBox(data.utiPc81 === "on")} <strong>PC 81</strong></div>
+      <div><span>MEDICAMENTOS E INSUMOS UTILIZADOS EN LA UNIDAD DE CUIDADOS INTENSIVOS NEONATALES</span>${renderOfficialBox(data.ucinPc82 === "on")} <strong>PC 82</strong></div>
       </section>
     </section>
   `;
@@ -1122,7 +1134,7 @@ function renderUtiPatientTypePanel(data, patientType) {
 
   return `
     <div class="official-patient-panel uti-patient-panel">
-      <div><strong>Nº DE EXPEDIENTE<br>CLINICO:</strong><span>${safe(data.clinicalRecord)}</span></div>
+      <div><strong>Nº DE EXPEDIENTE CLINICO:</strong><span>${safe(data.clinicalRecord)}</span></div>
       <div><strong>SISTEMA UNICO DE SALUD:</strong><span>${patientType === "SUS" ? "S.U.S" : ""}</span></div>
       <div><strong>VENTA:</strong><span>${safe(patientSale)}</span></div>
     </div>
@@ -1599,8 +1611,22 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260516-65").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260526-79").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
