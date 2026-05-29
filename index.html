@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260528-91" />
-    <link rel="icon" href="icons/icon-32.png?v=manual-20260528-91" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260528-91" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260528-91" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260528-93" />
+    <link rel="icon" href="icons/icon-32.png?v=manual-20260528-93" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260528-93" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260528-93" />
     <style id="critical-cache-fix">
       .template-switcher {
         display: grid;
@@ -85,7 +85,36 @@
         stroke-linejoin: round;
       }
 
+      #clearBtn {
+        color: #b42318;
+        border-color: #efb5ae;
+        background: #fff7f6;
+      }
+
+      #clearBtn:hover {
+        color: #ffffff;
+        border-color: #b42318;
+        background: #b42318;
+      }
+
       @media screen and (max-width: 700px) {
+        .template-switcher {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .template-tab {
+          grid-template-columns: 30px minmax(0, 1fr);
+          min-height: 52px;
+          padding: 10px 14px;
+          text-align: center;
+        }
+
+        .template-tab span:last-child {
+          overflow-wrap: normal;
+          word-break: normal;
+        }
+
         .preview-shell {
           display: none;
         }
@@ -129,7 +158,7 @@
         </button>
         <input id="importSavedInput" type="file" accept="application/json,.json" hidden />
         <button class="ghost-button icon-button" id="clearBtn" type="button">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 21 6-6"/><path d="m7 17 4 4"/><path d="m13 3 8 8-7 7-8-8Z"/><path d="m14 4-7 7"/></svg>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
           <span>Limpiar</span>
         </button>
         <button class="ghost-button icon-button" id="pdfBtn" type="button">
@@ -446,7 +475,7 @@
       </div>
     </div>
 
-    <script src="app.js?v=manual-20260528-91" type="module"></script>
+    <script src="app.js?v=manual-20260528-93" type="module"></script>
   </body>
 </html>
 

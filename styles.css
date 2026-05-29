@@ -163,6 +163,18 @@ button {
   color: var(--accent-dark);
 }
 
+#clearBtn {
+  color: #b42318;
+  border-color: #efb5ae;
+  background: #fff7f6;
+}
+
+#clearBtn:hover {
+  color: #ffffff;
+  border-color: #b42318;
+  background: #b42318;
+}
+
 .compact-button {
   min-height: 32px;
   padding: 6px 10px;
@@ -2868,6 +2880,22 @@ textarea {
   .medicine-search,
   .saved-recipe-card {
     grid-template-columns: 1fr;
+  }
+
+  .template-switcher {
+    gap: 10px;
+  }
+
+  .template-tab {
+    grid-template-columns: 30px minmax(0, 1fr);
+    min-height: 52px;
+    padding: 10px 14px;
+    text-align: center;
+  }
+
+  .template-tab span:last-child {
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
   .header-actions {

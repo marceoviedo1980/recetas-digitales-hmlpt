@@ -1646,7 +1646,7 @@ if ("serviceWorker" in navigator) {
     });
 
     navigator.serviceWorker
-      .register("./sw.js?v=manual-20260528-91", { updateViaCache: "none" })
+      .register("./sw.js?v=manual-20260528-93", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch((error) => {
         console.warn("No se pudo activar la PWA.", error);
