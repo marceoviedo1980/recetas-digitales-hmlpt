@@ -194,20 +194,90 @@ button {
 
 .template-switcher {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
   margin-bottom: 16px;
 }
 
 .template-tab {
-  color: var(--muted);
-  background: var(--soft);
+  --tab-color: var(--accent);
+  --tab-soft: #e6f3ef;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  justify-content: start;
+  gap: 9px;
+  min-height: 54px;
+  padding: 9px 11px;
+  color: #243431;
+  border-color: #b9cbc6;
+  background: #ffffff;
+  box-shadow: 0 1px 0 rgba(17, 33, 31, 0.04);
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: left;
+}
+
+.template-tab[data-template="ambulatorio"] {
+  --tab-color: #14715f;
+  --tab-soft: #dff1ec;
+}
+
+.template-tab[data-template="internado"] {
+  --tab-color: #2f5f9e;
+  --tab-soft: #e2ecfa;
+}
+
+.template-tab[data-template="utiUcin"] {
+  --tab-color: #9a5b12;
+  --tab-soft: #f7ead7;
+}
+
+.template-tab:hover {
+  border-color: var(--tab-color);
+  background: var(--tab-soft);
 }
 
 .template-tab.active {
   color: #ffffff;
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--tab-color);
+  background: var(--tab-color);
+  box-shadow: 0 8px 18px rgba(18, 85, 74, 0.18);
+}
+
+.template-tab .tab-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  color: var(--tab-color);
+  background: var(--tab-soft);
+}
+
+.template-tab.active .tab-icon {
+  color: var(--tab-color);
+  background: #ffffff;
+}
+
+.template-tab .tab-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.template-tab span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 fieldset {
@@ -2778,7 +2848,7 @@ textarea {
   }
 }
 
-@media (max-width: 700px) {
+@media screen and (max-width: 700px) {
   .app-header {
     align-items: flex-start;
     flex-direction: column;
@@ -2787,6 +2857,10 @@ textarea {
 
   .workspace {
     padding: 10px;
+  }
+
+  .preview-shell {
+    display: none;
   }
 
   .template-switcher,

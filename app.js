@@ -156,6 +156,13 @@ importSavedButton.addEventListener("click", () => importSavedInput.click());
 importSavedInput.addEventListener("change", importSavedRecipes);
 closeSavedDialogButton.addEventListener("click", () => savedDialog.close());
 document.querySelector("#clearBtn").addEventListener("click", () => {
+  const shouldClear = window.confirm(
+    "Seguro que quieres limpiar el formulario actual y borrar los medicamentos agregados? Las recetas guardadas no se borraran."
+  );
+  if (!shouldClear) {
+    return;
+  }
+
   form.reset();
   state.medicines = [];
   state.currentSavedId = null;
@@ -1631,9 +1638,19 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260528-87").catch((error) => {
-      console.warn("No se pudo activar la PWA.", error);
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
     });
+
+    navigator.serviceWorker
+      .register("./sw.js?v=manual-20260528-91", { updateViaCache: "none" })
+      .then((registration) => registration.update())
+      .catch((error) => {
+        console.warn("No se pudo activar la PWA.", error);
+      });
   });
 }
 

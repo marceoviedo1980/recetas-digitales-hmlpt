@@ -5,10 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#146c5d" />
     <title>Recetario Digital La Portada</title>
-    <link rel="manifest" href="manifest.webmanifest?v=manual-20260528-87" />
-    <link rel="icon" href="icons/icon-32.png?v=manual-20260528-87" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260528-87" />
-    <link rel="stylesheet" href="styles.css?v=manual-20260528-87" />
+    <link rel="manifest" href="manifest.webmanifest?v=manual-20260528-91" />
+    <link rel="icon" href="icons/icon-32.png?v=manual-20260528-91" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png?v=manual-20260528-91" />
+    <link rel="stylesheet" href="styles.css?v=manual-20260528-91" />
+    <style id="critical-cache-fix">
+      .template-switcher {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .template-tab {
+        --tab-color: #14715f;
+        --tab-soft: #e6f3ef;
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr);
+        align-items: center;
+        justify-content: start;
+        gap: 9px;
+        min-height: 54px;
+        padding: 9px 11px;
+        color: #243431;
+        border-color: #b9cbc6;
+        background: #ffffff;
+        font-weight: 800;
+        line-height: 1.1;
+        text-align: left;
+      }
+
+      .template-tab[data-template="ambulatorio"] {
+        --tab-color: #14715f;
+        --tab-soft: #dff1ec;
+      }
+
+      .template-tab[data-template="internado"] {
+        --tab-color: #2f5f9e;
+        --tab-soft: #e2ecfa;
+      }
+
+      .template-tab[data-template="utiUcin"] {
+        --tab-color: #9a5b12;
+        --tab-soft: #f7ead7;
+      }
+
+      .template-tab.active {
+        color: #ffffff;
+        border-color: var(--tab-color);
+        background: var(--tab-color);
+      }
+
+      .template-tab .tab-icon {
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        color: var(--tab-color);
+        background: var(--tab-soft);
+      }
+
+      .template-tab.active .tab-icon {
+        color: var(--tab-color);
+        background: #ffffff;
+      }
+
+      .template-tab .tab-icon svg {
+        display: block;
+        width: 18px;
+        height: 18px;
+        min-width: 18px;
+        min-height: 18px;
+        max-width: 18px;
+        max-height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      @media screen and (max-width: 700px) {
+        .preview-shell {
+          display: none;
+        }
+      }
+    </style>
   </head>
   <body>
     <header class="app-header">
@@ -64,9 +146,24 @@
     <main class="workspace">
       <section class="panel editor-panel" aria-label="Formulario de receta">
         <div class="template-switcher" role="tablist" aria-label="Tipo de recetario">
-          <button class="template-tab active" type="button" data-template="ambulatorio">Ambulatorio</button>
-          <button class="template-tab" type="button" data-template="internado">Internado</button>
-          <button class="template-tab" type="button" data-template="utiUcin">UTI / UCIN</button>
+          <button class="template-tab active" type="button" data-template="ambulatorio" aria-label="Receta ambulatoria">
+            <span class="tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M8 21v-2a4 4 0 0 1 4-4h1.5"/><path d="M15 5.5a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/><path d="M18 15v6"/><path d="M15 18h6"/></svg>
+            </span>
+            <span>Ambulatorio</span>
+          </button>
+          <button class="template-tab" type="button" data-template="internado" aria-label="Receta de internado">
+            <span class="tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/><path d="M10 10h4"/><path d="M12 8v4"/></svg>
+            </span>
+            <span>Internado</span>
+          </button>
+          <button class="template-tab" type="button" data-template="utiUcin" aria-label="Receta UTI UCIN">
+            <span class="tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 13h4l2-6 4 12 2-6h4"/><path d="M20 5v4"/><path d="M18 7h4"/></svg>
+            </span>
+            <span>UTI / UCIN</span>
+          </button>
         </div>
 
         <form id="recipeForm" autocomplete="off">
@@ -349,7 +446,7 @@
       </div>
     </div>
 
-    <script src="app.js?v=manual-20260528-87" type="module"></script>
+    <script src="app.js?v=manual-20260528-91" type="module"></script>
   </body>
 </html>
 
