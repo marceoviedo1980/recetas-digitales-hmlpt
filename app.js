@@ -156,6 +156,7 @@ importSavedButton.addEventListener("click", () => importSavedInput.click());
 importSavedInput.addEventListener("change", importSavedRecipes);
 closeSavedDialogButton.addEventListener("click", () => savedDialog.close());
 document.querySelector("#clearBtn").addEventListener("click", () => {
+  if (!confirm("¿Borrar todos los datos del formulario actual?\n\nEsta acción no se puede deshacer.")) return;
   form.reset();
   state.medicines = [];
   state.currentSavedId = null;
