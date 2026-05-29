@@ -156,7 +156,6 @@ importSavedButton.addEventListener("click", () => importSavedInput.click());
 importSavedInput.addEventListener("change", importSavedRecipes);
 closeSavedDialogButton.addEventListener("click", () => savedDialog.close());
 document.querySelector("#clearBtn").addEventListener("click", () => {
-  if (!confirm("¿Borrar todos los datos del formulario actual?\n\nEsta acción no se puede deshacer.")) return;
   form.reset();
   state.medicines = [];
   state.currentSavedId = null;
@@ -1632,7 +1631,7 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260528-88").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260528-87").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });
