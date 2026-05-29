@@ -477,8 +477,23 @@ textarea {
   transform-origin: top left;
 }
 
+.recipe-page.is-half-copies.is-ambulatorio .half-sheet-copy,
+.recipe-page.is-half-copies.is-internado .half-sheet-copy {
+  padding: 5mm;
+}
+
+.recipe-page.is-half-copies.is-ambulatorio .half-copy-content {
+  width: 198mm;
+  transform: scale(0.654, 1.06);
+  transform-origin: top left;
+  zoom: 1;
+}
+
 .recipe-page.is-half-copies.is-internado .half-copy-content {
-  transform: scale(0.625, 0.86);
+  width: 198mm;
+  transform: scale(0.654, 1);
+  transform-origin: top left;
+  zoom: 1;
 }
 
 .recipe-page.is-half-copies.is-uti-ucin .half-copy-content {
@@ -2040,6 +2055,44 @@ textarea {
   height: 3.75mm;
 }
 
+.recipe-page.is-half-copies.is-ambulatorio .official-header-ambulatorio {
+  min-height: 21mm;
+}
+
+.recipe-page.is-half-copies.is-ambulatorio .official-ambulatorio-side {
+  padding-top: 1.2mm;
+}
+
+.recipe-page.is-half-copies.is-ambulatorio .official-panel-extra {
+  gap: 0.4mm;
+  margin-top: 0.8mm;
+}
+
+.recipe-page.is-half-copies.is-ambulatorio .legal-ambulatorio .official-meta-lines {
+  margin: -0.3mm 0 0.45mm;
+}
+
+.recipe-page.is-half-copies.is-ambulatorio .legal-ambulatorio .official-form {
+  gap: 0.35mm;
+}
+
+.recipe-page.is-half-copies.is-ambulatorio .legal-ambulatorio .official-field {
+  min-height: 2.65mm;
+}
+
+.recipe-page.is-half-copies.is-ambulatorio .legal-ambulatorio .official-fill {
+  min-height: 2.2mm;
+}
+
+.recipe-page.is-half-copies.is-ambulatorio .legal-ambulatorio .official-diagnosis {
+  gap: 0.2mm;
+  margin-top: 0;
+}
+
+.recipe-page.is-half-copies.is-ambulatorio .official-diagnosis-row {
+  min-height: 2.45mm;
+}
+
 .recipe-page.is-half-copies.is-ambulatorio .manual-services div {
   min-height: 2.35mm;
   font-size: 4.65pt;
@@ -2056,6 +2109,51 @@ textarea {
 .recipe-page.is-half-copies.is-ambulatorio .signature-line,
 .recipe-page.is-half-copies.is-ambulatorio .patient-signature .signature-line {
   height: 8.6mm;
+}
+
+.recipe-page.is-half-copies.is-internado .official-header-internado {
+  min-height: 14.5mm;
+}
+
+.recipe-page.is-half-copies.is-internado .official-header-internado .official-patient-panel {
+  margin-top: 6mm;
+}
+
+.recipe-page.is-half-copies.is-internado .internado-meta {
+  margin: -0.2mm 0 0.35mm;
+}
+
+.recipe-page.is-half-copies.is-internado .official-form-internado {
+  gap: 0.35mm;
+}
+
+.recipe-page.is-half-copies.is-internado .official-form-internado .official-field {
+  min-height: 2.6mm;
+}
+
+.recipe-page.is-half-copies.is-internado .official-form-internado .official-fill {
+  min-height: 2.15mm;
+}
+
+.recipe-page.is-half-copies.is-internado .official-form-internado .official-date span {
+  grid-template-rows: auto 2.6mm;
+}
+
+.recipe-page.is-half-copies.is-internado .official-attention-row {
+  gap: 0.5mm 1.1mm;
+}
+
+.recipe-page.is-half-copies.is-internado .official-diagnosis.internado {
+  gap: 0.2mm;
+}
+
+.recipe-page.is-half-copies.is-internado .official-diagnosis.internado .official-diagnosis-row {
+  min-height: 2.55mm;
+}
+
+.recipe-page.is-half-copies.is-internado .manual-services.procedures div {
+  min-height: 2.25mm;
+  font-size: 4.95pt;
 }
 
 .uti-template {
@@ -2760,17 +2858,35 @@ textarea {
     width: 279mm;
     min-height: 216mm;
     height: 216mm;
+    max-height: 216mm;
     padding: 0;
-    page: half-copies-landscape;
+    overflow: hidden;
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
-  @page {
-    size: letter portrait;
-    margin: 0;
+  .recipe-page.is-half-copies .half-sheet-copy {
+    height: 216mm;
+    max-height: 216mm;
+    overflow: hidden;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
-  @page half-copies-landscape {
-    size: letter landscape;
-    margin: 0;
+  .recipe-page.is-half-copies.is-ambulatorio .half-copy-content,
+  .recipe-page.is-half-copies.is-internado .half-copy-content {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
+
+  .recipe-page.is-half-copies.is-ambulatorio .half-copy-content {
+    transform: scale(0.654, 1.06);
+    zoom: 1;
+  }
+
+  .recipe-page.is-half-copies.is-internado .half-copy-content {
+    transform: scale(0.654, 1);
+    zoom: 1;
+  }
+
 }

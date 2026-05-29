@@ -744,12 +744,13 @@ function medicineMeta(medicine) {
 
 function renderPreview() {
   const data = getData();
+  const isHalfCopies = data.printLayout === "halfCopies";
   preview.classList.remove("pdf-preview-page");
   preview.classList.toggle("is-ambulatorio", state.template === "ambulatorio");
   preview.classList.toggle("is-internado", state.template === "internado");
   preview.classList.toggle("is-uti-ucin", state.template === "utiUcin");
-  preview.classList.toggle("is-half-copies", data.printLayout === "halfCopies");
-  preview.classList.toggle("is-full-page", data.printLayout !== "halfCopies");
+  preview.classList.toggle("is-half-copies", isHalfCopies);
+  preview.classList.toggle("is-full-page", !isHalfCopies);
 
   let recipeHtml = "";
   if (state.template === "internado") {
@@ -760,7 +761,22 @@ function renderPreview() {
     recipeHtml = renderAmbulatorioRecipe(data);
   }
 
-  preview.innerHTML = data.printLayout === "halfCopies" ? renderHalfSheetCopies(recipeHtml) : recipeHtml;
+  preview.innerHTML = isHalfCopies ? renderHalfSheetCopies(recipeHtml) : recipeHtml;
+  updatePrintPageStyle(data.printLayout);
+}
+
+function updatePrintPageStyle(layout) {
+  let styleEl = document.querySelector("#printPageStyle");
+  if (!styleEl) {
+    styleEl = document.createElement("style");
+    styleEl.id = "printPageStyle";
+    document.head.appendChild(styleEl);
+  }
+  if (layout === "halfCopies") {
+    styleEl.innerHTML = "@page { size: letter landscape; margin: 0; }";
+  } else {
+    styleEl.innerHTML = "@page { size: letter portrait; margin: 0; }";
+  }
 }
 
 function renderHalfSheetCopies(recipeHtml) {
@@ -776,22 +792,26 @@ function renderHalfSheetCopies(recipeHtml) {
 }
 
 function renderAmbulatorioRecipe(data) {
+  const isHalfCopies = data.printLayout === "halfCopies";
+  const minRows = isHalfCopies ? 12 : 17;
   return `
     <div class="legal-template legal-ambulatorio">
       ${renderAmbulatorioOfficialHeader(data)}
       ${renderManualServices(data)}
-      ${renderManualMedicines(17, true)}
+      ${renderManualMedicines(minRows, true)}
       ${renderManualCostAndSignatures(data)}
     </div>
   `;
 }
 
 function renderInternadoRecipe(data) {
+  const isHalfCopies = data.printLayout === "halfCopies";
+  const minRows = isHalfCopies ? 12 : 15;
   return `
     <div class="legal-template legal-internado">
       ${renderInternadoOfficialHeader(data)}
       ${renderManualProcedures(data)}
-      ${renderManualMedicines(15, false)}
+      ${renderManualMedicines(minRows, false)}
       ${renderManualCostAndSignatures(data)}
     </div>
   `;
@@ -1611,11 +1631,15 @@ loadLocalData().catch((error) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=manual-20260526-79").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=manual-20260528-87").catch((error) => {
       console.warn("No se pudo activar la PWA.", error);
     });
   });
 }
+
+
+
+
 
 
 
