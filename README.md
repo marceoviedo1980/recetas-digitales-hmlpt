@@ -12,6 +12,7 @@ PWA para llenar e imprimir recetarios hospitalarios oficiales del Hospital Munic
 - Lista de servicios/especialidades.
 - Vista previa imprimible.
 - Instalacion como PWA en navegador compatible.
+- Logos institucionales (Gobierno Autonomo Municipal de La Paz y Hospital Humano La Portada) en la cabecera de los tres recetarios, tomados de `img/`.
 
 ## Publicacion en GitHub Pages
 
@@ -24,6 +25,7 @@ styles.css
 manifest.webmanifest
 sw.js
 icons/
+img/
 data/
 README.md
 ```

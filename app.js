@@ -831,6 +831,7 @@ function renderAmbulatorioOfficialHeader(data) {
   const sidePanelExtra = renderOfficialSideDates(data, birthDate, requestDate);
   return `
     <section class="official-header official-header-ambulatorio">
+      ${renderHeaderLogos()}
       ${renderOfficialBrand()}
       <div class="official-title official-title-ambulatorio">
         RECETARIO / RECIBO<br>ATENCION AMBULATORIA
@@ -871,6 +872,7 @@ function renderInternadoOfficialHeader(data) {
 
   return `
     <section class="official-header official-header-internado">
+      ${renderHeaderLogos()}
       <div class="official-address">
         Hospital Municipal La Portada<br>
         Zona La Portada/ Av. La Florida<br>
@@ -921,6 +923,26 @@ function renderInternadoOfficialHeader(data) {
       ${renderOfficialDiagnosisBlock(data, true)}
     </section>
   `;
+}
+
+// Logos institucionales de la cabecera. Van con position:absolute dentro de .official-header
+// (ver bloque "LOGOS DE CABECERA" al final de styles.css), por lo que no ocupan espacio
+// ni modifican ninguna medida del recetario.
+const HEADER_LOGOS = [
+  { cls: "logo-gamlp", src: "img/logo-gamlp.png" },
+  { cls: "logo-hospital", src: "img/logo-hospital-humano.png" },
+];
+
+// Precarga para que no parpadeen al regenerar la vista previa en cada tecla.
+HEADER_LOGOS.forEach((logo) => {
+  const image = new Image();
+  image.src = logo.src;
+});
+
+function renderHeaderLogos() {
+  return HEADER_LOGOS.map(
+    (logo) => `<img class="recipe-logo ${logo.cls}" src="${logo.src}" alt="" draggable="false">`,
+  ).join("");
 }
 
 function renderOfficialBrand() {
@@ -1094,6 +1116,7 @@ function renderUtiUcinRecipe(data) {
 function renderUtiOfficialHeader(data, patient, patientType, birthDate, admissionDate, dischargeDate) {
   return `
     <section class="official-header uti-official-header">
+      ${renderHeaderLogos()}
       <div class="official-address">
         Hospital Municipal La Portada<br>
         Zona La Portada/ Av. La Florida<br>
@@ -1646,7 +1669,7 @@ if ("serviceWorker" in navigator) {
     });
 
     navigator.serviceWorker
-      .register("./sw.js?v=manual-20260528-93", { updateViaCache: "none" })
+      .register("./sw.js?v=manual-20261101-94", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch((error) => {
         console.warn("No se pudo activar la PWA.", error);

@@ -2992,3 +2992,78 @@ textarea {
   }
 
 }
+
+/* ==========================================================================
+   LOGOS DE CABECERA (Gobierno Autonomo Municipal de La Paz + Hospital Humano La Portada)
+
+   Van con position:absolute dentro de .official-header (que ya es position:relative),
+   asi que NO ocupan espacio: ninguna medida del recetario cambia. Cada logo se coloca en el
+   hueco libre de la cabecera: el escudo a la izquierda del titulo y el logo del hospital a la
+   derecha, lo mas cerca posible de las esquinas superiores sin tapar texto ni recuadros.
+
+   Todas las medidas (--logo-h, --logo-left, --logo-right, --logo-top) estan en mm REALES
+   sobre el papel. En "dos copias" el contenido se escala con transform (X y Y distintos),
+   por eso se divide entre --sx / --sy: asi los logos conservan su proporcion y su tamano.
+   Si algun dia se cambia el transform de .half-copy-content, actualiza --sx / --sy abajo.
+   ========================================================================== */
+
+.recipe-page.is-half-copies.is-ambulatorio .half-copy-content {
+  --sx: 0.654;
+  --sy: 1.06;
+}
+
+.recipe-page.is-half-copies.is-internado .half-copy-content {
+  --sx: 0.654;
+  --sy: 1;
+}
+
+.recipe-page.is-half-copies.is-uti-ucin .half-copy-content {
+  --sx: 0.625;
+  --sy: 1.08;
+}
+
+.official-header .recipe-logo {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  object-fit: fill; /* NO usar contain: con el transform de 'dos copias' deformaria el logo */
+  pointer-events: none;
+  user-select: none;
+  top: calc(var(--logo-top, 0mm) / var(--sy, 1));
+  height: calc(var(--logo-h) / var(--sy, 1));
+  width: calc(var(--logo-h) * var(--logo-ratio) / var(--sx, 1));
+}
+
+.official-header .recipe-logo.logo-gamlp {
+  --logo-ratio: 1; /* 447 x 447 px */
+  left: calc(var(--logo-left) / var(--sx, 1));
+}
+
+.official-header .recipe-logo.logo-hospital {
+  --logo-ratio: 2.5187; /* 539 x 214 px */
+  right: calc(var(--logo-right) / var(--sx, 1));
+}
+
+/* ---- Hoja completa ---- */
+.recipe-page.is-full-page.is-ambulatorio .logo-gamlp   { --logo-h: 17mm;   --logo-left: 37mm; }
+.recipe-page.is-full-page.is-ambulatorio .logo-hospital { --logo-h: 10.5mm; --logo-right: 58mm; }
+
+.recipe-page.is-full-page.is-internado .logo-gamlp     { --logo-h: 17mm;   --logo-left: 37mm; }
+.recipe-page.is-full-page.is-internado .logo-hospital  { --logo-h: 12mm;   --logo-right: 0mm; }
+
+.recipe-page.is-full-page.is-uti-ucin .logo-gamlp      { --logo-h: 17mm;   --logo-left: 37mm; }
+.recipe-page.is-full-page.is-uti-ucin .logo-hospital   { --logo-h: 10.7mm; --logo-right: 56mm; }
+
+/* ---- Dos copias en hoja carta horizontal ---- */
+.recipe-page.is-half-copies.is-ambulatorio .logo-gamlp    { --logo-h: 15mm; --logo-left: 25.5mm; }
+.recipe-page.is-half-copies.is-ambulatorio .logo-hospital { --logo-h: 10mm; --logo-right: 29.5mm; }
+
+.recipe-page.is-half-copies.is-internado .logo-gamlp      { --logo-h: 14mm; --logo-left: 25mm; }
+.recipe-page.is-half-copies.is-internado .logo-hospital   { --logo-h: 8mm;  --logo-right: 34.5mm; }
+
+.recipe-page.is-half-copies.is-uti-ucin .logo-gamlp       { --logo-h: 14mm; --logo-left: 21mm; }
+.recipe-page.is-half-copies.is-uti-ucin .logo-hospital    { --logo-h: 9.5mm; --logo-right: 26.5mm; }

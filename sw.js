@@ -1,15 +1,17 @@
-const CACHE_NAME = "recetario-digital-manual-20260528-93";
+const CACHE_NAME = "recetario-digital-manual-20261101-94";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./index.html?app=pwa",
-  "./styles.css?v=manual-20260528-93",
-  "./app.js?v=manual-20260528-93",
-  "./manifest.webmanifest?v=manual-20260528-93",
+  "./styles.css?v=manual-20261101-94",
+  "./app.js?v=manual-20261101-94",
+  "./manifest.webmanifest?v=manual-20261101-94",
   "./icons/icon-32.png",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-1024.png",
+  "./img/logo-gamlp.png",
+  "./img/logo-hospital-humano.png",
   "./data/medicamentos.json",
   "./data/cartera_servicios.json",
 ];
