@@ -1,19 +1,41 @@
-const templates = {
-  ambulatorio: {
-    title: "RECETARIO / RECIBO\nATENCION AMBULATORIA",
-    showInternado: false,
-  },
-  internado: {
-    title: "RECETARIO / RECIBO\nATENCION DEL PACIENTE INTERNADO",
-    showInternado: true,
-  },
-  utiUcin: {
-    title: "RECETARIO / RECIBO",
-    showInternado: true,
-  },
+import {
+  escapeHtml,
+  normalizar,
+  numeroALetras,
+  mostrarAviso,
+  cargarFuente,
+  textoOrigen,
+  crearBuscador,
+} from "./utilidades.js";
+
+// ===== DATOS DEL ESTABLECIMIENTO: lo propio del hospital se cambia aqui =====
+const APP_NAME = "Recetario Digital La Portada";
+const DATA_CACHE = "recetario-digital-manual-datos"; // debe coincidir con DATA_CACHE en sw.js
+
+// De donde se leen los datos. "enLinea" es el archivo publicado por la otra PWA;
+// "local" es la copia de respaldo dentro de esta app (carpeta data/).
+const FUENTE_MEDICAMENTOS = {
+  enLinea: "https://raw.githubusercontent.com/marceoviedo1980/FarmaCheck/main/medicamentos.json",
+  local: "./data/medicamentos.json",
+};
+const FUENTE_DIAGNOSTICOS = {
+  enLinea: "https://raw.githubusercontent.com/marceoviedo1980/cartera-servicios/main/cartera_servicios.json",
+  local: "./data/cartera_servicios.json",
 };
 
+// Psicotropicos y estupefacientes (FarmaCheck no los marca: se reconocen por el nombre).
+// Si FarmaCheck agrega un campo "controlado", tambien se respeta.
+const CONTROLADOS = /fentanil|morfin|diazepam|midazolam|clonazepam|ketamin|cetamin/i;
+// Cantidad en literal. Ej.: "Citrato de Fentanilo 0,05 mg/ml (ampolla de 10 ml) (tres ampollas)".
+const UNIDAD_CONTROLADO = [
+  { patron: /iny|ampoll|vial/i, singular: "ampolla", plural: "ampollas", femenino: true },
+  { patron: /comprim|c[aá]psul|tableta|gragea/i, singular: "comprimido", plural: "comprimidos", femenino: false },
+];
+// =============================================================================
+
 const SAVED_RECIPES_KEY = "recetario-la-portada-recetas-guardadas-v1";
+const DRAFT_KEY = "recetario-la-portada-borrador-v1";
+const DRAFT_MAX_AGE_MS = 4 * 60 * 60 * 1000;
 const LICENSE_STATUS_URL = "./licencia-hmlpt-recetas.json";
 const LICENSE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const LICENSE_STATUS_KEY = "recetario-la-portada-licencia-v1";
@@ -21,40 +43,9 @@ const LICENSE_LAST_CHECK_KEY = "recetario-la-portada-licencia-ultima-revision-v1
 const DEFAULT_LICENSE_MESSAGE =
   "Esta version ya no esta autorizada para uso institucional. Contacte al desarrollador para soporte o renovacion.";
 
-let medicines = [
-  {
-    name: "Paracetamol",
-    concentration: "500 mg",
-    form: "Comprimido",
-    route: "VO",
-  },
-  {
-    name: "Ibuprofeno",
-    concentration: "400 mg",
-    form: "Comprimido",
-    route: "VO",
-  },
-  {
-    name: "Ceftriaxona",
-    concentration: "1 g",
-    form: "Vial",
-    route: "IV",
-  },
-  {
-    name: "Metformina",
-    concentration: "850 mg",
-    form: "Comprimido",
-    route: "VO",
-  },
-  {
-    name: "Omeprazol",
-    concentration: "20 mg",
-    form: "Capsula",
-    route: "VO",
-  },
-];
-
+let medicines = [];
 let diagnoses = [];
+const dataStatus = { medicamentos: null, diagnosticos: null };
 
 const clinicalServices = [
   "CIRUGIA",
@@ -100,6 +91,7 @@ const state = {
   template: "ambulatorio",
   medicines: [],
   currentSavedId: null,
+  pendingMedicine: null,
 };
 
 const form = document.querySelector("#recipeForm");
@@ -108,12 +100,8 @@ const medicineList = document.querySelector("#medicineList");
 const medicineInput = document.querySelector("#medicineInput");
 const quantityInput = document.querySelector("#quantityInput");
 const instructionInput = document.querySelector("#instructionInput");
-const medicineOptions = document.querySelector("#medicineOptions");
-const diagnosisOptions = document.querySelector("#diagnosisOptions");
-const serviceSelect = document.querySelector("#serviceSelect");
-const admissionServiceSelect = document.querySelector("#admissionServiceSelect");
-const dischargeServiceSelect = document.querySelector("#dischargeServiceSelect");
-const utiAdmissionServiceSelect = document.querySelector("#utiAdmissionServiceSelect");
+const medicineHint = document.querySelector("#medicineHint");
+const dataStatusLine = document.querySelector("#dataStatus");
 const installButton = document.querySelector("#installBtn");
 const pdfButton = document.querySelector("#pdfBtn");
 const pdfButtonLabel = pdfButton?.querySelector("span");
@@ -124,6 +112,8 @@ const importSavedButton = document.querySelector("#importSavedBtn");
 const importSavedInput = document.querySelector("#importSavedInput");
 const savedDialog = document.querySelector("#savedRecipesDialog");
 const savedRecipesList = document.querySelector("#savedRecipesList");
+const savedSearchInput = document.querySelector("#savedSearchInput");
+const savedSearchCount = document.querySelector("#savedSearchCount");
 const closeSavedDialogButton = document.querySelector("#closeSavedDialogBtn");
 const licenseBlocker = document.querySelector("#licenseBlocker");
 const licenseBlockerMessage = document.querySelector("#licenseBlockerMessage");
@@ -132,13 +122,16 @@ const ambulatorioServicesOptions = document.querySelector("#ambulatorioServicesO
 const internadoProcedureOptions = document.querySelector("#internadoProcedureOptions");
 let installPrompt = null;
 
-populateMedicineOptions();
 populateServiceOptions();
 
 ambulatorioServicesOptions.innerHTML = renderCheckOptions("service", ambulatorioServices);
 internadoProcedureOptions.innerHTML = renderCheckOptions("procedure", internadoProcedures);
 
-form.addEventListener("input", render);
+form.addEventListener("input", (event) => {
+  // los campos de cada medicamento agregado actualizan solo la hoja (para no perder el cursor)
+  if (event.target.closest("#medicineList")) return;
+  render();
+});
 updatePdfButtonLabel();
 window.addEventListener("resize", updatePdfButtonLabel);
 window.addEventListener("orientationchange", updatePdfButtonLabel);
@@ -155,6 +148,7 @@ exportSavedButton.addEventListener("click", exportSavedRecipes);
 importSavedButton.addEventListener("click", () => importSavedInput.click());
 importSavedInput.addEventListener("change", importSavedRecipes);
 closeSavedDialogButton.addEventListener("click", () => savedDialog.close());
+savedSearchInput?.addEventListener("input", () => renderSavedRecipesList());
 document.querySelector("#clearBtn").addEventListener("click", () => {
   const shouldClear = window.confirm(
     "Seguro que quieres limpiar el formulario actual y borrar los medicamentos agregados? Las recetas guardadas no se borraran."
@@ -166,6 +160,8 @@ document.querySelector("#clearBtn").addEventListener("click", () => {
   form.reset();
   state.medicines = [];
   state.currentSavedId = null;
+  clearPendingMedicine();
+  clearDraft();
   render();
 });
 
@@ -188,6 +184,7 @@ window.addEventListener("appinstalled", () => {
   installButton.classList.add("hidden");
 });
 
+// ===== Licencia =====
 function readStoredLicenseStatus() {
   try {
     return JSON.parse(localStorage.getItem(LICENSE_STATUS_KEY) || "null");
@@ -241,6 +238,7 @@ async function checkRemoteLicense({ force = false } = {}) {
   }
 }
 
+// ===== Tipo de recetario =====
 function activateTemplate(template) {
   state.template = template || "ambulatorio";
   tabs.forEach((item) => item.classList.toggle("active", item.dataset.template === state.template));
@@ -261,6 +259,7 @@ function activateTemplate(template) {
   render();
 }
 
+// ===== Recetas guardadas =====
 function readSavedRecipes() {
   try {
     const parsed = JSON.parse(localStorage.getItem(SAVED_RECIPES_KEY) || "[]");
@@ -276,6 +275,15 @@ function writeSavedRecipes(recipes) {
 }
 
 function saveCurrentRecipe() {
+  const formData = serializeForm();
+  const missing = [
+    !formData.paternalSurname?.trim() && "apellido paterno",
+    !formData.givenNames?.trim() && "nombres",
+  ].filter(Boolean);
+  if (missing.length && !window.confirm(`Falta: ${missing.join(" y ")} del paciente.\n¿Guardar la receta de todos modos?`)) {
+    return;
+  }
+
   const recipes = readSavedRecipes();
   const snapshot = buildRecipeSnapshot();
   const existingIndex = recipes.findIndex((recipe) => recipe.id === state.currentSavedId);
@@ -293,9 +301,17 @@ function saveCurrentRecipe() {
     state.currentSavedId = snapshot.id;
   }
 
-  writeSavedRecipes(recipes);
+  try {
+    writeSavedRecipes(recipes);
+  } catch (error) {
+    console.error("No se pudo guardar la receta.", error);
+    mostrarAviso("No se pudo guardar: la memoria del navegador está llena. Exporte un respaldo y borre recetas antiguas.", "error");
+    return;
+  }
+  saveDraft();
   saveRecipeButton.classList.add("saved-flash");
   window.setTimeout(() => saveRecipeButton.classList.remove("saved-flash"), 700);
+  mostrarAviso(existingIndex >= 0 ? "Receta actualizada" : "Receta guardada");
 }
 
 function buildRecipeSnapshot() {
@@ -358,15 +374,35 @@ function restoreForm(formData = {}) {
 }
 
 function openSavedRecipes() {
+  if (savedSearchInput) savedSearchInput.value = "";
   renderSavedRecipesList();
   if (typeof savedDialog.showModal === "function") savedDialog.showModal();
   else savedDialog.setAttribute("open", "");
 }
 
+function recipeMatchesSearch(recipe, terms) {
+  const data = recipe.formData || {};
+  const haystack = normalizar(
+    [recipe.title, data.clinicalRecord, data.paternalSurname, data.maternalSurname, data.givenNames, data.identityCard].join(" "),
+  );
+  return terms.every((term) => haystack.includes(term));
+}
+
 function renderSavedRecipesList() {
-  const recipes = readSavedRecipes();
-  if (!recipes.length) {
+  const allRecipes = readSavedRecipes();
+  const terms = normalizar(savedSearchInput?.value).split(" ").filter(Boolean);
+  const recipes = terms.length ? allRecipes.filter((recipe) => recipeMatchesSearch(recipe, terms)) : allRecipes;
+  if (savedSearchCount) {
+    savedSearchCount.textContent = terms.length
+      ? `${recipes.length} de ${allRecipes.length} recetas`
+      : `${allRecipes.length} ${allRecipes.length === 1 ? "receta guardada" : "recetas guardadas"}`;
+  }
+  if (!allRecipes.length) {
     savedRecipesList.innerHTML = '<p class="empty saved-empty">No hay recetas guardadas todavia.</p>';
+    return;
+  }
+  if (!recipes.length) {
+    savedRecipesList.innerHTML = '<p class="empty saved-empty">No se encontraron recetas con esa busqueda.</p>';
     return;
   }
 
@@ -407,12 +443,16 @@ function loadSavedRecipe(id) {
   state.currentSavedId = recipe.id;
   state.medicines = Array.isArray(recipe.medicines) ? recipe.medicines : [];
   restoreForm(recipe.formData);
+  clearPendingMedicine();
   activateTemplate(recipe.template);
   savedDialog.close();
 }
 
 function deleteSavedRecipe(id) {
-  const recipes = readSavedRecipes().filter((recipe) => recipe.id !== id);
+  const recipe = readSavedRecipes().find((item) => item.id === id);
+  if (!recipe) return;
+  if (!window.confirm(`¿Borrar esta receta guardada?\n\n${recipe.title}\n\nNo se podrá recuperar.`)) return;
+  const recipes = readSavedRecipes().filter((item) => item.id !== id);
   if (state.currentSavedId === id) state.currentSavedId = null;
   writeSavedRecipes(recipes);
   renderSavedRecipesList();
@@ -421,7 +461,7 @@ function deleteSavedRecipe(id) {
 function exportSavedRecipes() {
   const recipes = readSavedRecipes();
   const payload = {
-    app: "Recetario Digital La Portada",
+    app: APP_NAME,
     exportedAt: new Date().toISOString(),
     recipes,
   };
@@ -465,6 +505,63 @@ function formatSavedDate(value) {
   return date.toLocaleString("es-BO", { dateStyle: "short", timeStyle: "short" });
 }
 
+// ===== Borrador automatico (se recupera si la app se recarga, p. ej. al actualizarse) =====
+let draftTimer = null;
+
+function saveDraft() {
+  try {
+    localStorage.setItem(
+      DRAFT_KEY,
+      JSON.stringify({
+        template: state.template,
+        formData: serializeForm(),
+        medicines: state.medicines,
+        currentSavedId: state.currentSavedId,
+        savedAt: Date.now(),
+      }),
+    );
+  } catch (error) {
+    console.warn("No se pudo guardar el borrador.", error);
+  }
+}
+
+function scheduleDraftSave() {
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(saveDraft, 400);
+}
+
+function clearDraft() {
+  clearTimeout(draftTimer);
+  localStorage.removeItem(DRAFT_KEY);
+}
+
+function draftHasContent(draft) {
+  if (draft.medicines?.length) return true;
+  return Object.entries(draft.formData || {}).some(
+    ([key, value]) => key !== "printLayout" && value !== "" && value !== false,
+  );
+}
+
+function restoreDraft() {
+  let draft = null;
+  try {
+    draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+  } catch (error) {
+    draft = null;
+  }
+  if (!draft || Date.now() - (draft.savedAt || 0) > DRAFT_MAX_AGE_MS || !draftHasContent(draft)) {
+    clearDraft();
+    return false;
+  }
+  restoreForm(draft.formData);
+  state.medicines = Array.isArray(draft.medicines) ? draft.medicines : [];
+  state.currentSavedId = draft.currentSavedId || null;
+  activateTemplate(draft.template);
+  mostrarAviso("Se recuperó la receta que estaba llenando");
+  return true;
+}
+
+// ===== PDF =====
 async function generatePdf() {
   if (isMobilePdfFlow()) {
     window.print();
@@ -513,7 +610,7 @@ async function generatePdf() {
     pdf.save(pdfFileName());
   } catch (error) {
     console.error("No se pudo generar el PDF.", error);
-    alert("No se pudo generar el PDF. Verifica tu conexion a internet e intentalo nuevamente.");
+    alert("No se pudo generar el PDF. Usa el boton Imprimir y elige \"Guardar como PDF\".");
   } finally {
     preview.classList.remove("pdf-exporting");
     button.disabled = false;
@@ -533,13 +630,11 @@ function isMobilePdfFlow() {
   return isAndroidOrIos || isIpadDesktopMode;
 }
 
+// Librerias incluidas en la app (carpeta vendor/): el PDF se genera sin internet.
 function loadPdfLibraries() {
   if (window.html2canvas && window.jspdf?.jsPDF) return Promise.resolve();
 
-  return Promise.all([
-    loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
-    loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"),
-  ]);
+  return Promise.all([loadScript("./vendor/html2canvas.min.js"), loadScript("./vendor/jspdf.umd.min.js")]);
 }
 
 function loadScript(src) {
@@ -575,44 +670,144 @@ function pdfFileName() {
   return `recetario-${templateName}-${new Date().toISOString().slice(0, 10)}.pdf`;
 }
 
-document.querySelector("#addMedicineBtn").addEventListener("click", () => {
-  const rawMedicine = medicineInput.value.trim();
-  const selected = findMedicine(rawMedicine);
-  const quantity = Number(quantityInput.value || 1);
-  const instruction = instructionInput.value.trim();
+// ===== Datos: medicamentos (FarmaCheck) y diagnosticos (Cartera de Servicios) =====
+const limpiarCodigo = (codigo) => String(codigo ?? "").trim().toUpperCase().replace(/\s+/g, "");
 
-  if (!rawMedicine) {
-    medicineInput.focus();
-    return;
+function prepararMedicamentos(lista) {
+  return lista
+    .filter((item) => item && item.medicamento)
+    .map((item) => ({
+      code: item.codigo || "",
+      name: String(item.medicamento || "").trim(),
+      concentration: String(item.concentracion || "").trim(),
+      form: String(item.forma || "").trim(),
+      observation: String(item.observacion || "").trim(),
+      controlado: item.controlado || (CONTROLADOS.test(item.medicamento || "") ? "controlado" : ""),
+      route: "",
+    }));
+}
+
+// Une las filas repetidas (mismo codigo y nombre en AMBULATORIO e INTERNADO) en una sola opcion.
+function prepararDiagnosticos(lista) {
+  const porClave = new Map();
+  lista.forEach((item) => {
+    const code = limpiarCodigo(item.CODIGO);
+    const name = String(item.SERVICIO ?? "").trim();
+    if (!code && !name) return;
+    const key = `${code}|${normalizar(name)}`;
+    if (!porClave.has(key)) porClave.set(key, { code, name, types: new Set(), search: normalizar(`${code} ${name}`) });
+    const type = String(item["TIPO DE PACIENTE"] ?? "").trim().toUpperCase();
+    if (type) porClave.get(key).types.add(type);
+  });
+  return [...porClave.values()];
+}
+
+async function loadLocalData() {
+  const [medicineResult, diagnosisResult] = await Promise.allSettled([
+    cargarFuente({
+      ...FUENTE_MEDICAMENTOS,
+      cache: DATA_CACHE,
+      clave: "recetario-la-portada-medicamentos",
+      validar: (data) => Array.isArray(data) && data.length > 0 && data.some((item) => item?.medicamento),
+    }),
+    cargarFuente({
+      ...FUENTE_DIAGNOSTICOS,
+      cache: DATA_CACHE,
+      clave: "recetario-la-portada-diagnosticos",
+      validar: (data) => Array.isArray(data) && data.length > 0 && data.some((item) => item?.CODIGO),
+    }),
+  ]);
+
+  if (medicineResult.status === "fulfilled") {
+    medicines = prepararMedicamentos(medicineResult.value.data);
+    medicines.forEach((medicine) => (medicine.search = normalizar(medicineLabel(medicine))));
+    dataStatus.medicamentos = medicineResult.value;
+  } else {
+    console.warn("No se pudieron cargar los medicamentos.", medicineResult.reason);
   }
 
-  state.medicines.push({
-    ...(selected || freeTextMedicine(rawMedicine)),
-    quantity,
-    instruction,
-  });
+  if (diagnosisResult.status === "fulfilled") {
+    diagnoses = prepararDiagnosticos(diagnosisResult.value.data);
+    dataStatus.diagnosticos = diagnosisResult.value;
+  } else {
+    console.warn("No se pudieron cargar los diagnosticos.", diagnosisResult.reason);
+  }
 
-  medicineInput.value = "";
-  quantityInput.value = "1";
-  instructionInput.value = "";
+  renderDataStatus();
   render();
-});
+}
 
-form.elements.diagnosis.addEventListener("change", () => fillDiagnosisCode(form.elements.diagnosis, form.elements.cie10));
+function renderDataStatus() {
+  if (!dataStatusLine) return;
+  const med = dataStatus.medicamentos;
+  const dx = dataStatus.diagnosticos;
+  dataStatusLine.innerHTML =
+    `<span><strong>Medicamentos (FarmaCheck):</strong> ${escapeHtml(textoOrigen(med))}</span>` +
+    `<span><strong>Diagnósticos (Cartera de Servicios):</strong> ${escapeHtml(textoOrigen(dx))}</span>`;
+  dataStatusLine.classList.toggle("is-offline", Boolean((med && med.origen !== "en-linea") || (dx && dx.origen !== "en-linea")));
+}
 
-Array.from({ length: 5 }, (_, index) => index + 1).forEach((number) => {
-  const diagnosisInput = form.elements[`secondaryDiagnosis${number}`];
-  const codeInput = form.elements[`secondaryCode${number}`];
-  diagnosisInput.addEventListener("change", () => fillDiagnosisCode(diagnosisInput, codeInput));
-});
-
-function findMedicine(value) {
-  const normalizedValue = normalize(value);
-  return medicines.find((medicine) => normalize(medicineLabel(medicine)) === normalizedValue);
+// ===== Medicamentos: buscador, restricciones y cantidad en literal =====
+function medicinesForCurrentPatient() {
+  return medicines;
 }
 
 function medicineLabel(medicine) {
   return [medicine.name, medicine.concentration, medicine.form].filter(Boolean).join(" ");
+}
+
+function isControlled(medicine) {
+  return Boolean(medicine?.controlado);
+}
+
+function controlledUnit(medicine) {
+  return UNIDAD_CONTROLADO.find((unit) => unit.patron.test(medicine.form || "")) || UNIDAD_CONTROLADO[0];
+}
+
+function quantityInWords(medicine, quantity) {
+  const amount = Number(quantity);
+  const unit = controlledUnit(medicine);
+  const words = numeroALetras(amount, { femenino: unit.femenino });
+  if (!words) return "";
+  return `${words} ${amount === 1 ? unit.singular : unit.plural}`;
+}
+
+// Texto que se imprime en la columna de medicamentos.
+// Controlados: nombre + concentracion + (presentacion) + (cantidad en literal). Nada despues del parentesis.
+// La presentacion "(Ampolla de 10 ml)" de FarmaCheck se escribe despues de la concentracion, como en el
+// modelo de prescripcion: "Citrato de Fentanilo 0,05 mg/ml (ampolla de 10 ml) (tres ampollas)".
+function printedLabel(medicine) {
+  if (!isControlled(medicine)) return medicineLabel(medicine);
+  const literal = quantityInWords(medicine, medicine.quantity);
+  const presentation = `${medicine.name} ${medicine.form}`.match(/\(\s*ampolla[^)]*\)/i)?.[0] || "";
+  const name = medicine.name.replace(/\s*\(\s*ampolla[^)]*\)/i, "").trim();
+  const base = [name, medicine.concentration, presentation.replace(/\(\s*A/, "(a")].filter(Boolean).join(" ");
+  return literal ? `${base} (${literal})` : base;
+}
+
+function hasRestriction(medicine) {
+  const text = normalizar(medicine?.observation);
+  return Boolean(text) && text !== "sin restriccion";
+}
+
+function medicineNotes(medicine) {
+  const notes = [];
+  if (hasRestriction(medicine)) {
+    notes.push(`<span class="med-note med-note-restriccion">⚠ ${escapeHtml(medicine.observation)}</span>`);
+  }
+  if (isControlled(medicine)) {
+    const tipo = { estupefaciente: "Estupefaciente", psicotropico: "Psicotrópico" }[medicine.controlado] || "Controlado";
+    notes.push(`<span class="med-note med-note-controlado">${tipo} · cantidad en literal</span>`);
+  }
+  return notes.join("");
+}
+
+function findMedicine(value) {
+  const normalizedValue = normalizar(value);
+  return (
+    medicinesForCurrentPatient().find((medicine) => medicine.search === normalizedValue) ||
+    medicines.find((medicine) => medicine.search === normalizedValue)
+  );
 }
 
 function freeTextMedicine(value) {
@@ -625,72 +820,161 @@ function freeTextMedicine(value) {
   };
 }
 
-function normalize(value) {
-  return value.trim().toLowerCase();
+function searchMedicines(text) {
+  const terms = normalizar(text).split(" ").filter(Boolean);
+  return medicinesForCurrentPatient()
+    .filter((medicine) => terms.every((term) => medicine.search.includes(term)))
+    .sort((a, b) => Number(!a.search.startsWith(terms[0])) - Number(!b.search.startsWith(terms[0])))
+    .slice(0, 30)
+    .map((medicine) => ({ medicine }));
 }
 
-async function loadLocalData() {
-  const [medicineResult, diagnosisResult] = await Promise.allSettled([
-    fetch("./data/medicamentos.json").then((response) => response.json()),
-    fetch("./data/cartera_servicios.json").then((response) => response.json()),
-  ]);
+crearBuscador(medicineInput, {
+  buscar: searchMedicines,
+  pintar: ({ medicine }) =>
+    `<span class="buscador-principal">${escapeHtml(medicineLabel(medicine))}</span>` +
+    `${hasRestriction(medicine) ? `<small class="buscador-nota">⚠ ${escapeHtml(medicine.observation)}</small>` : ""}`,
+  elegir: ({ medicine }) => {
+    medicineInput.value = medicineLabel(medicine);
+    state.pendingMedicine = medicine;
+    renderMedicineHint();
+    quantityInput.focus();
+    quantityInput.select();
+  },
+});
 
-  if (medicineResult.status === "fulfilled" && Array.isArray(medicineResult.value)) {
-    medicines = medicineResult.value.map((item) => ({
-      code: item.codigo || "",
-      name: item.medicamento || "",
-      concentration: item.concentracion || "",
-      form: item.forma || "",
-      observation: item.observacion || "",
-      route: "",
-    }));
-    populateMedicineOptions();
+medicineInput.addEventListener("input", () => {
+  if (state.pendingMedicine && normalizar(medicineInput.value) !== state.pendingMedicine.search) {
+    state.pendingMedicine = null;
   }
+  renderMedicineHint();
+});
+quantityInput.addEventListener("input", renderMedicineHint);
 
-  if (diagnosisResult.status === "fulfilled" && Array.isArray(diagnosisResult.value)) {
-    diagnoses = diagnosisResult.value.map((item) => ({
-      code: item.CODIGO || "",
-      name: item.SERVICIO || "",
-      patientType: item["TIPO DE PACIENTE"] || "",
-    }));
-    populateDiagnosisOptions();
+function pendingMedicine() {
+  return state.pendingMedicine || (medicineInput.value.trim() ? findMedicine(medicineInput.value) : null);
+}
+
+function renderMedicineHint() {
+  if (!medicineHint) return;
+  const medicine = pendingMedicine();
+  if (!medicine) {
+    medicineHint.innerHTML = "";
+    medicineHint.hidden = true;
+    return;
   }
+  const parts = [];
+  if (hasRestriction(medicine)) {
+    parts.push(`<div class="hint-restriccion">⚠ <strong>Restricción:</strong> ${escapeHtml(medicine.observation)}</div>`);
+  }
+  if (isControlled(medicine)) {
+    const quantity = sanitizeQuantity(quantityInput.value);
+    parts.push(
+      `<div class="hint-controlado"><strong>Se imprimirá:</strong> ${escapeHtml(printedLabel({ ...medicine, quantity }))}</div>`,
+    );
+  }
+  medicineHint.innerHTML = parts.join("");
+  medicineHint.hidden = !parts.length;
+}
 
+function clearPendingMedicine() {
+  state.pendingMedicine = null;
+  renderMedicineHint();
+}
+
+function sanitizeQuantity(value) {
+  const number = Math.round(Number(value));
+  return Number.isFinite(number) && number >= 1 ? number : 1;
+}
+
+document.querySelector("#addMedicineBtn").addEventListener("click", () => {
+  const rawMedicine = medicineInput.value.trim();
+  if (!rawMedicine) {
+    medicineInput.focus();
+    return;
+  }
+  const selected = pendingMedicine();
+  const quantity = sanitizeQuantity(quantityInput.value);
+  const instruction = instructionInput.value.trim();
+
+  const base = selected ? { ...selected } : freeTextMedicine(rawMedicine);
+  delete base.search;
+  state.medicines.push({ ...base, quantity, instruction });
+
+  medicineInput.value = "";
+  quantityInput.value = "1";
+  instructionInput.value = "";
+  clearPendingMedicine();
   render();
+  medicineInput.focus();
+});
+
+// ===== Diagnosticos: buscador por nombre o codigo =====
+// sin signos de puntuacion, para que "neumonia no esp" encuentre "Neumonía, no especificada"
+const sinSignos = (texto) => texto.replace(/[^a-z0-9. ]/g, " ").replace(/\s+/g, " ").trim();
+
+// En receta ambulatoria salen primero los diagnosticos AMBULATORIO; en internado y UTI, los INTERNADO.
+function searchDiagnoses(text) {
+  const preferredType = state.template === "ambulatorio" ? "AMBULATORIO" : "INTERNADO";
+  const query = sinSignos(normalizar(text));
+  const terms = query.split(" ").filter(Boolean);
+  const matches = [];
+  for (const item of diagnoses) {
+    if (!terms.every((term) => item.search.includes(term))) continue;
+    const name = sinSignos(normalizar(item.name));
+    const rank = item.code.toLowerCase().startsWith(query) ? 0 : name.startsWith(query) ? 1 : name.includes(query) ? 2 : 3;
+    const otherType = item.types.size && !item.types.has(preferredType) ? 1 : 0;
+    matches.push({ item, rank, otherType, length: name.length });
+  }
+  return matches
+    .sort((a, b) => a.otherType - b.otherType || a.rank - b.rank || a.length - b.length || a.item.code.localeCompare(b.item.code))
+    .slice(0, 20)
+    .map((match) => match.item);
 }
 
-function populateMedicineOptions() {
-  medicineOptions.innerHTML = medicines
-    .map((medicine) => `<option value="${safe(medicineLabel(medicine))}"></option>`)
-    .join("");
+function findDiagnosisByCode(code) {
+  const normalizedCode = limpiarCodigo(code);
+  return diagnoses.find((diagnosis) => diagnosis.code === normalizedCode);
 }
 
-function populateDiagnosisOptions() {
-  diagnosisOptions.innerHTML = diagnoses
-    .map((diagnosis) => `<option value="${safe(diagnosis.name)}" label="${safe(diagnosis.code)}"></option>`)
-    .join("");
+function connectDiagnosisFields(nameInput, codeInput) {
+  if (!nameInput || !codeInput) return;
+  crearBuscador(nameInput, {
+    minimo: 2,
+    buscar: searchDiagnoses,
+    pintar: (item) =>
+      `<span class="buscador-codigo">${escapeHtml(item.code)}</span> <span class="buscador-principal">${escapeHtml(item.name)}</span>` +
+      [...item.types].map((type) => ` <em class="buscador-etiqueta">${type === "AMBULATORIO" ? "Amb." : "Int."}</em>`).join(""),
+    elegir: (item) => {
+      nameInput.value = item.name;
+      codeInput.value = item.code;
+      render();
+    },
+  });
+  // escribir solo el codigo completa el nombre si esta vacio
+  codeInput.addEventListener("change", () => {
+    const found = findDiagnosisByCode(codeInput.value);
+    if (!found) return;
+    codeInput.value = found.code;
+    if (!nameInput.value.trim()) nameInput.value = found.name;
+    render();
+  });
 }
+
+connectDiagnosisFields(form.elements.diagnosis, form.elements.cie10);
+connectDiagnosisFields(form.elements.admissionDiagnosis, form.elements.admissionDiagnosisCode);
+Array.from({ length: 5 }, (_, index) => index + 1).forEach((number) => {
+  connectDiagnosisFields(form.elements[`secondaryDiagnosis${number}`], form.elements[`secondaryCode${number}`]);
+});
 
 function populateServiceOptions() {
   const options = `<option value=""></option>${clinicalServices
     .map((service) => `<option value="${safe(service)}">${safe(service)}</option>`)
     .join("")}`;
-  serviceSelect.innerHTML = options;
-  admissionServiceSelect.innerHTML = options;
-  dischargeServiceSelect.innerHTML = options;
-  utiAdmissionServiceSelect.innerHTML = options;
-}
-
-function findDiagnosis(value) {
-  const normalizedValue = normalize(value);
-  return diagnoses.find((diagnosis) => normalize(diagnosis.name) === normalizedValue);
-}
-
-function fillDiagnosisCode(diagnosisInput, codeInput) {
-  const selected = findDiagnosis(diagnosisInput.value);
-  if (!selected) return;
-  codeInput.value = selected.code;
-  render();
+  ["#serviceSelect", "#admissionServiceSelect", "#dischargeServiceSelect", "#utiAdmissionServiceSelect"].forEach((selector) => {
+    const select = document.querySelector(selector);
+    if (select) select.innerHTML = options;
+  });
 }
 
 function renderCheckOptions(prefix, options) {
@@ -716,6 +1000,7 @@ function splitDate(value) {
   return { day, month, year };
 }
 
+// ===== Lista de medicamentos agregados (editable) =====
 function renderMedicineList() {
   if (!state.medicines.length) {
     medicineList.innerHTML = '<p class="empty">Sin medicamentos agregados.</p>';
@@ -725,29 +1010,64 @@ function renderMedicineList() {
   medicineList.innerHTML = state.medicines
     .map(
       (medicine, index) => `
-        <div class="medicine-row">
-          <div>
-            <strong>${medicineLabel(medicine)}</strong>
-            <small>${medicineMeta(medicine)}</small>
+        <div class="medicine-row" data-index="${index}">
+          <div class="medicine-row-name">
+            <strong data-label>${escapeHtml(printedLabel(medicine))}</strong>
+            ${medicineNotes(medicine)}
           </div>
-          <span>Cant. ${medicine.quantity}</span>
-          <button class="remove-button" type="button" data-index="${index}">Quitar</button>
+          <label class="medicine-row-field medicine-row-qty">
+            <span>Cant.</span>
+            <input type="number" min="1" step="1" inputmode="numeric" value="${escapeHtml(medicine.quantity)}" data-edit="quantity" aria-label="Cantidad" />
+          </label>
+          <label class="medicine-row-field medicine-row-instr">
+            <span>Indicación</span>
+            <input value="${escapeHtml(medicine.instruction || "")}" data-edit="instruction" aria-label="Indicacion" />
+          </label>
+          <button class="remove-button" type="button" data-remove="${index}">Quitar</button>
         </div>
       `,
     )
     .join("");
 
-  medicineList.querySelectorAll(".remove-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.medicines.splice(Number(button.dataset.index), 1);
-      render();
-    });
-  });
+  const capacity = medicineCapacity();
+  if (state.medicines.length > capacity) {
+    medicineList.insertAdjacentHTML(
+      "beforeend",
+      `<p class="empty capacity-warning">Aviso: este recetario tiene espacio para ${capacity} medicamentos${getData().printLayout === "halfCopies" ? " en dos copias" : ""}. Los ${state.medicines.length - capacity} restantes no se imprimiran.</p>`,
+    );
+  }
 }
 
-function medicineMeta(medicine) {
-  return [medicine.route, medicine.instruction || "Sin indicacion"].filter(Boolean).join(" · ");
-}
+medicineList.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-remove]");
+  if (!button) return;
+  state.medicines.splice(Number(button.dataset.remove), 1);
+  render();
+});
+
+medicineList.addEventListener("input", (event) => {
+  const field = event.target.closest("[data-edit]");
+  if (!field) return;
+  const row = field.closest(".medicine-row");
+  const medicine = state.medicines[Number(row.dataset.index)];
+  if (!medicine) return;
+  if (field.dataset.edit === "quantity") {
+    if (field.value === "") return;
+    medicine.quantity = sanitizeQuantity(field.value);
+    row.querySelector("[data-label]").textContent = printedLabel(medicine);
+  } else {
+    medicine.instruction = field.value;
+  }
+  renderPreview();
+  scheduleDraftSave();
+});
+
+medicineList.addEventListener("change", (event) => {
+  const field = event.target.closest('[data-edit="quantity"]');
+  if (!field) return;
+  const medicine = state.medicines[Number(field.closest(".medicine-row").dataset.index)];
+  if (medicine) field.value = medicine.quantity;
+});
 
 function renderPreview() {
   const data = getData();
@@ -796,6 +1116,42 @@ function renderHalfSheetCopies(recipeHtml) {
       <div class="half-copy-content">${recipeHtml}</div>
     </div>
   `;
+}
+
+function splitPatientName(value) {
+  const parts = (value || "").trim().split(/\s+/);
+  return {
+    paternal: parts[0] || "",
+    maternal: parts[1] || "",
+    names: parts.slice(2).join(" "),
+  };
+}
+
+function getPatientParts(data) {
+  if (data.paternalSurname || data.maternalSurname || data.givenNames) {
+    return {
+      paternal: data.paternalSurname || "",
+      maternal: data.maternalSurname || "",
+      names: data.givenNames || "",
+    };
+  }
+
+  return splitPatientName(data.patientName);
+}
+
+function safe(value) {
+  if (value === undefined || value === null || value === "") return "&nbsp;";
+  return escapeHtml(value);
+}
+
+// ===== Recetarios oficiales del Hospital Municipal La Portada =====
+// Filas de medicamentos de cada hoja (carta completa / dos copias). Los medicamentos que no caben no se imprimen
+// para que la hoja no se desconfigure; el formulario avisa.
+function medicineCapacity(template = state.template) {
+  const isHalfCopies = getData().printLayout === "halfCopies";
+  if (template === "utiUcin") return 20;
+  if (template === "internado") return isHalfCopies ? 12 : 15;
+  return isHalfCopies ? 12 : 17;
 }
 
 function renderAmbulatorioRecipe(data) {
@@ -1061,40 +1417,6 @@ function renderOfficialDiagnosisBlock(data, internado = false) {
   `;
 }
 
-function renderManualHeader(data) {
-  const patientProgram = ["VIH", "TUBERCULOSIS"].includes(data.patientType) ? data.patientType : "";
-  const patientSale = ["SOAT", "RGL"].includes(data.patientType) ? data.patientType : "";
-
-  return `
-    <section class="manual-meta-header" aria-label="Datos institucionales">
-      <div class="manual-meta-left">
-        <div><strong>SEDES:</strong> LA PAZ</div>
-        <div><strong>RED:</strong> 2 NORTE CENTRAL</div>
-        <div><strong>Municipio:</strong> LA PAZ</div>
-        <div><strong>Establecimiento:</strong> HOSPITAL MUNICIPAL LA PORTADA</div>
-      </div>
-      <div class="manual-meta-right">
-        <div class="manual-meta-row">
-          <strong>Nº DE EXPEDIENTE CLINICO:</strong>
-          <span class="manual-meta-record">${safe(data.clinicalRecord)}</span>
-        </div>
-        <div class="manual-meta-row">
-          <strong>SISTEMA UNICO DE SALUD:</strong>
-          <span class="manual-meta-value">${data.patientType === "SUS" ? "S.U.S" : ""}</span>
-        </div>
-        <div class="manual-meta-row">
-          <strong>PROGRAMA:</strong>
-          <span class="manual-meta-value">${safe(patientProgram)}</span>
-        </div>
-        <div class="manual-meta-row">
-          <strong>VENTA:</strong>
-          <span class="manual-meta-value">${safe(patientSale)}</span>
-        </div>
-      </div>
-    </section>
-  `;
-}
-
 function renderUtiUcinRecipe(data) {
   const birthDate = splitDate(data.birthDate);
   const admissionDate = splitDate(data.admissionDate);
@@ -1195,62 +1517,6 @@ function renderBox(checked) {
   return `<span class="legal-box">${checked ? "X" : ""}</span>`;
 }
 
-function renderInlineCheck(label, checked) {
-  return `<span class="inline-check">${safe(label)} ${renderBox(checked)}</span>`;
-}
-
-function renderSexCompact(value) {
-  return `<span class="sex-inline">M ${renderBox(value === "M")} F ${renderBox(value === "F")}</span>`;
-}
-
-function renderDateCells(date) {
-  return `
-    <span class="date-trio">
-      <span><b>DIA</b>${safe(date.day)}</span>
-      <span><b>MES</b>${safe(date.month)}</span>
-      <span><b>ANO</b>${safe(date.year)}</span>
-    </span>
-  `;
-}
-
-function renderDiagnosisBlock(data, internado = false) {
-  const secondaryRows = Array.from({ length: 5 }, (_, index) => {
-    const number = index + 1;
-    return {
-      number,
-      diagnosis: data[`secondaryDiagnosis${number}`] || "",
-      code: data[`secondaryCode${number}`] || "",
-    };
-  });
-
-  return `
-    <table class="legal-table diagnosis-manual">
-      <tbody>
-        ${internado ? `
-          <tr>
-            <td colspan="7"><strong>Diagnosticos:</strong></td>
-            <td colspan="30"></td>
-            <td colspan="5"></td>
-          </tr>
-        ` : ""}
-        <tr>
-          <td colspan="7"><strong>Diagnostico Principal:</strong></td>
-          <td colspan="30">${safe(data.diagnosis)}</td>
-          <td colspan="5" class="center"><strong>${safe(data.cie10)}</strong></td>
-        </tr>
-        ${secondaryRows.map((row, index) => `
-          <tr>
-            ${index === 0 ? '<td colspan="7" rowspan="5"><strong>Diagnosticos secundarios:</strong></td>' : ""}
-            <td colspan="2">${row.number}.-</td>
-            <td colspan="28">${safe(row.diagnosis)}</td>
-            <td colspan="5">${safe(row.code)}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
-}
-
 function renderManualServices(data) {
   return `
     <div class="manual-section-title">OTRAS PRESTACIONES</div>
@@ -1274,7 +1540,7 @@ function renderManualProcedures(data) {
 }
 
 function renderManualMedicines(minRows, withIndications) {
-  const rows = [...state.medicines];
+  const rows = state.medicines.slice(0, minRows);
   while (rows.length < minRows) rows.push(null);
   return `
     <table class="legal-table medicine-manual ${withIndications ? "has-indications" : "no-indications"}">
@@ -1313,7 +1579,7 @@ function renderManualMedicines(minRows, withIndications) {
       <tbody>
         ${rows.map((medicine) => `
           <tr>
-            <td>${medicine ? safe(medicineLabel(medicine)) : ""}</td>
+            <td>${medicine ? safe(printedLabel(medicine)) : ""}</td>
             ${withIndications ? `<td>${medicine ? safe(medicine.instruction || "") : ""}</td>` : ""}
             <td class="center">${medicine ? safe(medicine.quantity) : ""}</td>
             <td></td>
@@ -1327,7 +1593,7 @@ function renderManualMedicines(minRows, withIndications) {
 }
 
 function renderUtiMedicines(minRows) {
-  const rows = [...state.medicines];
+  const rows = state.medicines.slice(0, minRows);
   while (rows.length < minRows) rows.push(null);
 
   return `
@@ -1351,7 +1617,7 @@ function renderUtiMedicines(minRows) {
         ${rows.map((medicine, index) => `
           <tr>
             <td class="center">${index + 1}</td>
-            <td>${medicine ? safe(medicineLabel(medicine)) : ""}</td>
+            <td>${medicine ? safe(printedLabel(medicine)) : ""}</td>
             <td class="center">${medicine ? safe(medicine.quantity) : ""}</td>
             <td></td>
             <td></td>
@@ -1452,211 +1718,19 @@ function renderManualCostAndSignatures(data) {
   `;
 }
 
-function renderTitle(title) {
-  return `
-    <section class="excel-title">
-      ${title.replace("\n", "<br>")}
-    </section>
-  `;
-}
-
-function renderInstitutionBlock(data, internado) {
-  return `
-    <section class="excel-grid institution-block">
-      ${internado ? '<div class="cell blank span-34"></div>' : ""}
-      <div class="cell label span-8">N de EXPEDIENTE CLINICO</div>
-      ${internado ? "" : `<div class="cell fill span-5">${safe(data.clinicalRecord)}</div>`}
-      <div class="cell label span-9">SEDES: LA PAZ</div>
-      <div class="cell label span-23">RED: 2 NORTE CENTRAL</div>
-      ${internado ? '<div class="cell label span-8">SEGURO UNICO DE SALUD</div>' : ""}
-      <div class="cell label span-9">Municipio: LA PAZ</div>
-      <div class="cell label span-23">Establecimiento: HOSPITAL MUNICIPAL LA PORTADA</div>
-      <div class="cell label span-8">PROGRAMAS:</div>
-    </section>
-  `;
-}
-
-function renderDateBoxes(date) {
-  return `
-    <div class="cell center date-box span-3"><small>DIA</small>${safe(date.day)}</div>
-    <div class="cell center date-box span-3"><small>MES</small>${safe(date.month)}</div>
-    <div class="cell center date-box span-4"><small>ANO</small>${safe(date.year)}</div>
-  `;
-}
-
-function renderOption(label, selected) {
-  return `
-    <div class="cell label option-label span-4">${label}</div>
-    <div class="cell center option-box span-1">${selected === label ? "X" : ""}</div>
-  `;
-}
-
-function renderCheckText(label, checked, span) {
-  return `<div class="cell label span-${span}">${checked ? "X " : ""}${label}</div>`;
-}
-
-function renderSecondaryDiagnoses() {
-  const rows = [
-    ["1.-", "Dolor Agudo", "R52.0"],
-    ["2.-", "Gonartrosis no especificada", "M17.9"],
-    ["3.-", "Gastritis y duodenitis", "K29"],
-    ["4.-", "", ""],
-    ["5.-", "", ""],
-  ];
-
-  return rows
-    .map(
-      ([number, text, code]) => `
-        <div class="cell center span-2">${number}</div>
-        <div class="cell fill span-30">${safe(text)}</div>
-        <div class="cell fill span-5">${safe(code)}</div>
-      `,
-    )
-    .join("");
-}
-
-function renderOtherServices() {
-  const services = [
-    ["Consulta integral en servicio de Urgencias/Emergencia T17576036", ""],
-    ["Consulta odontologica general T17577005", ""],
-    ["Inyectables en consulta externa T17638014", ""],
-    ["Toma de papanicolau", ""],
-    ["Consulta integral de otras especialidades medicas T17576027", "x"],
-    ["Consulta integral de psicologia T17577003", ""],
-    ["Nebulizacion en consultorio externo T17638016", ""],
-    ["Electrocardiograma", ""],
-    ["Retiro de puntos en consultorio externo T17638019", ""],
-    ["Curacion en consultorio externo T17638009", ""],
-    ["Sutura en consultorio externo T17638020", ""],
-    ["Paro cardiaco", ""],
-    ["Cateterismo venoso periferico en urgencias T02663001", ""],
-    ["Lavado gastrico de intoxicaciones T02662006", ""],
-    ["Sutura en urgencias T02663006", ""],
-    ["Vacunacion con BCG", ""],
-    ["Cateterismo venoso periferico en consultorio externo T17638003", ""],
-    ["Control de salud de rutina del nino Z00.1", ""],
-  ];
-
-  return `
-    <section class="excel-section-title">OTRAS PRESTACIONES</section>
-    <section class="services-grid">
-      ${services.map(([text, mark]) => `<div>${mark ? `<strong>${mark}</strong> ` : ""}${text}</div>`).join("")}
-    </section>
-  `;
-}
-
-function renderProcedures() {
-  const procedures = [
-    "Anestesia General Balanceada T08639001",
-    "Cateterismo Venoso periferico en paciente internado T19655007",
-    "Nebulizacion en paciente internado T19655028",
-    "Anestesia General Neuroaxial T08639006",
-    "Lavado gastrico en paciente internado T19655024",
-    "Cateterismo Vesical en paciente internado T19655008",
-  ];
-
-  return `
-    <section class="excel-section-title">Procedimientos</section>
-    <section class="services-grid procedures-grid">
-      ${procedures.map((text) => `<div>${text}</div>`).join("")}
-    </section>
-  `;
-}
-
-function renderMedicineTable(minRows, withIndications) {
-  const rows = [...state.medicines];
-  while (rows.length < minRows) rows.push(null);
-
-  return `
-    <section class="rx-table ${withIndications ? "with-indications" : "internado-rx"}">
-      <div class="rx-head rx-medicine">MEDICAMENTOS E INSUMOS<br><small>(Nombre generico, Forma Farmaceutica y Concentracion)</small></div>
-      ${withIndications ? '<div class="rx-head rx-indications">INDICACIONES PARA EL PACIENTE<br><small>(Cantidad, Frecuencia, Tiempo de uso y Via de administracion)</small></div>' : ""}
-      <div class="rx-head rx-qty" colspan="2">CANTIDAD<br><small>Recetada / Dispensada</small></div>
-      <div class="rx-head rx-value">VALOR<br><small>Unitario / Total</small></div>
-      ${rows.map((medicine) => renderMedicineRow(medicine, withIndications)).join("")}
-    </section>
-  `;
-}
-
-function renderMedicineRow(medicine, withIndications) {
-  const med = medicine ? medicineLabel(medicine) : "&nbsp;";
-  const instruction = medicine ? medicine.instruction || "" : "";
-  const quantity = medicine ? medicine.quantity : "";
-
-  return `
-    <div class="rx-cell rx-medicine">${med}</div>
-    ${withIndications ? `<div class="rx-cell rx-indications">${safe(instruction)}</div>` : ""}
-    <div class="rx-cell rx-qty">${safe(quantity)}</div>
-    <div class="rx-cell rx-qty">&nbsp;</div>
-    <div class="rx-cell rx-value">&nbsp;</div>
-    <div class="rx-cell rx-value">&nbsp;</div>
-  `;
-}
-
-function renderCostAndObservations() {
-  return `
-    <section class="cost-block">
-      <div class="observations">OBSERVACIONES</div>
-      <div class="cost-lines">
-        <div>COSTO TOTAL</div>
-        <div>COSTO TOTAL AL USUARIO</div>
-      </div>
-    </section>
-  `;
-}
-
-function renderSignatureBlock(data) {
-  return `
-    <section class="signature-official">
-      <div><strong>Recetado por:</strong><span class="signature-space"></span>Sello y firma<br>${safe(data.doctor)} ${safe(data.license)}</div>
-      <div><strong>Dispensado por:</strong><span class="signature-space"></span>Sello y firma</div>
-      <div><strong>Nombre y Firma del(la) paciente/acompanante</strong><span class="signature-space"></span>C.I.</div>
-      <p>El prescriptor y dispensador certifican la veracidad de la informacion declarada en este documento medico legal</p>
-      <p>El usuario certifica haber recibido los medicamentos senalados en este documento medico legal</p>
-    </section>
-  `;
-}
-
-function splitPatientName(value) {
-  const parts = (value || "").trim().split(/\s+/);
-  return {
-    paternal: parts[0] || "",
-    maternal: parts[1] || "",
-    names: parts.slice(2).join(" "),
-  };
-}
-
-function getPatientParts(data) {
-  if (data.paternalSurname || data.maternalSurname || data.givenNames) {
-    return {
-      paternal: data.paternalSurname || "",
-      maternal: data.maternalSurname || "",
-      names: data.givenNames || "",
-    };
-  }
-
-  return splitPatientName(data.patientName);
-}
-
-function safe(value) {
-  if (value === undefined || value === null || value === "") return "&nbsp;";
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
 
 function render() {
   renderMedicineList();
   renderPreview();
+  renderMedicineHint();
+  scheduleDraftSave();
 }
 
-render();
+if (!restoreDraft()) render();
+renderDataStatus();
 checkRemoteLicense();
 loadLocalData().catch((error) => {
-  console.warn("No se pudieron cargar las bases locales.", error);
+  console.warn("No se pudieron cargar las bases de datos.", error);
 });
 
 if ("serviceWorker" in navigator) {
@@ -1665,32 +1739,15 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.addEventListener("controllerchange", () => {
       if (refreshing) return;
       refreshing = true;
+      saveDraft();
       window.location.reload();
     });
 
     navigator.serviceWorker
-      .register("./sw.js?v=manual-20261101-94", { updateViaCache: "none" })
+      .register("./sw.js", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch((error) => {
         console.warn("No se pudo activar la PWA.", error);
       });
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -895,6 +895,11 @@
   "TIPO DE PACIENTE": "AMBULATORIO"
  },
  {
+  "CODIGO": "L03.8",
+  "SERVICIO": "Celulitis de otros sitios",
+  "TIPO DE PACIENTE": "INTERNADO"
+ },
+ {
   "CODIGO": "L20",
   "SERVICIO": "Dermatitis atopica",
   "TIPO DE PACIENTE": "AMBULATORIO"
@@ -1225,7 +1230,7 @@
   "TIPO DE PACIENTE": "AMBULATORIO"
  },
  {
-  "CODIGO": "N2",
+  "CODIGO": "N23",
   "SERVICIO": "Colico renal, no especificado",
   "TIPO DE PACIENTE": "AMBULATORIO"
  },
@@ -1275,6 +1280,11 @@
   "TIPO DE PACIENTE": "AMBULATORIO"
  },
  {
+  "CODIGO": "N75.1",
+  "SERVICIO": "Absceso de la glandula de Bartholin",
+  "TIPO DE PACIENTE": "INTERNADO"
+ },
+  {
   "CODIGO": "N76.0",
   "SERVICIO": "Vaginitis aguda",
   "TIPO DE PACIENTE": "AMBULATORIO"

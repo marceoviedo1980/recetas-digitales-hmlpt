@@ -3067,3 +3067,229 @@ textarea {
 
 .recipe-page.is-half-copies.is-uti-ucin .logo-gamlp       { --logo-h: 14mm; --logo-left: 21mm; }
 .recipe-page.is-half-copies.is-uti-ucin .logo-hospital    { --logo-h: 9.5mm; --logo-right: 26.5mm; }
+
+/* Buscador de recetas guardadas */
+.saved-search { display: grid; gap: 4px; padding: 0 0 10px; }
+.saved-search input { width: 100%; min-height: 40px; padding: 8px 12px; border: 1px solid #b9c3d6; border-radius: 8px; font: inherit; box-sizing: border-box; }
+.saved-search-count { font-size: 0.8rem; color: #5a667d; }
+
+/* ==========================================================================
+   Buscadores, estado de datos, avisos de medicamentos y lista editable
+   (solo pantalla: nada de esto se imprime)
+   ========================================================================== */
+.data-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 10px 0 0;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f4f8f7;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.data-status.is-offline {
+  border-color: #e7c98a;
+  background: #fff8e6;
+  color: #6b4d00;
+}
+
+.editor-panel fieldset {
+  min-width: 0;
+}
+
+@media screen and (min-width: 701px) {
+  .medicine-search {
+    grid-template-columns: minmax(0, 1.3fr) 84px minmax(0, 1fr) auto;
+  }
+}
+
+.buscador-anclaje {
+  position: relative;
+}
+
+.buscador-lista {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  min-width: min(420px, 90vw);
+  max-height: 300px;
+  margin-top: 2px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(23, 33, 31, 0.16);
+  font-weight: 400;
+}
+
+.buscador-item {
+  padding: 8px 10px;
+  border-bottom: 1px solid #edf1f0;
+  cursor: pointer;
+  line-height: 1.25;
+}
+
+.buscador-item:last-child {
+  border-bottom: 0;
+}
+
+.buscador-item:hover,
+.buscador-item.activo {
+  background: var(--soft);
+}
+
+.buscador-codigo {
+  display: inline-block;
+  min-width: 52px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.buscador-etiqueta {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #e2ecfa;
+  color: #2f5f9e;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.buscador-nota {
+  display: block;
+  margin-top: 2px;
+  color: #8a5300;
+  font-size: 0.78rem;
+}
+
+.medicine-hint {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.88rem;
+}
+
+.hint-restriccion,
+.hint-controlado {
+  padding: 7px 10px;
+  border-radius: 6px;
+}
+
+.hint-restriccion {
+  border: 1px solid #efcf8f;
+  background: #fff7e3;
+  color: #6b4d00;
+}
+
+.hint-controlado {
+  border: 1px solid #d5c2ee;
+  background: #f6f0fd;
+  color: #4b2a7a;
+}
+
+@media screen and (min-width: 701px) {
+  .medicine-row {
+    grid-template-columns: minmax(0, 1fr) 76px minmax(130px, 0.75fr) auto;
+  }
+}
+
+.medicine-row-name strong {
+  display: block;
+}
+
+.medicine-row-field {
+  display: grid;
+  gap: 2px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.medicine-row-field input {
+  width: 100%;
+  min-height: 34px;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.med-note {
+  display: inline-block;
+  margin: 4px 6px 0 0;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+}
+
+.med-note-restriccion {
+  background: #fff1cf;
+  color: #6b4d00;
+}
+
+.med-note-controlado {
+  background: #efe5fb;
+  color: #4b2a7a;
+}
+
+.capacity-warning {
+  color: #9d2c2c;
+  font-weight: 700;
+}
+
+.app-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  z-index: 100;
+  max-width: min(520px, calc(100vw - 32px));
+  padding: 11px 18px;
+  border-radius: 8px;
+  background: #17211f;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 12px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.app-toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.app-toast[data-tipo="error"] {
+  background: #9d2c2c;
+}
+
+@media screen and (max-width: 700px) {
+  .medicine-row {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+
+  .medicine-row-name {
+    grid-column: 1 / -1;
+  }
+
+  .medicine-row .remove-button {
+    grid-column: 1 / -1;
+  }
+}
+
+@media print {
+  .data-status,
+  .buscador-lista,
+  .medicine-hint,
+  .app-toast {
+    display: none !important;
+  }
+}

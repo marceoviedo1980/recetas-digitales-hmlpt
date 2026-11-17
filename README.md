@@ -4,43 +4,38 @@ PWA para llenar e imprimir recetarios hospitalarios oficiales del Hospital Munic
 
 ## Funciones principales
 
-- Recetario ambulatorio.
-- Recetario internado.
-- Recetario UTI / UCIN.
-- Buscador de medicamentos desde `data/medicamentos.json`.
-- Buscador de diagnosticos y autollenado CIE-10 desde `data/cartera_servicios.json`.
-- Lista de servicios/especialidades.
-- Vista previa imprimible.
-- Instalacion como PWA en navegador compatible.
-- Logos institucionales (Gobierno Autonomo Municipal de La Paz y Hospital Humano La Portada) en la cabecera de los tres recetarios, tomados de `img/`.
+- Recetario ambulatorio, internado y UTI / UCIN.
+- Medicamentos leidos en vivo desde **FarmaCheck**, con aviso de restriccion al elegirlos
+  (solo en pantalla, no se imprime).
+- Psicotropicos y estupefacientes: la cantidad se escribe sola en literal.
+  Ej.: `Citrato de Fentanilo 0,05 mg/ml (ampolla de 10 ml) (tres ampollas)`.
+- Diagnosticos leidos en vivo desde **cartera-servicios**; se buscan por nombre o por codigo y salen primero
+  los del tipo de receta (ambulatorio / internado).
+- Aviso cuando los medicamentos superan las filas del recetario (17 en hoja carta ambulatoria, 15 en internado,
+  12 en dos copias, 20 en UTI / UCIN).
+- Guardar, cargar, buscar, respaldar e importar recetas (solo en el navegador del equipo).
+- Borrador automatico: si la app se recarga (p. ej. al actualizarse), se recupera la receta en curso.
+- Logos institucionales (Gobierno Autonomo Municipal de La Paz y Hospital Humano La Portada) en la cabecera.
+- Vista previa imprimible y PDF sin necesidad de internet.
 
-## Publicacion en GitHub Pages
+## De donde salen los datos
 
-Este proyecto puede publicarse como sitio estatico. Los archivos necesarios son:
+| Dato | Se lee de | Respaldo dentro de la app |
+|---|---|---|
+| Medicamentos | `marceoviedo1980/FarmaCheck/medicamentos.json` | `data/medicamentos.json` |
+| Diagnosticos | `marceoviedo1980/cartera-servicios/cartera_servicios.json` | `data/cartera_servicios.json` |
 
-```text
-index.html
-app.js
-styles.css
-manifest.webmanifest
-sw.js
-icons/
-img/
-data/
-README.md
-```
+Para actualizar medicamentos o diagnosticos **no se toca esta app**: se actualiza FarmaCheck o
+cartera-servicios y el recetario lo toma solo. Sin conexion usa la ultima copia descargada en el equipo y,
+si no hay ninguna, la copia de `data/`. La linea "Medicamentos / Diagnosticos" de la pantalla dice cual usa.
 
-No es necesario publicar los PDF de prueba, plantillas extraidas ni scripts locales.
+Las direcciones y la lista de controlados estan al inicio de `app.js` (bloque "DATOS DEL ESTABLECIMIENTO").
 
-## Uso
+## Publicar cambios de la app
 
-Abre la app publicada desde GitHub Pages, llena el formulario, revisa la vista previa y usa `Imprimir` o `Generar PDF`.
+Al cambiar cualquier archivo de la app, subir el numero `VERSION` en `sw.js` (es el unico lugar).
+No hace falta cambiarlo cuando solo cambian los datos.
 
 ## Datos
-
-Los datos cargados actualmente son:
-
-- `data/medicamentos.json`
-- `data/cartera_servicios.json`
 
 No deben agregarse datos personales de pacientes al repositorio.
